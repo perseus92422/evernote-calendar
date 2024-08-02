@@ -11,20 +11,22 @@ import { updateScheduleAPI, addScheduleAPI } from '../api/schedule'
 import ColorIcon from './colorIcon';
 import LineThickness from './lineThickness';
 import Message from "./message"
-import { COLOR_PATTERN } from '../const';
+import { COLOR_PATTERN, LINE_WIDTH_PATTERN, SCHEDULE_MODAL_TYPE, CALENDAR_LOCALES } from '../const';
+import { dateToYYYYMMDDF } from '../helper/util';
+import ENCHINTL from '@/app/lang/EN-CH.json';
 
 const ScheduleModal = (
   { type, isShow, setShow }:
-    { type?: number, isShow: boolean, setShow: (arg: boolean) => void }
+    { type: SCHEDULE_MODAL_TYPE, isShow: boolean, setShow: (arg: boolean) => void }
 ) => {
 
   const dispatch = useAppDispatch();
-  const { isShowDialog, scheduleKind, thickness, newPlan, action } = useAppSelector(getCalender);
-
-  const [visible, setVisible] = useState(true);
+  const { isShowDialog, scheduleKind, newPlan, intl } = useAppSelector(getCalender);
+  const [visible, setVisible] = useState<boolean>(true);
   const [error, setErorr] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState<String>("");
+  const [endDate, setEndDate] = useState<String>("");
+  const [kind, setKind] = useState<string>("0");
 
   const [data, setData] = useState<TPlan>(newPlan)
   // const [error, setError] = useState({
@@ -47,7 +49,6 @@ const ScheduleModal = (
   }
 
   const handleSubmit = () => {
-
     // if (moment(data.endDate).isBefore(data.startDate)) {
     //   setError({
     //     message: "End date must be after start date",
@@ -102,12 +103,13 @@ const ScheduleModal = (
   }
 
   const handleStartDateChange = (date: Date) => {
-
-    setData({ ...data, startDate: date.format("YYYY-MM-DD") })
+    setStartDate(dateToYYYYMMDDF(date));
+    // setData({ ...data, startDate: date.format("YYYY-MM-DD") })
   }
 
-  const handleEndDateChange = (date: moment.Moment) => {
-    setData({ ...data, endDate: date.format("YYYY-MM-DD") })
+  const handleEndDateChange = (date: Date) => {
+    setEndDate(dateToYYYYMMDDF(date))
+    // setData({ ...data, endDate: date.format("YYYY-MM-DD") })
   }
 
   const handleKind = (value: string) => {
@@ -118,31 +120,38 @@ const ScheduleModal = (
     setData({ ...data, [e.target.name]: e.target.value })
   }
 
-  useEffect(() => {
-    console.log("visisble value ", isShow);
-    // if (data.kind == "-1") {
-    //   setError({
-    //     message: "Kind must be started",
-    //     open: true
-    //   })
-    // } else {
-    //   setError({ message: "", open: false })
-    // }
-    // if (moment(newPlan.endDate).isBefore(moment(newPlan.startDate))) {
-    //   setError({
-    //     message: "End date must be after start date",
-    //     open: true
-    //   })
-    // } else {
-    //   setError({ message: "", open: false })
-    // }
-    setData(newPlan);
-  }, [newPlan])
+  // useEffect(() => {
+  //   console.log("visisble value ", isShow);
+  //   // if (data.kind == "-1") {
+  //   //   setError({
+  //   //     message: "Kind must be started",
+  //   //     open: true
+  //   //   })
+  //   // } else {
+  //   //   setError({ message: "", open: false })
+  //   // }
+  //   // if (moment(newPlan.endDate).isBefore(moment(newPlan.startDate))) {
+  //   //   setError({
+  //   //     message: "End date must be after start date",
+  //   //     open: true
+  //   //   })
+  //   // } else {
+  //   //   setError({ message: "", open: false })
+  //   // }
+  //   setData(newPlan);
+  // }, [newPlan])
 
   return (
     <Dialog.Root open={visible} onOpenChange={handleDialogShow} >
       <Dialog.Content >
-        <Dialog.Title> Schedule</Dialog.Title>
+        <Dialog.Title>
+          {
+            type == SCHEDULE_MODAL_TYPE.Create ? ENCHINTL['create-schedule-title'][intl] : null
+          }
+          {
+            type == SCHEDULE_MODAL_TYPE.Update ? ENCHINTL['update-schedule-title'][intl] : null
+          }
+        </Dialog.Title>
         <Dialog.Description size="2" mb="4">
           {
             error ? (<Message message={error} />) : null
@@ -151,11 +160,12 @@ const ScheduleModal = (
         <Flex direction="column" gap="3">
           <Flex direction="row" gap="3">
             <Flex direction="column">
-              <span>Start Date:</span>
+              <span>{ENCHINTL['start-date'][intl]}:</span>
               <div>
                 <DatePicker
+                  locale={CALENDAR_LOCALES[intl]}
                   selected={new Date(data.startDate)}
-                  onChange={(startDate: Date) => handleStartDateChange(startDate)}
+                  onChange={(date: Date) => handleStartDateChange(date)}
                   selectsStart
                   startDate={new Date(data.startDate)}
                   endDate={new Date(data.endDate)}
@@ -163,11 +173,12 @@ const ScheduleModal = (
               </div>
             </Flex>
             <Flex direction="column">
-              End Date:
+              <span>{ENCHINTL['end-date'][intl]}:</span>
               <div>
                 <DatePicker
+                  locale={CALENDAR_LOCALES[intl]}
                   selected={new Date(data.endDate)}
-                  onChange={(endDate: Date) => handleEndDateChange(moment(endDate))}
+                  onChange={(date: Date) => handleEndDateChange(date)}
                   selectsEnd
                   startDate={new Date(data.startDate)}
                   endDate={new Date(data.endDate)}
@@ -176,15 +187,14 @@ const ScheduleModal = (
               </div>
             </Flex>
             <Flex direction="column" className='w-full'>
-              <div >Type:</div>
+              <div >{ENCHINTL['schedule-type'][intl]}:</div>
               <div className='w-full'>
-                <Select.Root defaultValue={data.kind} value={data.kind} onValueChange={handleKind}>
+                <Select.Root defaultValue={kind} value={data.kind} onValueChange={handleKind}>
                   <Select.Trigger />
                   <Select.Content>
-                    <Select.Item value={"-1"}>-SELECT-</Select.Item>
                     <Select.Group>
                       {scheduleKind.map((v: TScheduleKind, i: number) => (
-                        <Select.Item key={i} value={v._id}>{v.name}</Select.Item>
+                        <Select.Item key={i} value={i.toString()}>{v.name}</Select.Item>
                       ))}
                     </Select.Group>
                   </Select.Content>
@@ -193,20 +203,29 @@ const ScheduleModal = (
             </Flex>
           </Flex>
           <Flex direction="column">
-            <div>Title:</div>
+            <p>{ENCHINTL['schedule-title'][intl]}:</p>
             <div>
-              <TextField.Root autoFocus={true} size="2" placeholder="Title" name="title" value={data.title} onChange={handleInputChange} />
+              <TextField.Root
+                autoFocus={true}
+                size="2"
+                placeholder={ENCHINTL['schedule-title-holder'][intl]}
+                value={data.title}
+                onChange={handleInputChange} />
             </div>
           </Flex>
           <Flex direction="column" className='w-full'>
-            <div>Demo:</div>
+            <p>{ENCHINTL['schedule-description'][intl]}:</p>
             <div className='w-full'>
-              <TextArea className='w-full'
-                value={data.demo} rows={5} placeholder='Demo' name="demo" onChange={handleInputChange} ></TextArea>
+              <TextArea
+                className='w-full'
+                value={data.demo}
+                rows={5}
+                placeholder={ENCHINTL['schedule-description-holder'][intl]}
+                onChange={handleInputChange} />
             </div>
           </Flex>
           <Flex direction="column" className='w-full'>
-            <div>Line Color:</div>
+            <p>{ENCHINTL['schedule-color-bar'][intl]}:</p>
             <Flex className='row gap-2 flex-wrap w-full'>
               {
                 COLOR_PATTERN.map((v: string, i: number) => (
@@ -215,12 +234,14 @@ const ScheduleModal = (
             </Flex>
           </Flex>
           <Flex direction="column" className='w-full'>
-            <div>Line Thickness:</div>
+            <p>{ENCHINTL['schedule-width-bar'][intl]}:</p>
             <Flex className='row gap-2 flex-wrap w-full'>
               <RadioCards.Root className='w-100' defaultValue={data.width.toString()} columns={{ initial: '1', sm: '5' }}>
-                {thickness.map((v: number, i: number) => (
-                  <LineThickness key={i} value={v} color={data.color} handleClick={handleLineThicknessClick} />
-                ))}
+                {
+                  LINE_WIDTH_PATTERN.map((v: number, i: number) => (
+                    <LineThickness key={i} value={v} color={data.color} handleClick={handleLineThicknessClick} />
+                  ))
+                }
               </RadioCards.Root>
             </Flex>
           </Flex>
@@ -228,13 +249,11 @@ const ScheduleModal = (
         <hr />
         <Flex gap="3" justify="end" className='pt-2'>
           <Button radius='full' color="indigo" onClick={handleSubmit}>
-            Submit
+            {ENCHINTL['submit-btn'][intl]}
           </Button>
           <Dialog.Close>
-            <Button radius='full' color="gray" onClick={e => {
-              dispatch(setIsShowDialog(!isShowDialog))
-            }}>
-              Close
+            <Button radius='full' color="gray" onClick={handleDialogShow}>
+              {ENCHINTL['close-btn'][intl]}
             </Button>
           </Dialog.Close>
         </Flex>

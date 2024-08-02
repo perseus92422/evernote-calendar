@@ -8,10 +8,9 @@ const initialState: {
     plan: TPlan[] | undefined,
     isShowDialog: boolean,
     scheduleKind: TScheduleKind[],
-    thickness: number[],
     newPlan: TPlan,
     action: string,
-    lang: number
+    intl: number
 } =
 {
     date: moment(new Date()).format("YYYY-MM-DD"),
@@ -19,7 +18,6 @@ const initialState: {
     plan: undefined,
     isShowDialog: false,
     scheduleKind: [],
-    thickness: [2, 3, 4, 5, 6],
     newPlan: {
         _id: "",
         color: 'indigo',
@@ -39,7 +37,7 @@ const initialState: {
         updatedAt: ""
     },
     action: "create",
-    lang: 0
+    intl: 1
 };
 export const CalenderSlice = createSlice({
     name: "Calender",
@@ -90,7 +88,6 @@ export const CalenderSlice = createSlice({
         getScheduleKind(state, action) {
             state.scheduleKind = action.payload;
         }
-
     }
 });
 

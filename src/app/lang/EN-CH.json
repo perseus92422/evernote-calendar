@@ -1,0 +1,54 @@
+{
+    "create-schedule-title": [
+        "Create Schedule",
+        "创建计划"
+    ],
+    "update-schedule-title": [
+        "Update Schedule",
+        "更新时间表"
+    ],
+    "start-date": [
+        "Start Date",
+        "开始日期"
+    ],
+    "end-date": [
+        "End Date",
+        "结束日期"
+    ],
+    "schedule-type":[
+        "Type",
+        "类型"
+    ],
+    "schedule-title":[
+        "Title",
+        "标题"
+    ],
+    "schedule-title-holder":[
+        "Title",
+        "标题"
+    ],
+    "schedule-description":[
+        "Description",
+        "描述"
+    ],
+    "schedule-description-holder":[
+        "Description",
+        "描述"
+    ],
+    "schedule-color-bar":[
+        "Line Color",
+        "线条颜色"
+    ],
+    "schedule-width-bar":[
+        "Line Thickness",
+        "线的粗细"
+    ],
+    "submit-btn":[
+        "Submit",
+        "提交"
+    ],
+    "close-btn":[
+        "Close",
+        "关闭"
+    ]
+}

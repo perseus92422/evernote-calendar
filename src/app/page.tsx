@@ -1,6 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
 import moment from 'moment';
+import { registerLocale } from 'react-datepicker';
+import { zhCN, enUS } from 'date-fns/locale';
 import Calender from "./pages/calender";
 import Header from "@/app/layout/header";
 import { ToastContainer } from 'react-toastify';
@@ -11,6 +13,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
   const dispatch = useAppDispatch();
+
+  registerLocale('en', enUS);
+  registerLocale('cn', zhCN);
+
   const { date } = useAppSelector(getCalender)
   // const date = moment(useAppSelector(getCalender).date);
   const kind = useAppSelector(getCalender).kind;

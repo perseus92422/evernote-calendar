@@ -6,6 +6,7 @@ import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from '@radix-ui/react-ico
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
 import ScheduleModal from '../components/ScheduleModal';
 import { setDate, setKind, getCalender, setIsShowDialog, setAction, setNewPlan } from '@/app/redux/calenderSlice';
+import { SCHEDULE_MODAL_TYPE } from '../const';
 
 const Header = () => {
 
@@ -62,7 +63,7 @@ const Header = () => {
   return (
     <div>
       {visible ? (
-        <ScheduleModal isShow={visible} setShow={setVisible} />
+        <ScheduleModal type={SCHEDULE_MODAL_TYPE.Create} isShow={visible} setShow={setVisible} />
       ) : null}
       <Flex direction="row" justify="between" gap="4" py="2">
         <Flex pt="2">
