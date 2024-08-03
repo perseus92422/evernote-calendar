@@ -1,3 +1,14 @@
+export interface ScheduleTypesDTO {
+  meeting: string[];
+  birthday: string[];
+  work: string[];
+  holiday: string[];
+  travel: string[];
+  memory: string[];
+  date: string[];
+}
+
+
 export interface TPlan {
   _id: string,
   color: string | 'indigo'

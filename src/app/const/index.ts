@@ -26,6 +26,16 @@ export const CALENDAR_LOCALES = [
     'cn'
 ]
 
+export const SCHEDULE_TYPES = [
+    'meeting',
+    'birthday',
+    'work',
+    'holiday',
+    'travel',
+    'memory',
+    'date'
+]
+
 export const enum SCHEDULE_MODAL_TYPE {
     Create = 'Create',
     Update = 'Update'
