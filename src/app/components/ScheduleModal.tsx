@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Dialog,
   Button,
@@ -12,8 +12,6 @@ import {
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../redux/hook'
-import { setIsShowDialog, getCalender, updatePlan, addPlan } from '../redux/calenderSlice'
-import { updateScheduleAPI, addScheduleAPI } from '../api/schedule'
 import ColorIcon from './colorIcon';
 import LineThickness from './lineThickness';
 import Message from "./message"
@@ -24,17 +22,32 @@ import {
   SCHEDULE_TYPES,
   CALENDAR_LOCALES
 } from '../const';
-import { ScheduleTypesDTO } from '../type';
-import { compareDate } from '../helper/util';
+import {
+  NewScheduleDTO,
+  ScheduleTypesDTO
+} from '../type';
+import {
+  dateToYYYYMMDDF,
+  compareDate
+} from '../helper/util';
 import ENCHINTL from '@/app/lang/EN-CH.json';
+import {
+  createSchedule,
+  updateSchedule
+} from '../api';
+import { setScheduleProps } from '../features/calendar.slice';
 
 const ScheduleModal = (
   { type, isShow, setShow }:
-    { type: SCHEDULE_MODAL_TYPE, isShow?: boolean, setShow: (arg: boolean) => void }
+    {
+      type: SCHEDULE_MODAL_TYPE,
+      isShow?: boolean,
+      setShow: (arg: boolean) => void
+    }
 ) => {
 
   const dispatch = useAppDispatch();
-  const { intl } = useAppSelector(getCalender);
+  const { schedule, intl } = useAppSelector((state) => state.calendar);
   const [visible, setVisible] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -47,10 +60,10 @@ const ScheduleModal = (
 
   const handleDialogShow = () => {
     setVisible(!visible);
-    setShow(!visible)
+    setShow(!visible);
   }
 
-  const handleSubmit = () => {
+  async function handleSubmit() {
     if (!compareDate(startDate, endDate)) {
       setError(ENCHINTL['schedule']['modal']['error']['date-invalid'][intl]);
       return;
@@ -64,10 +77,26 @@ const ScheduleModal = (
       return;
     }
     if (type == SCHEDULE_MODAL_TYPE.Create) {
+      let payload: NewScheduleDTO = {
+        title,
+        description,
+        color,
+        width,
+        startDate: dateToYYYYMMDDF(startDate),
+        endDate: dateToYYYYMMDDF(endDate)
+      }
+      let { data, status } = await createSchedule(payload);
+      if (status >= 400) {
 
+      } else {
+        let tmpSchedule = schedule;
+        tmpSchedule.push(data);
+        dispatch(setScheduleProps(tmpSchedule));
+        toast.info(ENCHINTL['schedule']['modal']['toast']['create-schedule-success'][intl]);
+      }
     }
     if (type == SCHEDULE_MODAL_TYPE.Update) {
-
+      // let { data, status } = await updateSchedule();
     }
     // if (action == "Edit") {
     //   updateScheduleAPI(data).then((schedule) => {
@@ -92,6 +121,7 @@ const ScheduleModal = (
     //     })
     //   })
     // }
+    initState();
   }
 
   const handleStartDateChange = (date: Date) => {
@@ -112,6 +142,19 @@ const ScheduleModal = (
 
   const handleWidthChange = (value: number) => {
     setWidth(width);
+  }
+
+  const initState = () => {
+    setVisible(!visible);
+    setShow(!visible);
+    setKind(SCHEDULE_TYPES[0]);
+    setError("");
+    setStartDate(new Date());
+    setEndDate(new Date());
+    setTitle("");
+    setDescription("");
+    setColor(COLOR_PATTERN[0]);
+    setWidth(LINE_WIDTH_PATTERN[0]);
   }
 
   return (

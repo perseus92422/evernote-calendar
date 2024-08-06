@@ -6,7 +6,7 @@ import moment from 'moment'
 import { useAppDispatch, useAppSelector } from '@/app/redux/hook';
 import { getCalender, setDate } from '@/app/redux/calenderSlice';
 
-import TOneDay, { TPlan } from '../type'
+import TOneDay, { TPlan } from '../types'
 import TaskShow from './taskShow'
 
 const Bar = ({ color, width, position }: { color: string; position: number; width?: number }) => {

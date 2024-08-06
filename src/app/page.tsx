@@ -1,12 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
-import moment from 'moment';
 import { registerLocale } from 'react-datepicker';
 import { zhCN, enUS } from 'date-fns/locale';
 import Calender from "./pages/calender";
 import Header from "@/app/layout/header";
 import { ToastContainer } from 'react-toastify';
-import ScheduleModal from "./components/ScheduleModal";
 import { getCalender, setDate } from "./redux/calenderSlice";
 import { useAppSelector, useAppDispatch } from "./redux/hook";
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,19 +33,19 @@ export default function Home() {
       setPlay(true);
     }, 400);
   };
-  useEffect(() => {
-    if (!isScrolling) {
-      let kd: moment.unitOfTime.DurationConstructor = "days";
-      if (kind == "week") kd = "days";
-      else kd = "months";
-      dispatch(setDate(moment(date).add(direction, kd).format("YYYY-MM-DD")));
-    }
-  }, [isScrolling, direction])
+
+  // useEffect(() => {
+  //   if (!isScrolling) {
+  //     let kd: moment.unitOfTime.DurationConstructor = "days";
+  //     if (kind == "week") kd = "days";
+  //     else kd = "months";
+  //     dispatch(setDate(moment(date).add(direction, kd).format("YYYY-MM-DD")));
+  //   }
+  // }, [isScrolling, direction])
 
   return (
     <div className="container mx-auto px-4" onWheel={handleWheel}>
       <Header />
-      {/* <ScheduleModal /> */}
       <Calender />
       <ToastContainer
         position="top-center"

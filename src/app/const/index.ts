@@ -40,3 +40,9 @@ export const enum SCHEDULE_MODAL_TYPE {
     Create = 'Create',
     Update = 'Update'
 }
+
+export const enum CALENDAR_VIEW_MODE {
+    month1 = 'Month 1',
+    month2 = 'Month 2',
+    week = 'Week'
+}

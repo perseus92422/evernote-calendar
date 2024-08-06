@@ -1,12 +1,4 @@
-export interface ScheduleTypesDTO {
-  meeting: string[];
-  birthday: string[];
-  work: string[];
-  holiday: string[];
-  travel: string[];
-  memory: string[];
-  date: string[];
-}
+
 
 
 export interface TPlan {
@@ -27,6 +19,7 @@ export interface TPlan {
   updatedAt: string,
   __v: string
 }
+
 export interface TScheduleKind {
   _id: string,
   name: string,

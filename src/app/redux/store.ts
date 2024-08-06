@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action, combineReducers } from "@reduxjs/t
 // import { persistStore, persistReducer } from "reduxjs-toolkit-persist";
 // import storage from 'reduxjs-toolkit-persist/lib/storage'
 import { CalenderSlice } from "./calenderSlice";
+import { calendarSlice } from "../features/calendar.slice";
 
 // const persistConfig = {
 //     key: 'root',
@@ -14,7 +15,8 @@ import { CalenderSlice } from "./calenderSlice";
 
 export const store = configureStore({
     reducer: {
-        [CalenderSlice.name]: CalenderSlice.reducer
+        [CalenderSlice.name]: CalenderSlice.reducer,
+        [calendarSlice.name]: calendarSlice.reducer
     }
 });
 // export const persistor = persistStore(store);

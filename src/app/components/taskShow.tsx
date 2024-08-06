@@ -6,9 +6,9 @@ import moment from 'moment'
 import { toast } from 'react-toastify';
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
 import { getCalender, setIsShowDialog, setAction, setNewPlan, deletePlan } from '@/app/redux/calenderSlice';
-import { deleteScheduleAPI } from '../api/schedule'
+import { deleteScheduleAPI } from '../api/schedule.api'
 import Alert from './alert';
-import { TPlan, TScheduleKind } from '../type';
+import { TPlan, TScheduleKind } from '../types';
 
 function cutString(str: string) {
   if (str.length > 10) {

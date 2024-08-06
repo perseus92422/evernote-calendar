@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import moment from 'moment';
 import { RootState } from './store';
-import { TPlan, TScheduleKind } from '../type';
+import { TPlan, TScheduleKind } from '../types';
 const initialState: {
     date: string,
     kind: string,
