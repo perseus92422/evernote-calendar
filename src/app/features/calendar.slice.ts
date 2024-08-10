@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ScheduleDTO } from "../type";
 import { CALENDAR_VIEW_MODE } from "../const";
+import { dateToYYYYMMDDF } from "../helper/util";
 
 const initialState: {
     schedule: ScheduleDTO[],
@@ -11,7 +12,7 @@ const initialState: {
     schedule: [],
     intl: 0,
     viewMode: CALENDAR_VIEW_MODE.month1,
-    activeDate: ""
+    activeDate: dateToYYYYMMDDF(new Date())
 }
 
 export const calendarSlice = createSlice({

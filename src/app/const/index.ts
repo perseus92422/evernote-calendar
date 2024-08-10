@@ -26,6 +26,11 @@ export const CALENDAR_LOCALES = [
     'cn'
 ]
 
+export const MOMENT_LOCALES = [
+    'en-ca',
+    'zh-cn'
+]
+
 export const SCHEDULE_TYPES = [
     'meeting',
     'birthday',
@@ -35,6 +40,7 @@ export const SCHEDULE_TYPES = [
     'memory',
     'date'
 ]
+
 
 export const enum SCHEDULE_MODAL_TYPE {
     Create = 'Create',
@@ -46,3 +52,4 @@ export const enum CALENDAR_VIEW_MODE {
     month2 = 'Month 2',
     week = 'Week'
 }
+

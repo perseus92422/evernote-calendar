@@ -1,5 +1,4 @@
 import moment from "moment";
-// import 'moment/locale/zh-cn';
 
 export const dateToYYYYMMDDF = (date: Date): string => {
     return moment(date).format('YYYY-MM-DD');
@@ -31,4 +30,8 @@ export const getFullDescriptionOfMonth = (date: Date, intl: number) => {
         moment.locale('zh-cn');
     }
     return moment(date).locale('zh-cn').format('MMMM');
+}
+
+export const getDaysOfMonth = () => {
+    
 }

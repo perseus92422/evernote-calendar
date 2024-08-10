@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react'
 import { registerLocale } from 'react-datepicker';
 import { zhCN, enUS } from 'date-fns/locale';
+import 'moment/locale/en-ca';
+import 'moment/locale/zh-cn';
 import Calender from "./pages/calender";
 import Header from "@/app/layout/header";
 import { ToastContainer } from 'react-toastify';
@@ -17,7 +19,7 @@ export default function Home() {
 
   const { date } = useAppSelector(getCalender)
   // const date = moment(useAppSelector(getCalender).date);
-  const kind = useAppSelector(getCalender).kind;
+  // const kind = useAppSelector(getCalender).kind;
   const [isScrolling, setIsScrolling] = useState(false);
   const [direction, setDirection] = useState(0);
   const [play, setPlay] = useState(true);

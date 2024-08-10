@@ -2,12 +2,12 @@
 import React from 'react'
 import { IconButton, Flex, Box, Popover } from '@radix-ui/themes'
 import moment from 'moment'
-
 import { useAppDispatch, useAppSelector } from '@/app/redux/hook';
-import { getCalender, setDate } from '@/app/redux/calenderSlice';
+import { setDate } from '@/app/redux/calenderSlice';
 
 import TOneDay, { TPlan } from '../types'
 import TaskShow from './taskShow'
+import { CALENDAR_VIEW_MODE } from '../const';
 
 const Bar = ({ color, width, position }: { color: string; position: number; width?: number }) => {
 
@@ -114,14 +114,16 @@ const Conner = ({ no, width, color, position }: { no: number; width?: number; co
     }}></Box>)
   }
 }
-const OneDay = (prop: TOneDay) => {
+
+const Day = (prop: TOneDay) => {
+
   const dispatch = useAppDispatch();
-  const kind = useAppSelector(getCalender).kind;
+  const { viewMode } = useAppSelector(state => state.calendar);
   const { no, month, datesCnt, plan, width, color } = prop;
+
   const date = moment(prop.date);
   const handleIconButton = (date: moment.Moment) => {
     dispatch(setDate(date.format("YYYY-MM-DD")));
-    // dispatch(setDateAndPlan({ date: date.format("YYYY-MM-DD"), plan }))
   }
 
   let cornerL = null
@@ -129,7 +131,7 @@ const OneDay = (prop: TOneDay) => {
   let k = no;
   if (~~(no / 7) % 2) k = ~~(no / 7) * 7 + (6 - no % 7)
 
-  if (kind == "month_1") {
+  if (viewMode == CALENDAR_VIEW_MODE.month1) {
     if (no == 0) {
       let pos = -width / 2;
       let _pos = pos;
@@ -137,11 +139,6 @@ const OneDay = (prop: TOneDay) => {
         if (moment(v.endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(v.endDate).isSameOrAfter(moment(v.startDate), 'day')) {
           _pos += v.width;
         }
-        // for (let j = 0; j <= i; j++) {
-        //   if (moment(a[j].endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(a[j].endDate).isSameOrAfter(moment(v.startDate), 'day')) {
-        //     _pos += v.width;
-        //   }
-        // }
         if (date.isBetween(moment(v.startDate), moment(v.endDate), 'day', "[)")) {
           return Conner({ no: 0, width: v.width, color: v.color, position: _pos - v.width / 2 })
         } else return null
@@ -157,11 +154,6 @@ const OneDay = (prop: TOneDay) => {
       let pos = -width / 2;
       let _pos = pos;
       let connerPlan = plan?.map((v: TPlan) => {
-        // for (let j = 0; j <= i; j++) {
-        //   if (moment(a[j].endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(a[j].endDate).isSameOrAfter(moment(v.startDate), 'day')) {
-        //     _pos += v.width;
-        //   }
-        // }
         if (moment(v.endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(v.endDate).isSameOrAfter(moment(v.startDate), 'day')) {
           _pos += v.width;
         }
@@ -177,7 +169,6 @@ const OneDay = (prop: TOneDay) => {
           height: '100%',
         }} > {Conner({ no: 1, width })}{connerPlan}</ Box>
       } else {
-        // cornerL = Conner({ no: 2, width })
         cornerL = <Box style={{
           position: 'relative',
           width: '50%',
@@ -190,11 +181,6 @@ const OneDay = (prop: TOneDay) => {
       let pos = -width / 2;
       let _pos = pos;
       let connerPlan = plan?.map((v: TPlan) => {
-        // for (let j = 0; j <= i; j++) {
-        //   if (moment(a[j].endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(a[j].endDate).isSameOrAfter(moment(v.startDate), 'day')) {
-        //     _pos += v.width;
-        //   }
-        // }
         if (moment(v.endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(v.endDate).isSameOrAfter(moment(v.startDate), 'day')) {
           _pos += v.width;
         }
@@ -213,11 +199,6 @@ const OneDay = (prop: TOneDay) => {
       let pos = -width / 2;
       let _pos = pos;
       let connerPlan = plan?.map((v: TPlan) => {
-        // for (let j = 0; j <= i; j++) {
-        //   if (moment(a[j].endDate).clone().weekday(6).isSameOrAfter(date, "day") && moment(a[j].endDate).isSameOrAfter(moment(v.startDate), "day")) {
-        //     _pos += v.width;
-        //   }
-        // }
         if (moment(v.endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(v.endDate).isSameOrAfter(moment(v.startDate), 'day')) {
           _pos += v.width;
         }
@@ -235,11 +216,6 @@ const OneDay = (prop: TOneDay) => {
       let pos = -width / 2;
       let _pos = pos;
       let connerPlan = plan?.map((v: TPlan) => {
-        // for (let j = 0; j <= i; j++) {
-        //   if (moment(a[j].endDate).clone().weekday(6).isSameOrAfter(date, "day") && moment(a[j].endDate).isSameOrAfter(moment(v.startDate), "day")) {
-        //     _pos += v.width;
-        //   }
-        // }
         if (moment(v.endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(v.endDate).isSameOrAfter(moment(v.startDate), 'day')) {
           _pos += v.width;
         }
@@ -257,11 +233,6 @@ const OneDay = (prop: TOneDay) => {
       let pos = -width / 2;
       let _pos = pos;
       let connerPlan = plan?.map((v: TPlan) => {
-        // for (let j = 0; j <= i; j++) {
-        //   if (moment(a[j].endDate).clone().weekday(6).isSameOrAfter(date, "day") && moment(a[j].endDate).isSameOrAfter(moment(v.startDate), "day")) {
-        //     _pos += v.width;
-        //   }
-        // }
         if (moment(v.endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(v.endDate).isSameOrAfter(moment(v.startDate), 'day')) {
           _pos += v.width;
         }
@@ -283,11 +254,6 @@ const OneDay = (prop: TOneDay) => {
   let planDay = false;
   let _pos = pos;
   const planBarL = plan?.map((v: TPlan) => {
-    // for (let j = 0; j <= i; j++) {
-    //   if (moment(a[j].endDate).clone().weekday(6).isSameOrAfter(date, "day") && moment(a[j].endDate).isSameOrAfter(moment(v.startDate), "day")) {
-    //     _pos += v.width;
-    //   }
-    // }
     if (moment(v.endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(v.endDate).isSameOrAfter(moment(v.startDate), 'day')) {
       _pos += v.width;
     }
@@ -300,7 +266,7 @@ const OneDay = (prop: TOneDay) => {
       planDay = true;
       return <></>;
     }
-    if (kind == "month_2") {
+    if (viewMode == CALENDAR_VIEW_MODE.month2) {
       if (date.isSame(moment(v.endDate), 'day')) {
         return <Bar color={v.color} position={_pos - v.width} width={v.width} />;
       }
@@ -327,18 +293,13 @@ const OneDay = (prop: TOneDay) => {
   pos = -(width == undefined ? 1 : width / 2);
   _pos = pos;
   const planBarR = plan?.map((v: TPlan, i) => {
-    // for (let j = 0; j <= i; j++) {
-    //   if (moment(a[j].endDate).clone().weekday(6).isSameOrAfter(date, "day") && moment(a[j].endDate).isSameOrAfter(moment(v.startDate), "day")) {
-    //     _pos += v.width;
-    //   }
-    // }
     if (moment(v.endDate).clone().weekday(6).isSameOrAfter(date, 'day') && moment(v.endDate).isSameOrAfter(moment(v.startDate), 'day')) {
       _pos += v.width;
     }
     if (moment(v.startDate).isSame(moment(v.endDate), "day")) {
       return <></>;
     }
-    if (kind == "month_2") {
+    if (viewMode == CALENDAR_VIEW_MODE.month2) {
       if (date.isSame(moment(v.startDate), 'day')) {
         return <Bar key={i} color={v.color} position={_pos - v.width} width={v.width} />;
       }
@@ -377,7 +338,10 @@ const OneDay = (prop: TOneDay) => {
           <IconButton
             className={` ${dateColor} cursor-pointer border-2 !font-medium`}
             style={{ left: 'calc(50% - 20px)', backgroundColor: dateColor }}
-            size="3" radius="full" variant="outline" color={buttonBorderColor} // highContrast={date.month() === month} 
+            size="3"
+            radius="full"
+            variant="outline"
+            color={buttonBorderColor}
             onClick={e => handleIconButton(date)}
           >
             {date.date()}
@@ -409,4 +373,4 @@ const OneDay = (prop: TOneDay) => {
   )
 }
 
-export default OneDay
+export default Day;
