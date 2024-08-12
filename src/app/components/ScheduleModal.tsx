@@ -23,6 +23,7 @@ import {
   CALENDAR_LOCALES
 } from '../const';
 import {
+  ScheduleDTO,
   NewScheduleDTO,
   ScheduleTypesDTO
 } from '../type';
@@ -85,11 +86,11 @@ const ScheduleModal = (
         startDate: dateToYYYYMMDDF(startDate),
         endDate: dateToYYYYMMDDF(endDate)
       }
-      let { data, status } = await createSchedule(payload);
+      let { data, status }: { data: ScheduleDTO, status: number } = await createSchedule(payload);
       if (status >= 400) {
 
       } else {
-        let tmpSchedule = schedule;
+        let tmpSchedule = JSON.parse(JSON.stringify(schedule));
         tmpSchedule.push(data);
         dispatch(setScheduleProps(tmpSchedule));
         toast.info(ENCHINTL['schedule']['modal']['toast']['create-schedule-success'][intl]);

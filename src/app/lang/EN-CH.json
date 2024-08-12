@@ -2,12 +2,12 @@
     "schedule":{
         "modal":{
             "create-title":[
-                "Create Schedule",
-                "创建计划"
+                "New Schedule",
+                "新时间表"
             ],
             "update-title":[
-                "Update Schedule",
-                "更新时间表"
+                "Edit Schedule",
+                "編輯時間表"
             ],
            "start-date": [
                 "Start Date",
@@ -109,11 +109,34 @@
             }
         }
     },
+    "note":{
+        "modal":{
+            "create-title":[
+                "New Note",
+                "新笔记"
+            ],
+            "update-title":[
+                "Edit Note",
+                "編輯譯註釋"
+            ],
+            "title":[
+                "Title",
+                "标题"
+            ],
+            "title-holder":[
+                "Title",
+                "标题"
+            ]
+        }
+    },
+    "todolist":{
+        "modal":{}
+    },
     "header":{
         "create-btn":[
             "New Schedule",
             "新时间表"
-        ],
+        ],  
         "today-btn":[
             "Today",
             "今天"
@@ -132,5 +155,19 @@
                 "周视图"
             ]
         }
+    },
+    "side-bar":{
+        "note":[
+            "Note",
+            "笔记"
+        ],
+        "schedule":[
+            "Schedule",
+            "日程"
+        ],
+        "todolist":[
+            "TodoList",
+            "待办事项列表"
+        ]
     }
 }

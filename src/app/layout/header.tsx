@@ -12,7 +12,7 @@ import {
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
-  PlusIcon
+  PlusIcon,
 } from '@radix-ui/react-icons'
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
 import ScheduleModal from '../components/ScheduleModal';
@@ -81,7 +81,7 @@ const Header = () => {
   }
 
   return (
-    <div>
+    <Flex direction="row" justify="between" gap="4" py="2" pt="3">
       {visible ? (
         <ScheduleModal
           type={SCHEDULE_MODAL_TYPE.Create}
@@ -89,96 +89,75 @@ const Header = () => {
           setShow={setVisible}
         />
       ) : null}
-      <Flex direction="row" justify="between" gap="4" py="2">
-        <Flex pt="2">
-          <Button
-            className='cursor-pointer'
-            variant='soft'
-            color='cyan'
-            radius='full'
-            onClick={handleDialogOpen}>
-            <PlusIcon />{ENCHINTL['header']['create-btn'][intl]}
+      <Button
+        className='cursor-pointer'
+        variant='soft'
+        color='cyan'
+        radius='full'
+        onClick={handleDialogOpen}>
+        <PlusIcon />{ENCHINTL['header']['create-btn'][intl]}
+      </Button>
+      {/* <Flex gap="3" pt="2">
+        <Flex gap="3" >
+          <Button variant="soft" onClick={handleTodayBtn} className='cursor-pointer' >
+            {ENCHINTL['header']['today-btn'][intl]}
           </Button>
         </Flex>
-        <Flex gap="3" pt="2">
-          <Flex gap="3" >
-            <Button variant="soft" onClick={handleTodayBtn} className='cursor-pointer' >
-              {ENCHINTL['header']['today-btn'][intl]}
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger className='cursor-pointer'>
+            <Button variant="soft" >
+              {moment(curActiveDate).year()}
+              <DropdownMenu.TriggerIcon />
             </Button>
-          </Flex>
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger className='cursor-pointer'>
-              <Button variant="soft" >
-                {moment(curActiveDate).year()}
-                <DropdownMenu.TriggerIcon />
-              </Button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content className='max-h-[300px]'>
-              {
-                Array(12).fill(0).map((v: number, i: number) => (
-                  <DropdownMenu.Item key={i} onClick={() => handleYearChange(BASE_YEAR_CALENDAR + i - 6)}>
-                    {BASE_YEAR_CALENDAR + i - 6}
-                  </DropdownMenu.Item>
-                ))
-              }
-            </DropdownMenu.Content>
-          </DropdownMenu.Root>
-          <IconButton className='cursor-pointer' radius="full" variant="soft" onClick={() => handlePrev2NextMonth(-1)}>
-            <ChevronLeftIcon width="18" height="18" />
-          </IconButton>
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger className='w-[130px] cursor-pointer'  >
-              <Button variant="soft">
-                {moment(curActiveDate).locale(MOMENT_LOCALES[intl]).format('MMMM')}
-                <DropdownMenu.TriggerIcon />
-              </Button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content className='max-h-[300px]'>
-              {
-                Array(12).fill(0).map((v: number, i: number) => (
-                  <DropdownMenu.Item key={i} onClick={() => handleMonthChange(i)}>
-                    {moment().locale(MOMENT_LOCALES[intl]).month(i).format("MMMM")}
-                  </DropdownMenu.Item>
-                ))
-              }
-            </DropdownMenu.Content>
-          </DropdownMenu.Root>
-          <IconButton className='cursor-pointer' radius="full" variant="soft">
-            <ChevronRightIcon width="18" height="18" onClick={() => handlePrev2NextMonth(1)} />
-          </IconButton>
-        </Flex>
-        <Flex gap="6" align="center">
-          <Tabs.Root defaultValue={viewMode}>
-            <Tabs.List>
-              <Tabs.Trigger className='cursor-pointer' value={CALENDAR_VIEW_MODE.month1} onClick={() => handleCalendarViewModeChange(CALENDAR_VIEW_MODE.month1)}>{ENCHINTL['header']['view-mode']['month1'][intl]}</Tabs.Trigger>
-              <Tabs.Trigger className='cursor-pointer' value={CALENDAR_VIEW_MODE.month2} onClick={() => handleCalendarViewModeChange(CALENDAR_VIEW_MODE.month2)}>{ENCHINTL['header']['view-mode']['month2'][intl]}</Tabs.Trigger>
-              <Tabs.Trigger className='cursor-pointer' value={CALENDAR_VIEW_MODE.week} onClick={() => handleCalendarViewModeChange(CALENDAR_VIEW_MODE.week)}>{ENCHINTL['header']['view-mode']['week'][intl]}</Tabs.Trigger>
-            </Tabs.List>
-          </Tabs.Root>
-          <Flex onClick={handleIntlChange}>
-            <Button radius='none' variant={curIntl === 0 ? "classic" : "outline"}>EN</Button>
-            <Button radius='none' variant={curIntl === 1 ? "classic" : "outline"} >中文</Button>
-          </Flex>
-          {/* <DropdownMenu.Root>
-            <DropdownMenu.Trigger>
-              <Avatar
-                size="2"
-                className='cursor-pointer'
-                radius='full'
-                src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
-                fallback="A"
-              />
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content>
-              <DropdownMenu.Item>My Profile</DropdownMenu.Item>
-              <DropdownMenu.Item>Sign Out</DropdownMenu.Item>
-              <DropdownMenu.Item>Sign In</DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu.Root> */}
-
-        </Flex>
-      </Flex >
-    </div >
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content className='max-h-[300px]'>
+            {
+              Array(12).fill(0).map((v: number, i: number) => (
+                <DropdownMenu.Item key={i} onClick={() => handleYearChange(BASE_YEAR_CALENDAR + i - 6)}>
+                  {BASE_YEAR_CALENDAR + i - 6}
+                </DropdownMenu.Item>
+              ))
+            }
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+        <IconButton className='cursor-pointer' radius="full" variant="soft" onClick={() => handlePrev2NextMonth(-1)}>
+          <ChevronLeftIcon width="18" height="18" />
+        </IconButton>
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger className='w-[130px] cursor-pointer'  >
+            <Button variant="soft">
+              {moment(curActiveDate).locale(MOMENT_LOCALES[intl]).format('MMMM')}
+              <DropdownMenu.TriggerIcon />
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content className='max-h-[300px]'>
+            {
+              Array(12).fill(0).map((v: number, i: number) => (
+                <DropdownMenu.Item key={i} onClick={() => handleMonthChange(i)}>
+                  {moment().locale(MOMENT_LOCALES[intl]).month(i).format("MMMM")}
+                </DropdownMenu.Item>
+              ))
+            }
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+        <IconButton className='cursor-pointer' radius="full" variant="soft">
+          <ChevronRightIcon width="18" height="18" onClick={() => handlePrev2NextMonth(1)} />
+        </IconButton>
+      </Flex> */}
+      <Flex gap="6" align="center">
+        <Tabs.Root defaultValue={viewMode}>
+          <Tabs.List>
+            <Tabs.Trigger className='cursor-pointer' value={CALENDAR_VIEW_MODE.month1} onClick={() => handleCalendarViewModeChange(CALENDAR_VIEW_MODE.month1)}>{ENCHINTL['header']['view-mode']['month1'][intl]}</Tabs.Trigger>
+            <Tabs.Trigger className='cursor-pointer' value={CALENDAR_VIEW_MODE.month2} onClick={() => handleCalendarViewModeChange(CALENDAR_VIEW_MODE.month2)}>{ENCHINTL['header']['view-mode']['month2'][intl]}</Tabs.Trigger>
+            <Tabs.Trigger className='cursor-pointer' value={CALENDAR_VIEW_MODE.week} onClick={() => handleCalendarViewModeChange(CALENDAR_VIEW_MODE.week)}>{ENCHINTL['header']['view-mode']['week'][intl]}</Tabs.Trigger>
+          </Tabs.List>
+        </Tabs.Root>
+      </Flex>
+      <Flex onClick={handleIntlChange}>
+        <Button radius='none' variant={curIntl === 0 ? "classic" : "outline"}>EN</Button>
+        <Button radius='none' variant={curIntl === 1 ? "classic" : "outline"} >中文</Button>
+      </Flex>
+    </Flex >
   )
 }
 
