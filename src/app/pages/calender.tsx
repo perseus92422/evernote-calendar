@@ -19,6 +19,7 @@ import ScheduleModal from '../components/ScheduleModal';
 import NoteModal from '../components/NoteModal';
 import { SCHEDULE_MODAL_TYPE } from '../const';
 import { NOTE_MODAL_TYPE } from '../const';
+import { dateToYYYYMMDDF } from '../helper/util';
 
 const Calender = () => {
 
@@ -30,8 +31,10 @@ const Calender = () => {
   const [scheduleModal, setScheduleModal] = useState<boolean>(false);
   const [todolistModal, setTodoListModal] = useState<boolean>(false);
   const [datebarShow, setDateBarShow] = useState<boolean>(false);
+  const [activeDate, setActiveDate] = useState<string>(dateToYYYYMMDDF(new Date()));
 
-  const handleDateClick = () => {
+  const handleDateClick = (date: string) => {
+    setActiveDate(date);
     setDateBarShow(true);
   }
 
@@ -89,6 +92,7 @@ const Calender = () => {
                     key={j}
                     day={day.day}
                     date={day.date}
+                    activeDate={activeDate}
                     weekNum={day.weekNum}
                     isOut={day.isOut}
                     isMonday={day.isMonday}
@@ -107,6 +111,7 @@ const Calender = () => {
                     key={j}
                     day={viewMode == CALENDAR_VIEW_MODE.month2 ? week[6 - j].day : day.day}
                     date={viewMode == CALENDAR_VIEW_MODE.month2 ? week[6 - j].date : day.date}
+                    activeDate={activeDate}
                     weekNum={viewMode == CALENDAR_VIEW_MODE.month2 ? week[6 - j].weekNum : day.weekNum}
                     isOut={viewMode == CALENDAR_VIEW_MODE.month2 ? week[6 - j].isOut : day.isOut}
                     isMonday={viewMode == CALENDAR_VIEW_MODE.month2 ? week[6 - j].isSunday : day.isSunday}

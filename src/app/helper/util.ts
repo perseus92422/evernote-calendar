@@ -33,5 +33,5 @@ export const getFullDescriptionOfMonth = (date: Date, intl: number) => {
 }
 
 export const getDaysOfMonth = () => {
-    
+
 }

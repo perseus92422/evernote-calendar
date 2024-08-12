@@ -1,8 +1,11 @@
-import { Flex, IconButton } from "@radix-ui/themes";
+import { Flex, IconButton, Button } from "@radix-ui/themes";
+import { dateToYYYYMMDDF } from "../helper/util";
 import { CALENDAR_VIEW_MODE } from "../const";
+
 
 const Day = ({
     date,
+    activeDate,
     day,
     weekNum,
     viewMode,
@@ -16,6 +19,7 @@ const Day = ({
     dateBarHandler
 }: {
     date: string;
+    activeDate: string;
     day: number;
     weekNum: number;
     viewMode: CALENDAR_VIEW_MODE;
@@ -26,7 +30,7 @@ const Day = ({
     isRightTop: boolean;
     isLeftTop: boolean;
     isLeftBottom: boolean;
-    dateBarHandler: () => void;
+    dateBarHandler: (date: string) => void;
 }) => {
 
     return (
@@ -42,11 +46,12 @@ const Day = ({
                 ) : null
             }
             <IconButton
-                className="cursor-pointer border-2 !font-medium border-gray-400"
+                className={("cursor-pointer border-2 !font-medium ") + (activeDate == date ? "bg-[#cd2200ea] text-white" : "")}
+                color={isOut ? "gray" : (dateToYYYYMMDDF(new Date()) == date || activeDate == date ? "tomato" : "sky")}
                 size="3"
                 radius="full"
                 variant="outline"
-                onClick={dateBarHandler}
+                onClick={() => dateBarHandler(date)}
             >
                 {day}
             </IconButton>
@@ -60,7 +65,7 @@ const Day = ({
                     <div className={("absolute w-[calc(50%-20px)] border-[#243c5a] right-0  ") + (isSunday ? " h-1/2 border-r-2 " : " border ") + (weekNum % 2 == 0 ? "  border-t-2 " : " border-b-2 ") + (isRightBottom ? " bottom-0 rounded-tr-lg " : "") + (isRightTop ? " top-0 rounded-br-lg " : "")} />
                 ) : null
             }
-        </Flex>
+        </Flex >
     )
 }
 
