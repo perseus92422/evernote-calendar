@@ -229,5 +229,65 @@
         },
         "note":{},
         "todolist":{}
+    },
+    "modal":{
+        "note":{
+            "title-d":{
+                "create":[
+                    "New Note",
+                    "新笔记"
+                ],
+                "update":[
+                    "Edit Note",
+                    "編輯註釋"
+                ]
+            },
+            "title-p":[
+                "Title",
+                "标题"
+            ],
+            "title-textfield-holder":[
+                "Title",
+                "标题"
+            ],
+            "content-p":[
+                "Content",
+                "内容"
+            ],
+            "content-textarea-holder":[
+               "Content",
+                "内容"
+            ],
+            "button":{
+                "submit":[
+                    "Submit",
+                    "提交"
+                ],
+                "close":[
+                    "Close",
+                    "关闭"
+                ]
+            }
+        }
+    },
+    "error":{
+        "schedule":{
+            "modal":{
+                "empty-title":[
+                    "Title is empty.",
+                    "标题为空。"
+                ],
+                "empty-content":[
+                    "Content is empty",
+                    "内容为空。"
+                ]
+            }
+        },
+        "note":{
+
+        },
+        "todolist":{
+
+        }
     }
 }

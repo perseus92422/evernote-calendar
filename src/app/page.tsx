@@ -10,6 +10,8 @@ import { ToastContainer } from 'react-toastify';
 import { getCalender, setDate } from "./redux/calenderSlice";
 import { useAppSelector, useAppDispatch } from "./redux/hook";
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
 
 export default function Home() {
   const dispatch = useAppDispatch();

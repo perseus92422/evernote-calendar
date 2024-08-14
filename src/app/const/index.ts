@@ -31,6 +31,11 @@ export const MOMENT_LOCALES = [
     'zh-cn'
 ]
 
+export const WYSIWYG_LOCALES = [
+    'en',
+    'zh'
+]
+
 export const SCHEDULE_TYPES = [
     'meeting',
     'birthday',
