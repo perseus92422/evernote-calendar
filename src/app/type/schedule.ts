@@ -6,6 +6,7 @@ export interface ScheduleDTO {
     endDate: string;
     color: string;
     width: number;
+    type: string;
 }
 
 export interface NewScheduleDTO {
@@ -15,6 +16,7 @@ export interface NewScheduleDTO {
     endDate: string;
     color: string;
     width: number;
+    type: string;
 }
 
 export interface UpdateScheduleDTO {
@@ -24,6 +26,7 @@ export interface UpdateScheduleDTO {
     endDate?: string;
     color?: string;
     width?: number;
+    type?: string;
 }
 
 export interface ScheduleTypesDTO {

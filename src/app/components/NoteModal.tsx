@@ -4,6 +4,7 @@ import {
     Dialog,
     Button,
     TextField,
+    Text,
     Flex
 } from "@radix-ui/themes";
 import Message from "./message";
@@ -44,8 +45,8 @@ const NoteModal = (
                 <Dialog.Description>
 
                 </Dialog.Description>
-                <div>
-                    <p>{ENCHIntl['note']['modal']['title'][intl]}</p>
+                <Flex direction="column">
+                    <Text as="p">{ENCHIntl['note']['modal']['title'][intl]}</Text>
                     <TextField.Root
                         autoFocus={true}
                         size="2"
@@ -53,7 +54,10 @@ const NoteModal = (
                         value={title}
                         onChange={e => handleTitleChange(e.target.value)}
                     />
-                </div>
+                </Flex >
+                <Flex>
+
+                </Flex>
                 <Dialog.Close>
                     <Button onClick={handleModalShow}>
                         Close

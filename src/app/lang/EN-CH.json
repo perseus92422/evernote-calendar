@@ -99,11 +99,11 @@
             },
             "toast":{
                 "create-schedule-success":[
-                    "Plan is added newly.",
+                    "Schedule is added newly.",
                     "新添加的计划。"
                 ],
                 "update-schedule-success":[
-                    "Plan is updated.",
+                    "Schedule is updated.",
                     "计划已更新。"
                 ]
             }
@@ -211,5 +211,23 @@
                 "全部"
             ]
         }
+    },
+    "toast":{
+        "schedule":{
+            "create-success":[
+                "Schedule is added successfully.",
+                "时间表添加成功。"
+            ],
+            "update-success":[
+                "Schedule is updated successfully.",
+                "时间表已成功更新。"
+            ],
+            "remove-success":[
+                "Schedule is removed successfully.",
+                "已成功删除时间表。"
+            ]
+        },
+        "note":{},
+        "todolist":{}
     }
 }

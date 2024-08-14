@@ -15,7 +15,6 @@ import {
   PlusIcon,
 } from '@radix-ui/react-icons'
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
-import ScheduleModal from '../components/ScheduleModal';
 import {
   SCHEDULE_MODAL_TYPE,
   MOMENT_LOCALES,
@@ -82,21 +81,6 @@ const Header = () => {
 
   return (
     <Flex direction="row" justify="between" gap="4" py="2" pt="3">
-      {visible ? (
-        <ScheduleModal
-          type={SCHEDULE_MODAL_TYPE.Create}
-          isShow={visible}
-          setShow={setVisible}
-        />
-      ) : null}
-      <Button
-        className='cursor-pointer'
-        variant='soft'
-        color='cyan'
-        radius='full'
-        onClick={handleDialogOpen}>
-        <PlusIcon />{ENCHINTL['header']['create-btn'][intl]}
-      </Button>
       {/* <Flex gap="3" pt="2">
         <Flex gap="3" >
           <Button variant="soft" onClick={handleTodayBtn} className='cursor-pointer' >

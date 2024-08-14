@@ -27,6 +27,8 @@ import NoteModal from '../components/NoteModal';
 import { SCHEDULE_MODAL_TYPE } from '../const';
 import { NOTE_MODAL_TYPE } from '../const';
 import { dateToYYYYMMDDF } from '../helper/util';
+import NoteTab from '../components/NoteTab';
+import ScheduleTab from '../components/ScheduleTab';
 
 const Calender = () => {
 
@@ -149,12 +151,13 @@ const Calender = () => {
       </div>
       {
         datebarShow ? (
-          <div className='w-1/2'>
+          <div className='w-1/2 max-h-[800px] overflow-auto'>
             {
               scheduleModal ? (
                 <ScheduleModal
                   isShow={scheduleModal}
-                  setShow={setScheduleModal}
+                  setShowModal={setScheduleModal}
+                  setShowDateBar={setDateBarShow}
                   type={SCHEDULE_MODAL_TYPE.Create}
                 />) : null
             }
@@ -178,6 +181,7 @@ const Calender = () => {
               </Tabs.List>
               <Box pt="3">
                 <Tabs.Content value="note">
+                  {/* <NoteTab /> */}
                   <Flex direction="row-reverse">
                     <Button onClick={handleNewNoteBtnClick}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
                   </Flex>
@@ -185,40 +189,12 @@ const Calender = () => {
                   <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['note']['all-p'][intl]}</Strong></Text>
                 </Tabs.Content>
                 <Tabs.Content value="schedule">
-                  <Flex direction="row-reverse">
-                    <Button onClick={handleNewScheduleBtnClick}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
-                  </Flex>
-                  <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['note']['today-p'][intl]}</Strong></Text>
-                  <Flex direction="column" pt="3" pb="3">
-                    <Flex direction="column" className='w-full rounded-[2px] border-2 px-2 py-2 border-[#00c7fe83] my-1'>
-                      <Flex direction="row-reverse" gap="2" py="1">
-                        <TrashIcon width="20" height="20" />
-                        <Pencil1Icon width="20" height="20" />
-                      </Flex>
-                      <HoverCard.Root>
-                        <HoverCard.Trigger>
-                          <Flex direction="row">
-                            <Flex className='w-1/3'>
-                              <Text as="p" size="3"><Strong>Test of the shcedule</Strong></Text>
-                            </Flex>
-                            <Flex className='w-2/3' justify="between">
-                              <Text as="p" size="3">2024-08-08</Text>
-                              <div className='w-1/3 border-t-2 h-0 m-auto border-[color]' />
-                              <Text as="p" size="3">2024-08-09</Text>
-                            </Flex>
-                          </Flex>
-                        </HoverCard.Trigger>
-                        <HoverCard.Content>
-                          <Flex direction="column">
-                            <Text as="p" size="3"><Strong>Test of the shcedule</Strong></Text>
-                            <Text as="p"></Text>
-                          </Flex>
-                        </HoverCard.Content>
-                      </HoverCard.Root>
-
-                    </Flex>
-                  </Flex>
-                  <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['note']['all-p'][intl]}</Strong></Text>
+                  <ScheduleTab
+                    intl={intl}
+                    activeDate={activeDate}
+                    setShowDateBar={setDateBarShow}
+                    handleNewClickBtn={handleNewScheduleBtnClick}
+                  />
                 </Tabs.Content>
                 <Tabs.Content value="todolist">
                   <Flex direction="row-reverse">

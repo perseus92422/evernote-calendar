@@ -7,7 +7,8 @@ import {
   TextArea,
   TextField,
   Select,
-  RadioCards
+  RadioCards,
+  Text
 } from '@radix-ui/themes'
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
@@ -25,6 +26,7 @@ import {
 import {
   ScheduleDTO,
   NewScheduleDTO,
+  UpdateScheduleDTO,
   ScheduleTypesDTO
 } from '../type';
 import {
@@ -39,11 +41,19 @@ import {
 import { setScheduleProps } from '../features/calendar.slice';
 
 const ScheduleModal = (
-  { type, isShow, setShow }:
+  {
+    type,
+    isShow,
+    activeSchedule,
+    setShowModal,
+    setShowDateBar,
+  }:
     {
-      type: SCHEDULE_MODAL_TYPE,
-      isShow?: boolean,
-      setShow: (arg: boolean) => void
+      type: SCHEDULE_MODAL_TYPE;
+      isShow?: boolean;
+      activeSchedule?: ScheduleDTO;
+      setShowModal: (arg: boolean) => void;
+      setShowDateBar: (arg: boolean) => void;
     }
 ) => {
 
@@ -51,17 +61,17 @@ const ScheduleModal = (
   const { schedule, intl } = useAppSelector((state) => state.calendar);
   const [visible, setVisible] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
-  const [kind, setKind] = useState<string>(SCHEDULE_TYPES[0]);
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [color, setColor] = useState<string>(COLOR_PATTERN[0]);
-  const [width, setWidth] = useState<number>(LINE_WIDTH_PATTERN[0]);
+  const [startDate, setStartDate] = useState<Date>(activeSchedule ? new Date(activeSchedule.startDate) : new Date());
+  const [endDate, setEndDate] = useState<Date>(activeSchedule ? new Date(activeSchedule.endDate) : new Date());
+  const [kind, setKind] = useState<string>(activeSchedule ? activeSchedule.type : SCHEDULE_TYPES[0]);
+  const [title, setTitle] = useState<string>(activeSchedule ? activeSchedule.title : "");
+  const [description, setDescription] = useState<string>(activeSchedule ? activeSchedule.description : "");
+  const [color, setColor] = useState<string>(activeSchedule ? activeSchedule.color : COLOR_PATTERN[0]);
+  const [width, setWidth] = useState<number>(activeSchedule ? activeSchedule.width : LINE_WIDTH_PATTERN[0]);
 
   const handleDialogShow = () => {
     setVisible(!visible);
-    setShow(!visible);
+    setShowModal(!visible);
   }
 
   async function handleSubmit() {
@@ -83,6 +93,7 @@ const ScheduleModal = (
         description,
         color,
         width,
+        type: kind,
         startDate: dateToYYYYMMDDF(startDate),
         endDate: dateToYYYYMMDDF(endDate)
       }
@@ -93,35 +104,33 @@ const ScheduleModal = (
         let tmpSchedule = JSON.parse(JSON.stringify(schedule));
         tmpSchedule.push(data);
         dispatch(setScheduleProps(tmpSchedule));
-        toast.info(ENCHINTL['schedule']['modal']['toast']['create-schedule-success'][intl]);
+        toast.info(ENCHINTL['toast']['schedule']['create-success'][intl]);
       }
     }
-    if (type == SCHEDULE_MODAL_TYPE.Update) {
-      // let { data, status } = await updateSchedule();
+    if (type == SCHEDULE_MODAL_TYPE.Update && activeSchedule) {
+      let payload: UpdateScheduleDTO = {};
+      if (activeSchedule?.title != title)
+        payload.title = title;
+      if (activeSchedule?.description != description)
+        payload.description = description;
+      if (activeSchedule?.startDate != dateToYYYYMMDDF(startDate))
+        payload.startDate = dateToYYYYMMDDF(startDate);
+      if (activeSchedule?.endDate != dateToYYYYMMDDF(endDate))
+        payload.endDate = dateToYYYYMMDDF(endDate);
+      if (activeSchedule?.color != color)
+        payload.color = color;
+      if (activeSchedule?.width != width)
+        payload.width = width;
+      if (activeSchedule?.type != kind)
+        payload.type = kind;
+      const { data, status } = await updateSchedule(activeSchedule.id, payload);
+      if (status >= 400) {
+
+      }
+      else
+        toast.info(ENCHINTL['toast']['schedule']['update-success'][intl]);
     }
-    // if (action == "Edit") {
-    //   updateScheduleAPI(data).then((schedule) => {
-    //     dispatch(updatePlan(schedule.data))
-    //     dispatch(setIsShowDialog(!isShowDialog))
-    //     toast.info("Plan is updated");
-    //   }).catch(() => {
-    //     setError({
-    //       message: "Server Error.",
-    //       open: true
-    //     })
-    //   })
-    // } else if ("Create") {
-    //   addScheduleAPI(data).then((schedule) => {
-    //     dispatch(addPlan(schedule.data))
-    //     dispatch(setIsShowDialog(!isShowDialog))
-    //     toast.info("Plan is added newly");
-    //   }).catch(() => {
-    //     setError({
-    //       message: "Server Error.",
-    //       open: true
-    //     })
-    //   })
-    // }
+    setShowDateBar(false);
     initState();
   }
 
@@ -147,7 +156,7 @@ const ScheduleModal = (
 
   const initState = () => {
     setVisible(!visible);
-    setShow(!visible);
+    setShowModal(!visible);
     setKind(SCHEDULE_TYPES[0]);
     setError("");
     setStartDate(new Date());
@@ -170,10 +179,11 @@ const ScheduleModal = (
           }
         </Dialog.Title>
         <Dialog.Description size="2" mb="4">
-          {
-            error ? (<Message message={error} />) : null
-          }
+
         </Dialog.Description>
+        {
+          error ? (<Message message={error} />) : null
+        }
         <Flex direction="column" gap="3">
           <Flex direction="row" gap="3">
             <Flex direction="column">
@@ -222,7 +232,7 @@ const ScheduleModal = (
             </Flex>
           </Flex>
           <Flex direction="column">
-            <p>{ENCHINTL['schedule']['modal']['title'][intl]}:</p>
+            <Text as='p'>{ENCHINTL['schedule']['modal']['title'][intl]}:</Text>
             <div>
               <TextField.Root
                 autoFocus={true}
@@ -233,7 +243,7 @@ const ScheduleModal = (
             </div>
           </Flex>
           <Flex direction="column" className='w-full'>
-            <p>{ENCHINTL['schedule']['modal']['description'][intl]}:</p>
+            <Text as='p'>{ENCHINTL['schedule']['modal']['description'][intl]}:</Text>
             <div className='w-full'>
               <TextArea
                 className='w-full'
