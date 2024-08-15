@@ -7,10 +7,12 @@ import {
 } from "@radix-ui/themes";
 import NoteBar from "./NoteBar";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { findAllByDay, findAll } from "../../api/note.api";
+import { findAllNote, findAllNoteByDay, removeNote } from "../../api/note.api";
+// import { findAllByDay, findAll, remove } from "../../api/note.api";
 import { NoteDTO } from "../../type";
 import NoteModal from "./NoteModal";
 import { NOTE_MODAL_TYPE } from "@/app/const";
+import { toast } from "react-toastify";
 
 const NoteTab = (
     {
@@ -33,7 +35,7 @@ const NoteTab = (
     const [activeNote, setActiveNote] = useState<NoteDTO>();
 
     async function getAllNote() {
-        const { data, status } = await findAll();
+        const { data, status } = await findAllNote();
         if (status >= 400) {
 
         } else {
@@ -43,7 +45,7 @@ const NoteTab = (
     }
 
     async function getAllNoteByDay() {
-        const { data, status } = await findAllByDay(activeDate);
+        const { data, status } = await findAllNoteByDay(activeDate);
         if (status >= 400) {
 
         } else {
@@ -52,7 +54,13 @@ const NoteTab = (
     }
 
     async function handlerRemoveBtnClick(id: number) {
+        const { status, data } = await removeNote(id);
+        setShowDateBar(false);
+        if (status >= 400) {
 
+        } else {
+            toast.info(ENCHINTL['toast']['note']['remove-success'][intl]);
+        }
     }
 
     const handlerEditBtnClick = (note: NoteDTO) => {

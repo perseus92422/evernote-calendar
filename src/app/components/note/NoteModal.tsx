@@ -19,7 +19,7 @@ import Message from "../common/message";
 import { NOTE_MODAL_TYPE, WYSIWYG_LOCALES } from "../../const";
 import ENCHIntl from '@/app/lang/EN-CH.json';
 import { NewNoteDTO, UpdateNoteDTO, NoteDTO } from "../../type/note.dto";
-import { createNote } from "../../api/note.api";
+import { createNote, updateNote } from "../../api/note.api";
 import { toast } from "react-toastify";
 
 const NoteModal = (
@@ -83,7 +83,17 @@ const NoteModal = (
             }
         }
         if (type == NOTE_MODAL_TYPE.Update) {
-            toast.info(ENCHIntl['toast']['note']['update-success'][intl]);
+            let payload: UpdateNoteDTO = {};
+            if (title != note.title)
+                payload.title = title;
+            if (content != note.content)
+                payload.content = content;
+            const { data, status } = await updateNote(note.id, payload);
+            if (status >= 400) {
+
+            } else {
+                toast.info(ENCHIntl['toast']['note']['update-success'][intl]);
+            }
         }
         initState();
     }

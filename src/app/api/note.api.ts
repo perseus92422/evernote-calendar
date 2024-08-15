@@ -10,14 +10,14 @@ export async function updateNote(id: number, payload: UpdateNoteDTO): Promise<Ax
     return await axios.put(`${BASE_URL}/note/${id}`, { ...payload });
 }
 
-export async function remove(id: number): Promise<AxiosResponse> {
+export async function removeNote(id: number): Promise<AxiosResponse> {
     return await axios.delete(`${BASE_URL}/note/${id}`);
 }
 
-export async function findAll(): Promise<AxiosResponse> {
+export async function findAllNote(): Promise<AxiosResponse> {
     return await axios.get(`${BASE_URL}/note`);
 }
 
-export async function findAllByDay(day: string): Promise<AxiosResponse> {
+export async function findAllNoteByDay(day: string): Promise<AxiosResponse> {
     return await axios.get(`${BASE_URL}/note/day`, { params: { day } });
 }
