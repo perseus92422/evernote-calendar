@@ -9,7 +9,7 @@ import {
     TrashIcon,
     Pencil1Icon
 } from "@radix-ui/react-icons";
-import { NoteDTO } from "../type";
+import { NoteDTO } from "../../type";
 
 const NoteBar = ({
     note,
@@ -19,24 +19,21 @@ const NoteBar = ({
 }: {
     note: NoteDTO;
     todayFlag: boolean;
-    handlerEditBtnClick: () => void;
+    handlerEditBtnClick: (arg: NoteDTO) => void;
     handlerRemoveBtnClick: (id: number) => void;
 }) => {
 
     return (
-        <Flex direction="column" pt="1" pb="1" className="w-full rounded-[4px] border-2 px-2 py-2 border-[#00c7fe83] my-1">
+        <Flex maxHeight="250" direction="column" pt="1" pb="1" className="w-full rounded-[4px] border-2 px-2 py-2 border-[#00c7fe83] my-1 overflow-auto">
             <Flex direction="row" justify="between" gap="2" py="1">
-                {
-                    !todayFlag ? (
-                        <Text as="p"><Strong>{note.date}</Strong></Text>
-                    ) : null
-                }
-                <Flex>
+                <Text as="p"><Strong>{!todayFlag ? note.date : ""}</Strong></Text>
+                <Flex direction="row" gap="2">
                     <Pencil1Icon
+                        radius="full"
                         className="cursor-pointer"
                         width="20"
                         height="20"
-                        onClick={handlerEditBtnClick}
+                        onClick={() => handlerEditBtnClick(note)}
                     />
                     <TrashIcon
                         className="cursor-pointer"
@@ -46,16 +43,8 @@ const NoteBar = ({
                     />
                 </Flex>
             </Flex>
-            <HoverCard.Root>
-                <HoverCard.Trigger>
-                    <Text as="p" size="3" className="py-1"><Strong>Test of the Note</Strong> </Text>
-                </HoverCard.Trigger>
-                <HoverCard.Content>
-                    <Flex direction="column">
-                        <Text as="p" size="2" className="py-1"><Strong>Test of the </Strong></Text>
-                    </Flex>
-                </HoverCard.Content>
-            </HoverCard.Root>
+            <Text as="p" size="3" className="py-1"><Strong>{note.title}</Strong> </Text>
+            <div dangerouslySetInnerHTML={{ __html: note.content }} />
         </Flex>
     )
 }

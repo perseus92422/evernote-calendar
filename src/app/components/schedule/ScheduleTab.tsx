@@ -12,10 +12,10 @@ import {
     findAllSchedule,
     findDaySchedule,
     removeSchedule
-} from "../api";
-import { ScheduleDTO } from "../type";
+} from "../../api";
+import { ScheduleDTO } from "../../type";
 import ScheduleModal from "./ScheduleModal";
-import { SCHEDULE_MODAL_TYPE } from "../const";
+import { SCHEDULE_MODAL_TYPE } from "../../const";
 
 const ScheduleTab = (
     {
@@ -87,7 +87,7 @@ const ScheduleTab = (
             <Flex direction="row-reverse">
                 <Button onClick={handleNewClickBtn}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
             </Flex>
-            <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['note']['today-p'][intl]}</Strong></Text>
+            <Text as='p' size="4"><Strong>{activeDate}</Strong></Text>
             {
                 activeDaySchedule.map((v, i) => (
                     <ScheduleBar

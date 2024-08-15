@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAppSelector } from "../redux/hook";
+import { useAppSelector } from "../../redux/hook";
 import {
     Dialog,
     Button,
@@ -7,26 +7,33 @@ import {
     Text,
     Flex
 } from "@radix-ui/themes";
-import { EditorState, convertToRaw } from 'draft-js';
+import {
+    EditorState,
+    ContentState,
+    convertToRaw,
+    convertFromHTML,
+} from 'draft-js';
 import dratfToHtml from 'draftjs-to-html';
 import Editor from "./Editor";
-import Message from "./message";
-import { NOTE_MODAL_TYPE, WYSIWYG_LOCALES } from "../const";
+import Message from "../common/message";
+import { NOTE_MODAL_TYPE, WYSIWYG_LOCALES } from "../../const";
 import ENCHIntl from '@/app/lang/EN-CH.json';
-import { NewNoteDTO } from "../type/note.dto";
-import { createNote } from "../api/note.api";
+import { NewNoteDTO, UpdateNoteDTO, NoteDTO } from "../../type/note.dto";
+import { createNote } from "../../api/note.api";
 import { toast } from "react-toastify";
 
 const NoteModal = (
     {
         type,
         isShow,
+        note,
         activeDate,
         setShowModal,
         setShowDateBar,
     }: {
         type: NOTE_MODAL_TYPE;
         isShow: boolean;
+        note?: NoteDTO;
         activeDate?: string;
         setShowModal: (arg: boolean) => void;
         setShowDateBar: (arg: boolean) => void;
@@ -34,9 +41,14 @@ const NoteModal = (
 
     const { intl } = useAppSelector(state => state.calendar);
     const [visible, setVisible] = useState<boolean>(true);
-    const [title, setTitle] = useState<string>("");
+    const [title, setTitle] = useState<string>(note ? note.title : "");
     const [error, setError] = useState<string>("");
-    const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
+    const [editorState, setEditorState] = useState<EditorState>(
+        note ?
+            EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(note.content).contentBlocks))
+            :
+            EditorState.createEmpty()
+    );
 
     const handleModalShow = () => {
         setVisible(!visible);

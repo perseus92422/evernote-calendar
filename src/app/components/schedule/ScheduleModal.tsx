@@ -12,33 +12,33 @@ import {
 } from '@radix-ui/themes'
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '../redux/hook'
+import { useAppDispatch, useAppSelector } from '../../redux/hook'
 import ColorIcon from './colorIcon';
 import LineThickness from './lineThickness';
-import Message from "./message"
+import Message from "../common/message"
 import {
   COLOR_PATTERN,
   LINE_WIDTH_PATTERN,
   SCHEDULE_MODAL_TYPE,
   SCHEDULE_TYPES,
   CALENDAR_LOCALES
-} from '../const';
+} from '../../const';
 import {
   ScheduleDTO,
   NewScheduleDTO,
   UpdateScheduleDTO,
   ScheduleTypesDTO
-} from '../type';
+} from '../../type';
 import {
   dateToYYYYMMDDF,
   compareDate
-} from '../helper/util';
+} from '../../helper/util';
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
   createSchedule,
   updateSchedule
-} from '../api';
-import { setScheduleProps } from '../features/calendar.slice';
+} from '../../api';
+import { setScheduleProps } from '../../features/calendar.slice';
 
 const ScheduleModal = (
   {

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/redux/hook';
 import { setDate } from '@/app/redux/calenderSlice';
 
 import TOneDay, { TPlan } from '../types'
-import TaskShow from './taskShow'
+// import TaskShow from './taskShow'
 import { CALENDAR_VIEW_MODE } from '../const';
 
 const Bar = ({ color, width, position }: { color: string; position: number; width?: number }) => {
@@ -347,7 +347,7 @@ const Day = (prop: TOneDay) => {
             {date.date()}
           </IconButton>
         </Popover.Trigger>
-        {<TaskShow />}
+        {/* {<TaskShow />} */}
       </Popover.Root>
       {cornerL}
       {

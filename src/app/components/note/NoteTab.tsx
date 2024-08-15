@@ -7,24 +7,30 @@ import {
 } from "@radix-ui/themes";
 import NoteBar from "./NoteBar";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { findAllByDay, findAll } from "../api/note.api";
-import { NoteDTO } from "../type";
+import { findAllByDay, findAll } from "../../api/note.api";
+import { NoteDTO } from "../../type";
+import NoteModal from "./NoteModal";
+import { NOTE_MODAL_TYPE } from "@/app/const";
 
 const NoteTab = (
     {
         intl,
         activeDate,
+        setShowDateBar,
         handleNewBtnHandler
     }:
         {
             intl: number;
             activeDate: string;
+            setShowDateBar: (arg: boolean) => void;
             handleNewBtnHandler: () => void;
         }
 ) => {
 
+    const [visible, setVisible] = useState<boolean>(false);
     const [allnNoteList, setAllNoteList] = useState<Array<NoteDTO>>([]);
     const [todayNoteList, setTodayNoteList] = useState<Array<NoteDTO>>([]);
+    const [activeNote, setActiveNote] = useState<NoteDTO>();
 
     async function getAllNote() {
         const { data, status } = await findAll();
@@ -49,8 +55,9 @@ const NoteTab = (
 
     }
 
-    const handlerEditBtnClick = () => {
-
+    const handlerEditBtnClick = (note: NoteDTO) => {
+        setVisible(true);
+        setActiveNote(note);
     }
 
     useEffect(() => {
@@ -63,10 +70,20 @@ const NoteTab = (
 
     return (
         <div>
+            {
+                visible ?
+                    <NoteModal
+                        type={NOTE_MODAL_TYPE.Update}
+                        isShow={visible}
+                        note={activeNote}
+                        setShowModal={setVisible}
+                        setShowDateBar={setShowDateBar}
+                    /> : null
+            }
             <Flex direction="row-reverse">
                 <Button onClick={handleNewBtnHandler}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
             </Flex>
-            <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['note']['today-p'][intl]}</Strong></Text>
+            <Text as='p' size="4"><Strong>{activeDate}</Strong></Text>
             {
                 todayNoteList.map((v, i) => (
                     <NoteBar

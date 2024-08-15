@@ -1,3 +1,3 @@
-export * from './schedule';
-export * from './calendar';
+export * from './schedule.dto';
+export * from './calendar.dto';
 export * from './note.dto';

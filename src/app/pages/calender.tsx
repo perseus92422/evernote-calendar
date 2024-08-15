@@ -12,23 +12,21 @@ import {
   HoverCard
 } from '@radix-ui/themes';
 import {
-  Cross1Icon,
-  TrashIcon,
-  Pencil1Icon
+  Cross1Icon
 } from '@radix-ui/react-icons';
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
-import { CALENDAR_VIEW_MODE } from '../const';
-import { DayDTO, ScheduleDTO } from '../type';
-import Day from '../components/Day';
+import Day from '../components/common/Day';
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import ScheduleModal from '../components/ScheduleModal';
-import ScheduleBar from '../components/ScheduleBar';
-import NoteModal from '../components/NoteModal';
+import ScheduleModal from '../components/schedule/ScheduleModal';
+import NoteModal from '../components/note/NoteModal';
+import NoteTab from '../components/note/NoteTab';
+import ScheduleTab from '../components/schedule/ScheduleTab';
 import { SCHEDULE_MODAL_TYPE } from '../const';
 import { NOTE_MODAL_TYPE } from '../const';
 import { dateToYYYYMMDDF } from '../helper/util';
-import NoteTab from '../components/NoteTab';
-import ScheduleTab from '../components/ScheduleTab';
+import { CALENDAR_VIEW_MODE } from '../const';
+import { DayDTO, ScheduleDTO } from '../type';
+
 
 const Calender = () => {
 
@@ -186,6 +184,7 @@ const Calender = () => {
                   <NoteTab
                     intl={intl}
                     activeDate={activeDate}
+                    setShowDateBar={setDateBarShow}
                     handleNewBtnHandler={handleNewNoteBtnClick}
                   />
                 </Tabs.Content>
