@@ -107,7 +107,37 @@
                     "计划已更新。"
                 ]
             }
-        }
+        },
+        "types":{
+                "meeting":[
+                    "Meeting",
+                    "会议"
+                ],
+                "birthday":[
+                    "Birthday",
+                    "生日"
+                ],
+                "work":[
+                    "Work",
+                    "工作"
+                ],
+                "holiday":[
+                    "Holiday",
+                    "假期"
+                ],
+                "travel":[
+                    "Travel",
+                    "旅行"
+                ],
+                "memory":[
+                    "Memory",
+                    "记忆"
+                ],
+                "date":[
+                    "Date",
+                    "约会"
+                ]
+            }
     },
     "note":{
         "modal":{
@@ -227,7 +257,20 @@
                 "已成功删除时间表。"
             ]
         },
-        "note":{},
+        "note":{
+            "create-success":[
+                "Note is added successfully.",
+                "注释已成功添加。"
+            ],
+            "update-success":[
+                "Note is updated successfully.",
+                "注释已成功更新。"
+            ],
+            "remove-success":[
+                "Note is removed successfully.",
+                "注释已成功删除。"
+            ]
+        },
         "todolist":{}
     },
     "modal":{
@@ -268,6 +311,38 @@
                     "关闭"
                 ]
             }
+        },
+        "schedule":{
+            "types":{
+                "meeting":[
+                    "Meeting",
+                    "会议"
+                ],
+                "birthday":[
+                    "Birthday",
+                    "生日"
+                ],
+                "work":[
+                    "Work",
+                    "工作"
+                ],
+                "holiday":[
+                    "Holiday",
+                    "假期"
+                ],
+                "travel":[
+                    "Travel",
+                    "旅行"
+                ],
+                "memory":[
+                    "Memory",
+                    "记忆"
+                ],
+                "date":[
+                    "Date",
+                    "约会"
+                ]
+            }
         }
     },
     "error":{
@@ -284,7 +359,16 @@
             }
         },
         "note":{
-
+            "modal":{
+                "empty-title":[
+                    "Title is empty.",
+                    "标题为空。"
+                ],
+                "empty-content":[
+                    "Content is empty",
+                    "内容为空。"
+                ]
+            }
         },
         "todolist":{
 

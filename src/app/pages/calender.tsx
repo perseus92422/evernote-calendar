@@ -165,7 +165,8 @@ const Calender = () => {
               noteModal ? (
                 <NoteModal
                   isShow={noteModal}
-                  setShow={setNoteModal}
+                  setShowModal={setNoteModal}
+                  setShowDateBar={setDateBarShow}
                   activeDate={activeDate}
                   type={NOTE_MODAL_TYPE.Create}
                 />
@@ -182,9 +183,11 @@ const Calender = () => {
               </Tabs.List>
               <Box pt="3">
                 <Tabs.Content value="note">
-                  <NoteTab intl={intl} handleNewBtnHandler={handleNewNoteBtnClick} />
-
-
+                  <NoteTab
+                    intl={intl}
+                    activeDate={activeDate}
+                    handleNewBtnHandler={handleNewNoteBtnClick}
+                  />
                 </Tabs.Content>
                 <Tabs.Content value="schedule">
                   <ScheduleTab

@@ -14,19 +14,22 @@ import Message from "./message";
 import { NOTE_MODAL_TYPE, WYSIWYG_LOCALES } from "../const";
 import ENCHIntl from '@/app/lang/EN-CH.json';
 import { NewNoteDTO } from "../type/note.dto";
-
+import { createNote } from "../api/note.api";
+import { toast } from "react-toastify";
 
 const NoteModal = (
     {
         type,
         isShow,
         activeDate,
-        setShow
+        setShowModal,
+        setShowDateBar,
     }: {
         type: NOTE_MODAL_TYPE;
         isShow: boolean;
         activeDate?: string;
-        setShow: (arg: boolean) => void;
+        setShowModal: (arg: boolean) => void;
+        setShowDateBar: (arg: boolean) => void;
     }) => {
 
     const { intl } = useAppSelector(state => state.calendar);
@@ -37,32 +40,53 @@ const NoteModal = (
 
     const handleModalShow = () => {
         setVisible(!visible);
-        setShow(!visible);
+        setShowModal(!visible);
     }
 
     const handleTitleChange = (value: string) => {
         setTitle(value);
     }
 
-    const handleSubmitBtnClick = () => {
+    async function handleSubmitBtnClick() {
         let content = dratfToHtml(convertToRaw(editorState.getCurrentContent()));
-        if (title == "") {
-            setError(ENCHIntl['error']['note']['modal']['empty-title'][intl]);
-            return;
+        if (type == NOTE_MODAL_TYPE.Create) {
+            if (title == "") {
+                setError(ENCHIntl['error']['note']['modal']['empty-title'][intl]);
+                return;
+            }
+            if (!editorState.getCurrentContent().hasText()) {
+                setError(ENCHIntl['error']['note']['modal']['empty-content'][intl]);
+                return;
+            }
+            let payload: NewNoteDTO = {
+                title,
+                content,
+                date: activeDate
+            };
+            const { data, status } = await createNote(payload);
+            if (status >= 400) {
+
+            } else {
+                toast.info(ENCHIntl['toast']['note']['create-success'][intl]);
+            }
         }
-        if (content == '<p></p>') {
-            setError(ENCHIntl['error']['note']['modal']['empty-content'][intl]);
-            return;
+        if (type == NOTE_MODAL_TYPE.Update) {
+            toast.info(ENCHIntl['toast']['note']['update-success'][intl]);
         }
-        let payload: NewNoteDTO = {
-            title,
-            content,
-            date: activeDate
-        };
+        initState();
     }
 
     const handlerEditorStateChange = (value: EditorState) => {
         setEditorState(value);
+    }
+
+    const initState = () => {
+        setTitle("");
+        setEditorState(EditorState.createEmpty());
+        setError("");
+        setVisible(false);
+        setShowModal(false);
+        setShowDateBar(false);
     }
 
     return (
@@ -75,7 +99,7 @@ const NoteModal = (
                 <Dialog.Description>
 
                 </Dialog.Description>
-
+                {error ? (<Message message={error} />) : null}
                 <Flex direction="column" py="2" gap="1">
                     <Text as="p" >{ENCHIntl['modal']['note']['title-p'][intl]}</Text>
                     <TextField.Root

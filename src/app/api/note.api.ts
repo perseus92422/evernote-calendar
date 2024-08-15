@@ -17,3 +17,7 @@ export async function remove(id: number): Promise<AxiosResponse> {
 export async function findAll(): Promise<AxiosResponse> {
     return await axios.get(`${BASE_URL}/note`);
 }
+
+export async function findAllByDay(day: string): Promise<AxiosResponse> {
+    return await axios.get(`${BASE_URL}/note/day`, { params: { day } });
+}

@@ -93,6 +93,7 @@ const ScheduleTab = (
                     <ScheduleBar
                         key={i}
                         schedule={v}
+                        intl={intl}
                         handlerEditBtn={handleScheduleEdit}
                         handlerRemoveBtn={handleScheduleRemove}
                     />
@@ -105,6 +106,7 @@ const ScheduleTab = (
                         <ScheduleBar
                             key={i}
                             schedule={v}
+                            intl={intl}
                             handlerEditBtn={handleScheduleEdit}
                             handlerRemoveBtn={handleScheduleRemove}
                         />

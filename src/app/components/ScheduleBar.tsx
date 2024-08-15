@@ -8,24 +8,30 @@ import {
     TrashIcon,
     Pencil1Icon
 } from "@radix-ui/react-icons";
-import { ScheduleDTO } from "../type";
+import { ScheduleDTO, ScheduleTypesDTO } from "../type";
+import ENCHINTL from '@/app/lang/EN-CH.json';
 
 const ScheduleBar = (
     {
         schedule,
+        intl,
         handlerEditBtn,
         handlerRemoveBtn
     }: {
         schedule: ScheduleDTO;
+        intl: number;
         handlerEditBtn: (arg: ScheduleDTO) => void;
         handlerRemoveBtn: (arg: number) => void;
     }) => {
 
     return (
         <Flex direction="column" pt="1" pb="1" className='w-full rounded-[4px] border-2 px-2 py-2 border-[#00c7fe83] my-1'>
-            <Flex direction="row" justify="end" gap="2" py="1">
-                <TrashIcon className="cursor-pointer" width="20" height="20" onClick={() => handlerRemoveBtn(schedule.id)} />
-                <Pencil1Icon className="cursor-pointer" width="20" height="20" onClick={() => handlerEditBtn(schedule)} />
+            <Flex direction="row" justify="between" gap="2" py="1">
+                <Text as="p"><Strong>{ENCHINTL['modal']['schedule']['types'][schedule.type as keyof ScheduleTypesDTO][intl]}</Strong></Text>
+                <Flex>
+                    <Pencil1Icon className="cursor-pointer" width="20" height="20" onClick={() => handlerEditBtn(schedule)} />
+                    <TrashIcon className="cursor-pointer" width="20" height="20" onClick={() => handlerRemoveBtn(schedule.id)} />
+                </Flex>
             </Flex>
             <HoverCard.Root>
                 <HoverCard.Trigger>
