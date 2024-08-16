@@ -19,13 +19,13 @@ const NoteTab = (
         intl,
         activeDate,
         setShowDateBar,
-        handleNewBtnHandler
+        handleNewBtnClick
     }:
         {
             intl: number;
             activeDate: string;
             setShowDateBar: (arg: boolean) => void;
-            handleNewBtnHandler: () => void;
+            handleNewBtnClick: () => void;
         }
 ) => {
 
@@ -89,7 +89,7 @@ const NoteTab = (
                     /> : null
             }
             <Flex direction="row-reverse">
-                <Button onClick={handleNewBtnHandler}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
+                <Button onClick={handleNewBtnClick}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
             </Flex>
             <Text as='p' size="4"><Strong>{activeDate}</Strong></Text>
             {

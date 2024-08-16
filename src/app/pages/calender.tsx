@@ -19,13 +19,19 @@ import Day from '../components/common/Day';
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import ScheduleModal from '../components/schedule/ScheduleModal';
 import NoteModal from '../components/note/NoteModal';
-import NoteTab from '../components/note/NoteTab';
+import TodoListModal from '../components/todolist/TodoListModal';
 import ScheduleTab from '../components/schedule/ScheduleTab';
-import { SCHEDULE_MODAL_TYPE } from '../const';
-import { NOTE_MODAL_TYPE } from '../const';
-import { dateToYYYYMMDDF } from '../helper/util';
-import { CALENDAR_VIEW_MODE } from '../const';
+import NoteTab from '../components/note/NoteTab';
+import TodoListTab from '../components/todolist/TodoListTab';
+import {
+  SCHEDULE_MODAL_TYPE,
+  NOTE_MODAL_TYPE,
+  TODOLIST_MODAL_TYPE,
+  CALENDAR_VIEW_MODE,
+} from '../const';
 import { DayDTO, ScheduleDTO } from '../type';
+import { dateToYYYYMMDDF } from '../helper/util';
+
 
 
 const Calender = () => {
@@ -64,13 +70,6 @@ const Calender = () => {
     setDateBarShow(false);
   }
 
-  const handleScheduleBarEdit = () => {
-
-  }
-
-  const handleScheduleBarRemove = () => {
-
-  }
 
   useEffect(() => {
     let tmpMonth: Array<Array<DayDTO>> = [];
@@ -170,6 +169,16 @@ const Calender = () => {
                 />
               ) : null
             }
+            {
+              todolistModal ? (
+                <TodoListModal
+                  intl={intl}
+                  isShow={todolistModal}
+                  setShowModal={setTodoListModal}
+                  type={TODOLIST_MODAL_TYPE.Create}
+                />
+              ) : null
+            }
             <Flex direction="row-reverse">
               <Cross1Icon onClick={handleDateBarShow} />
             </Flex>
@@ -185,7 +194,7 @@ const Calender = () => {
                     intl={intl}
                     activeDate={activeDate}
                     setShowDateBar={setDateBarShow}
-                    handleNewBtnHandler={handleNewNoteBtnClick}
+                    handleNewBtnClick={handleNewNoteBtnClick}
                   />
                 </Tabs.Content>
                 <Tabs.Content value="schedule">
@@ -197,11 +206,11 @@ const Calender = () => {
                   />
                 </Tabs.Content>
                 <Tabs.Content value="todolist">
-                  <Flex direction="row-reverse">
-                    <Button onClick={handleNewTodoListBtnClick}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
-                  </Flex>
-                  <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['todolist']['today-p'][intl]}</Strong></Text>
-                  <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['todolist']['all-p'][intl]}</Strong></Text>
+                  <TodoListTab
+                    intl={intl}
+                    activeDate={activeDate}
+                    handleNewBtnClick={handleNewTodoListBtnClick}
+                  />
                 </Tabs.Content>
               </Box>
             </Tabs.Root>

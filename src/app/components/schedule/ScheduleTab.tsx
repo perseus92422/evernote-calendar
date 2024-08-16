@@ -5,17 +5,18 @@ import {
     Text,
     Strong
 } from "@radix-ui/themes";
-import ENCHINTL from '@/app/lang/EN-CH.json';
 import { toast } from "react-toastify";
+import ScheduleModal from "./ScheduleModal";
 import ScheduleBar from "./ScheduleBar";
+import ENCHINTL from '@/app/lang/EN-CH.json';
+import { SCHEDULE_MODAL_TYPE } from "../../const";
 import {
     findAllSchedule,
     findDaySchedule,
     removeSchedule
 } from "../../api";
 import { ScheduleDTO } from "../../type";
-import ScheduleModal from "./ScheduleModal";
-import { SCHEDULE_MODAL_TYPE } from "../../const";
+
 
 const ScheduleTab = (
     {

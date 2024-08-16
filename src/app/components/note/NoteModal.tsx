@@ -61,15 +61,15 @@ const NoteModal = (
 
     async function handleSubmitBtnClick() {
         let content = dratfToHtml(convertToRaw(editorState.getCurrentContent()));
+        if (title == "") {
+            setError(ENCHIntl['error']['note']['modal']['empty-title'][intl]);
+            return;
+        }
+        if (!editorState.getCurrentContent().hasText()) {
+            setError(ENCHIntl['error']['note']['modal']['empty-content'][intl]);
+            return;
+        }
         if (type == NOTE_MODAL_TYPE.Create) {
-            if (title == "") {
-                setError(ENCHIntl['error']['note']['modal']['empty-title'][intl]);
-                return;
-            }
-            if (!editorState.getCurrentContent().hasText()) {
-                setError(ENCHIntl['error']['note']['modal']['empty-content'][intl]);
-                return;
-            }
             let payload: NewNoteDTO = {
                 title,
                 content,

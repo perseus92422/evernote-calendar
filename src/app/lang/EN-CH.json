@@ -343,6 +343,44 @@
                     "约会"
                 ]
             }
+        },
+        "todolist":{
+            "title-d":{
+                "create":[
+                    "New Task",
+                    "新任务"
+                ],
+                "update":[
+                    "Edit Task",
+                    "编辑任务"
+                ]
+            },
+            "title-p":[
+                "Title",
+                "标题"
+            ],
+            "title-textfield-holder":[
+                "Title",
+                "标题"
+            ],
+            "description-p":[
+                "Description",
+                "描述"
+            ],
+            "description-textarea-holder":[
+                "Description",
+                "描述"
+            ],
+            "button":{
+                "submit":[
+                    "Submit",
+                    "提交"
+                ],
+                "close":[
+                    "Close",
+                    "关闭"
+                ]
+            }
         }
     },
     "error":{
@@ -361,17 +399,38 @@
         "note":{
             "modal":{
                 "empty-title":[
-                    "Title is empty.",
+                    "The title is empty.",
                     "标题为空。"
                 ],
                 "empty-content":[
-                    "Content is empty",
+                    "The content is empty",
                     "内容为空。"
                 ]
             }
         },
         "todolist":{
-
+            "modal":{
+                "empty-title":[
+                    "The title is empty.",
+                    "标题为空。"
+                ],
+                "empty-description":[
+                    "The description is empty",
+                    "描述为空。"
+                ],
+                "empty-starttime":[
+                    "The start time is empty",
+                    "开始时间为空。"
+                ],
+                "empty-endtime":[
+                    "The end time is empty",
+                    "结束时间为空。"
+                ],
+                "invalid-endtime":[
+                    "The end time must be after the start time",
+                    "结束时间必须晚于开始时间。"
+                ]
+            }
         }
     }
 }

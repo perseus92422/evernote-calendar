@@ -38,7 +38,6 @@ import {
   createSchedule,
   updateSchedule
 } from '../../api';
-import { setScheduleProps } from '../../features/calendar.slice';
 
 const ScheduleModal = (
   {
@@ -57,8 +56,7 @@ const ScheduleModal = (
     }
 ) => {
 
-  const dispatch = useAppDispatch();
-  const { schedule, intl } = useAppSelector((state) => state.calendar);
+  const { intl } = useAppSelector((state) => state.calendar);
   const [visible, setVisible] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [startDate, setStartDate] = useState<Date>(activeSchedule ? new Date(activeSchedule.startDate) : new Date());
@@ -101,9 +99,6 @@ const ScheduleModal = (
       if (status >= 400) {
 
       } else {
-        let tmpSchedule = JSON.parse(JSON.stringify(schedule));
-        tmpSchedule.push(data);
-        dispatch(setScheduleProps(tmpSchedule));
         toast.info(ENCHINTL['toast']['schedule']['create-success'][intl]);
       }
     }
@@ -231,27 +226,22 @@ const ScheduleModal = (
               </div>
             </Flex>
           </Flex>
-          <Flex direction="column">
+          <Flex direction="column" py="2" gap="1">
             <Text as='p'>{ENCHINTL['schedule']['modal']['title'][intl]}:</Text>
-            <div>
-              <TextField.Root
-                autoFocus={true}
-                size="2"
-                placeholder={ENCHINTL['schedule']['modal']['title-holder'][intl]}
-                value={title}
-                onChange={(e) => { setTitle(e.target.value) }} />
-            </div>
+            <TextField.Root
+              autoFocus={true}
+              size="2"
+              placeholder={ENCHINTL['schedule']['modal']['title-holder'][intl]}
+              value={title}
+              onChange={(e) => { setTitle(e.target.value) }} />
           </Flex>
-          <Flex direction="column" className='w-full'>
+          <Flex direction="column" py="2" gap="1">
             <Text as='p'>{ENCHINTL['schedule']['modal']['description'][intl]}:</Text>
-            <div className='w-full'>
-              <TextArea
-                className='w-full'
-                value={description}
-                rows={5}
-                placeholder={ENCHINTL['schedule']['modal']['description-holder'][intl]}
-                onChange={(e) => { setDescription(e.target.value) }} />
-            </div>
+            <TextArea
+              value={description}
+              rows={5}
+              placeholder={ENCHINTL['schedule']['modal']['description-holder'][intl]}
+              onChange={(e) => { setDescription(e.target.value) }} />
           </Flex>
           <Flex direction="column" className='w-full'>
             <p>{ENCHINTL['schedule']['modal']['color-bar'][intl]}:</p>
