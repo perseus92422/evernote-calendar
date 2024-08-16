@@ -271,7 +271,20 @@
                 "注释已成功删除。"
             ]
         },
-        "todolist":{}
+        "todolist":{
+            "create-success":[
+                "Task is added successfully.",
+                "任务添加成功。"
+            ],
+            "update-success":[
+                "Task is updated successfully.",
+                "任务更新成功。"
+            ],
+            "remove-success":[
+                "Task is removed successfully.",
+                "任务已成功删除。"
+            ]
+        }
     },
     "modal":{
         "note":{

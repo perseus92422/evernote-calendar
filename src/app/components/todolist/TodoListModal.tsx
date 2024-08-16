@@ -9,20 +9,33 @@ import {
 } from "@radix-ui/themes";
 import Message from "../common/message";
 import ENCHINTL from '@/app/lang/EN-CH.json';
+import { createTask } from "@/app/api/todolist.api";
 import { TODOLIST_MODAL_TYPE } from "@/app/const";
+import {
+    NewTaskDTO,
+    UpdateTaskDTO,
+    TaskDTO
+} from "@/app/type";
+import { toast } from "react-toastify";
 
 const TodoListModal = (
     {
         intl,
         type,
         isShow,
-        setShowModal
+        activeDate,
+        task,
+        setShowModal,
+        setShowDateBar,
     }:
         {
             intl: number;
             type: TODOLIST_MODAL_TYPE;
             isShow: boolean;
+            activeDate: string;
+            task?: TaskDTO;
             setShowModal: (arg: boolean) => void;
+            setShowDateBar: (arg: boolean) => void;
         }
 ) => {
 
@@ -76,8 +89,39 @@ const TodoListModal = (
             setError(ENCHINTL['error']['todolist']['modal']['invalid-endtime'][intl])
             return;
         }
+        console.log("tset of ")
+        if (type == TODOLIST_MODAL_TYPE.Create) {
+            let payload: NewTaskDTO = {
+                title,
+                description,
+                dueDate: activeDate,
+                startTime,
+                endTime
+            }
+            const { data, status } = await createTask(payload);
+            if (status >= 400) {
+
+            } else {
+                toast.info(ENCHINTL['toast']['todolist']['create-success'][intl]);
+            }
+        }
+        if (type == TODOLIST_MODAL_TYPE.Update) {
+            let payload: UpdateTaskDTO = {};
+
+        }
+        initState();
     }
 
+    const initState = () => {
+        setError("");
+        setTitle("");
+        setDescription("");
+        setStartTime("");
+        setEndTime("");
+        setVisible(false);
+        setShowModal(false);
+        setShowDateBar(false);
+    }
 
 
     return (

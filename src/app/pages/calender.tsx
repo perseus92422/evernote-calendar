@@ -174,8 +174,10 @@ const Calender = () => {
                 <TodoListModal
                   intl={intl}
                   isShow={todolistModal}
-                  setShowModal={setTodoListModal}
                   type={TODOLIST_MODAL_TYPE.Create}
+                  activeDate={activeDate}
+                  setShowModal={setTodoListModal}
+                  setShowDateBar={setDateBarShow}
                 />
               ) : null
             }
