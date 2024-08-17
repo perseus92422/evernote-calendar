@@ -5,14 +5,18 @@ import {
     Button,
     Strong
 } from "@radix-ui/themes";
+import { toast } from "react-toastify";
+import NoteModal from "./NoteModal";
 import NoteBar from "./NoteBar";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { findAllNote, findAllNoteByDay, removeNote } from "../../api/note.api";
-// import { findAllByDay, findAll, remove } from "../../api/note.api";
+import {
+    findAllNote,
+    findAllNoteByDay,
+    removeNote
+} from "../../api/note.api";
 import { NoteDTO } from "../../type";
-import NoteModal from "./NoteModal";
 import { NOTE_MODAL_TYPE } from "@/app/const";
-import { toast } from "react-toastify";
+
 
 const NoteTab = (
     {
@@ -30,8 +34,8 @@ const NoteTab = (
 ) => {
 
     const [visible, setVisible] = useState<boolean>(false);
-    const [allnNoteList, setAllNoteList] = useState<Array<NoteDTO>>([]);
-    const [todayNoteList, setTodayNoteList] = useState<Array<NoteDTO>>([]);
+    const [allNoteList, setAllNoteList] = useState<Array<NoteDTO>>([]);
+    const [activeDayNoteList, setActiveDayNoteList] = useState<Array<NoteDTO>>([]);
     const [activeNote, setActiveNote] = useState<NoteDTO>();
 
     async function getAllNote() {
@@ -49,7 +53,7 @@ const NoteTab = (
         if (status >= 400) {
 
         } else {
-            setTodayNoteList([...data]);
+            setActiveDayNoteList([...data]);
         }
     }
 
@@ -59,7 +63,7 @@ const NoteTab = (
         if (status >= 400) {
 
         } else {
-            toast.info(ENCHINTL['toast']['note']['remove-success'][intl]);
+            toast.success(ENCHINTL['toast']['note']['remove-success'][intl]);
         }
     }
 
@@ -93,7 +97,7 @@ const NoteTab = (
             </Flex>
             <Text as='p' size="4"><Strong>{activeDate}</Strong></Text>
             {
-                todayNoteList.map((v, i) => (
+                activeDayNoteList.map((v, i) => (
                     <NoteBar
                         key={i}
                         note={v}
@@ -105,7 +109,7 @@ const NoteTab = (
             }
             <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['note']['all-p'][intl]}</Strong></Text>
             {
-                allnNoteList.map((v, i) => (
+                allNoteList.map((v, i) => (
                     <NoteBar
                         key={i}
                         note={v}

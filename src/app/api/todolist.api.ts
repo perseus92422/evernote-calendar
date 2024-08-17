@@ -15,5 +15,9 @@ export async function removeTask(id: number): Promise<AxiosResponse> {
 }
 
 export async function findAllTask(): Promise<AxiosResponse> {
-    return await axios.get(`${BASE_URL}/taks`);
+    return await axios.get(`${BASE_URL}/task`);
+}
+
+export async function findAllTaskByDay(day: string): Promise<AxiosResponse> {
+    return await axios.get(`${BASE_URL}/task/day`, { params: { day } });
 }

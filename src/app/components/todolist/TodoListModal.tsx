@@ -7,16 +7,17 @@ import {
     TextField,
     TextArea,
 } from "@radix-ui/themes";
+import { toast } from "react-toastify";
 import Message from "../common/message";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { createTask } from "@/app/api/todolist.api";
+import { createTask, updateTask } from "@/app/api/todolist.api";
 import { TODOLIST_MODAL_TYPE } from "@/app/const";
 import {
     NewTaskDTO,
     UpdateTaskDTO,
     TaskDTO
 } from "@/app/type";
-import { toast } from "react-toastify";
+
 
 const TodoListModal = (
     {
@@ -41,10 +42,10 @@ const TodoListModal = (
 
     const [visible, setVisible] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [title, setTitle] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
-    const [startTime, setStartTime] = useState<string>("");
-    const [endTime, setEndTime] = useState<string>("");
+    const [title, setTitle] = useState<string>(task ? task.title : "");
+    const [description, setDescription] = useState<string>(task ? task.description : "");
+    const [startTime, setStartTime] = useState<string>(task ? task.startTime : "");
+    const [endTime, setEndTime] = useState<string>(task ? task.endTime : "");
 
 
     const handleModalShow = () => {
@@ -89,7 +90,6 @@ const TodoListModal = (
             setError(ENCHINTL['error']['todolist']['modal']['invalid-endtime'][intl])
             return;
         }
-        console.log("tset of ")
         if (type == TODOLIST_MODAL_TYPE.Create) {
             let payload: NewTaskDTO = {
                 title,
@@ -102,12 +102,25 @@ const TodoListModal = (
             if (status >= 400) {
 
             } else {
-                toast.info(ENCHINTL['toast']['todolist']['create-success'][intl]);
+                toast.success(ENCHINTL['toast']['todolist']['create-success'][intl]);
             }
         }
         if (type == TODOLIST_MODAL_TYPE.Update) {
             let payload: UpdateTaskDTO = {};
+            if (task.title != title)
+                payload.title = title;
+            if (task.description != description)
+                payload.description = description;
+            if (task.startTime != startTime)
+                payload.startTime = startTime;
+            if (task.endTime != endTime)
+                payload.endTime = endTime;
+            const { data, status } = await updateTask(task.id, payload);
+            if (status >= 400) {
 
+            } else {
+                toast.success(ENCHINTL['toast']['todolist']['update-success'][intl]);
+            }
         }
         initState();
     }

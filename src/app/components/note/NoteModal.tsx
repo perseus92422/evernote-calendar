@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAppSelector } from "../../redux/hook";
 import {
     Dialog,
@@ -13,14 +13,27 @@ import {
     convertToRaw,
     convertFromHTML,
 } from 'draft-js';
+import { toast } from "react-toastify";
 import dratfToHtml from 'draftjs-to-html';
 import Editor from "./Editor";
 import Message from "../common/message";
-import { NOTE_MODAL_TYPE, WYSIWYG_LOCALES } from "../../const";
+import {
+    createNote,
+    updateNote
+} from "../../api/note.api";
+import {
+    NewNoteDTO,
+    UpdateNoteDTO,
+    NoteDTO
+} from "../../type/note.dto";
+import {
+    NOTE_MODAL_TYPE,
+    WYSIWYG_LOCALES
+} from "../../const";
 import ENCHIntl from '@/app/lang/EN-CH.json';
-import { NewNoteDTO, UpdateNoteDTO, NoteDTO } from "../../type/note.dto";
-import { createNote, updateNote } from "../../api/note.api";
-import { toast } from "react-toastify";
+
+
+
 
 const NoteModal = (
     {
@@ -79,7 +92,7 @@ const NoteModal = (
             if (status >= 400) {
 
             } else {
-                toast.info(ENCHIntl['toast']['note']['create-success'][intl]);
+                toast.success(ENCHIntl['toast']['note']['create-success'][intl]);
             }
         }
         if (type == NOTE_MODAL_TYPE.Update) {
@@ -92,7 +105,7 @@ const NoteModal = (
             if (status >= 400) {
 
             } else {
-                toast.info(ENCHIntl['toast']['note']['update-success'][intl]);
+                toast.success(ENCHIntl['toast']['note']['update-success'][intl]);
             }
         }
         initState();

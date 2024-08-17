@@ -1,7 +1,5 @@
-import { useEffect } from "react";
 import {
     Flex,
-    HoverCard,
     Text,
     Strong
 } from "@radix-ui/themes";
@@ -24,7 +22,7 @@ const NoteBar = ({
 }) => {
 
     return (
-        <Flex maxHeight="250" direction="column" pt="1" pb="1" className="w-full rounded-[4px] border-2 px-2 py-2 border-[#00c7fe83] my-1 overflow-auto">
+        <Flex maxHeight="250" direction="column" py="1" className="w-full rounded-[4px] border-2 px-2 py-2 border-[#00c7fe83] my-1 overflow-auto">
             <Flex direction="row" justify="between" gap="2" py="1">
                 <Text as="p"><Strong>{!todayFlag ? note.date : ""}</Strong></Text>
                 <Flex direction="row" gap="2">

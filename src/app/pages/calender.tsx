@@ -212,6 +212,7 @@ const Calender = () => {
                     intl={intl}
                     activeDate={activeDate}
                     handleNewBtnClick={handleNewTodoListBtnClick}
+                    setShowDateBar={setDateBarShow}
                   />
                 </Tabs.Content>
               </Box>

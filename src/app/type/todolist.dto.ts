@@ -24,3 +24,8 @@ export interface UpdateTaskDTO {
     endTime?: string;
     complete?: boolean;
 }
+
+export interface TodoListDTO {
+    date: string;
+    todolist: TaskDTO[];
+}

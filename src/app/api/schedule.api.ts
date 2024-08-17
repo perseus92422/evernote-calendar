@@ -18,6 +18,6 @@ export async function removeSchedule(id: number): Promise<AxiosResponse> {
     return await axios.delete(BASE_URL + `/schedule/${id}`);
 }
 
-export async function findDaySchedule(day: string): Promise<AxiosResponse> {
+export async function findAllScheduleBy(day: string): Promise<AxiosResponse> {
     return await axios.get(BASE_URL + `/schedule/day`, { params: { day } });
 }

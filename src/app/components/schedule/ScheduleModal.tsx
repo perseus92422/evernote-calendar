@@ -12,7 +12,7 @@ import {
 } from '@radix-ui/themes'
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '../../redux/hook'
+import { useAppSelector } from '../../redux/hook'
 import ColorIcon from './colorIcon';
 import LineThickness from './lineThickness';
 import Message from "../common/message"
@@ -99,7 +99,7 @@ const ScheduleModal = (
       if (status >= 400) {
 
       } else {
-        toast.info(ENCHINTL['toast']['schedule']['create-success'][intl]);
+        toast.success(ENCHINTL['toast']['schedule']['create-success'][intl]);
       }
     }
     if (type == SCHEDULE_MODAL_TYPE.Update && activeSchedule) {
@@ -123,7 +123,7 @@ const ScheduleModal = (
 
       }
       else
-        toast.info(ENCHINTL['toast']['schedule']['update-success'][intl]);
+        toast.success(ENCHINTL['toast']['schedule']['update-success'][intl]);
     }
     setShowDateBar(false);
     initState();

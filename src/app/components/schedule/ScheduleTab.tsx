@@ -12,7 +12,7 @@ import ENCHINTL from '@/app/lang/EN-CH.json';
 import { SCHEDULE_MODAL_TYPE } from "../../const";
 import {
     findAllSchedule,
-    findDaySchedule,
+    findAllScheduleBy,
     removeSchedule
 } from "../../api";
 import { ScheduleDTO } from "../../type";
@@ -44,7 +44,7 @@ const ScheduleTab = (
     }
 
     async function getActiveDaySchedule() {
-        const { data, status } = await findDaySchedule(activeDate);
+        const { data, status } = await findAllScheduleBy(activeDate);
         setActiveDaySchedule([...data])
     }
 
@@ -61,7 +61,7 @@ const ScheduleTab = (
 
         }
         else {
-            toast.info(ENCHINTL['toast']['schedule']['remove-success'][intl]);
+            toast.success(ENCHINTL['toast']['schedule']['remove-success'][intl]);
         }
     }
 

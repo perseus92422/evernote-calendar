@@ -6,7 +6,8 @@ import {
 } from "@radix-ui/themes";
 import {
     TrashIcon,
-    Pencil1Icon
+    Pencil1Icon,
+    CalendarIcon
 } from "@radix-ui/react-icons";
 import { ScheduleDTO, ScheduleTypesDTO } from "../../type";
 import ENCHINTL from '@/app/lang/EN-CH.json';
@@ -50,7 +51,13 @@ const ScheduleBar = (
                             <Text as="p" size="3"><Strong>{schedule.title}</Strong></Text>
                         </Flex>
                         <Flex className='w-2/3' justify="between">
-                            <Text as="p" size="3">{schedule.startDate}</Text>
+                            <Flex gap="2">
+                                <CalendarIcon
+                                    height="20"
+                                    width="20"
+                                />
+                                <Text as="p" size="3">{schedule.startDate}</Text>
+                            </Flex>
                             <div
                                 className="w-1/3 m-auto h-0"
                                 style={{
@@ -58,7 +65,13 @@ const ScheduleBar = (
                                     borderColor: schedule.color
                                 }}
                             />
-                            <Text as="p" size="3">{schedule.endDate}</Text>
+                            <Flex gap="2">
+                                <CalendarIcon
+                                    height="20"
+                                    width="20"
+                                />
+                                <Text as="p" size="3">{schedule.endDate}</Text>
+                            </Flex>
                         </Flex>
                     </Flex>
                 </HoverCard.Trigger>
