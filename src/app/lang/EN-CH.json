@@ -23,6 +23,44 @@
             ]
         }
     },
+    "sign-up":{
+        "title-p":[
+            "Sign Up",
+            "登记"
+        ],
+        "first-name-label":[
+            "First Name",
+            "名"
+        ],
+        "last-name-label":[
+            "Last Name",
+            "姓"
+        ],
+        "email-label":[
+            "Email",
+            "Email"
+        ],
+        "password-label":[
+            "Password",
+            "密码"
+        ],
+        "text1-p":[
+            "Already have an account?",
+            "已有账户？"
+        ],
+        "link":{
+            "sign-in":[
+                "Sign In",
+                "登录"
+            ]
+        },
+        "button":{
+            "sign-up":[
+                "Sign Up",
+                "登记"
+            ]
+        }
+    },
     "side-bar":{
         "note":{
             "tab":[
@@ -349,6 +387,32 @@
                     "结束时间必须晚于开始时间。"
                 ]
             }
+        },
+        "sign-up":{
+            "empty-firstname":[
+                "The first name is empty.",
+                "名字为空。"
+            ],
+            "empty-lastname":[
+                "The last name is empty.",
+                "姓氏为空。"
+            ],
+            "empty-email":[
+                "Email is empty.",
+                "Email 为空。"
+            ],
+            "empty-password":[
+                "The password is empty",
+                "密码为空。"
+            ],
+            "invalid-short-password":[
+                "The password must be more than 6 letters.",
+                "密码必须超过6个字母。"
+            ],
+            "invalid-email":[
+                "Email is invalid.",
+                "Email 无效。"
+            ]
         }
     }
 }

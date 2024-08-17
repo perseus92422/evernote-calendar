@@ -46,6 +46,7 @@ export const SCHEDULE_TYPES = [
     'date'
 ]
 
+export const EMAIL_REGEX = '/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/';
 
 export const enum SCHEDULE_MODAL_TYPE {
     Create = 'Create',
@@ -67,4 +68,6 @@ export const enum CALENDAR_VIEW_MODE {
     month2 = 'Month 2',
     week = 'Week'
 }
+
+
 

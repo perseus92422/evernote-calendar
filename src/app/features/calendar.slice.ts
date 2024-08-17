@@ -10,7 +10,7 @@ const initialState: {
     activeDate: string;
 } = {
     schedule: [],
-    intl: 0,
+    intl: 1,
     viewMode: CALENDAR_VIEW_MODE.month1,
     activeDate: dateToYYYYMMDDF(new Date())
 }

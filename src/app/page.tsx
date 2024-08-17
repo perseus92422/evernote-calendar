@@ -7,7 +7,6 @@ import 'moment/locale/zh-cn';
 import Calender from "./pages/calender";
 import Header from "@/app/layout/header";
 import { ToastContainer } from 'react-toastify';
-import { getCalender, setDate } from "./redux/calenderSlice";
 import { useAppSelector, useAppDispatch } from "./redux/hook";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -19,7 +18,7 @@ export default function Home() {
   registerLocale('en', enUS);
   registerLocale('cn', zhCN);
 
-  const { date } = useAppSelector(getCalender)
+  // const { date } = useAppSelector(getCalender)
   // const date = moment(useAppSelector(getCalender).date);
   // const kind = useAppSelector(getCalender).kind;
   const [isScrolling, setIsScrolling] = useState(false);
