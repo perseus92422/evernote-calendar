@@ -74,15 +74,15 @@ const ScheduleModal = (
 
   async function handleSubmit() {
     if (!compareDate(startDate, endDate)) {
-      setError(ENCHINTL['schedule']['modal']['error']['date-invalid'][intl]);
+      setError(ENCHINTL['error']['schedule']['modal']['invalid-end-date'][intl]);
       return;
     }
     if (!title) {
-      setError(ENCHINTL['schedule']['modal']['error']['title-invalid'][intl]);
+      setError(ENCHINTL['error']['schedule']['modal']['empty-title'][intl]);
       return;
     }
     if (!description) {
-      setError(ENCHINTL['schedule']['modal']['error']['description-invalid'][intl]);
+      setError(ENCHINTL['error']['schedule']['modal']['empty-content'][intl]);
       return;
     }
     if (type == SCHEDULE_MODAL_TYPE.Create) {
@@ -167,10 +167,10 @@ const ScheduleModal = (
       <Dialog.Content >
         <Dialog.Title>
           {
-            type == SCHEDULE_MODAL_TYPE.Create ? ENCHINTL['schedule']['modal']['create-title'][intl] : null
+            type == SCHEDULE_MODAL_TYPE.Create ? ENCHINTL['modal']['schedule']['title-d']['create'][intl] : null
           }
           {
-            type == SCHEDULE_MODAL_TYPE.Update ? ENCHINTL['schedule']['modal']['update-title'][intl] : null
+            type == SCHEDULE_MODAL_TYPE.Update ? ENCHINTL['modal']['schedule']['title-d']['update'][intl] : null
           }
         </Dialog.Title>
         <Dialog.Description size="2" mb="4">
@@ -182,69 +182,63 @@ const ScheduleModal = (
         <Flex direction="column" gap="3">
           <Flex direction="row" gap="3">
             <Flex direction="column">
-              <span>{ENCHINTL['schedule']['modal']['start-date'][intl]}:</span>
-              <div>
-                <DatePicker
-                  locale={CALENDAR_LOCALES[intl]}
-                  selected={startDate}
-                  onChange={(date: Date) => handleStartDateChange(date)}
-                  selectsStart
-                  startDate={startDate}
-                  endDate={endDate}
-                />
-              </div>
+              <Text as="p">{ENCHINTL['modal']['schedule']['start-date-p'][intl]}:</Text>
+              <DatePicker
+                locale={CALENDAR_LOCALES[intl]}
+                selected={startDate}
+                onChange={(date: Date) => handleStartDateChange(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+              />
             </Flex>
             <Flex direction="column">
-              <span>{ENCHINTL['schedule']['modal']['end-date'][intl]}:</span>
-              <div>
-                <DatePicker
-                  locale={CALENDAR_LOCALES[intl]}
-                  selected={endDate}
-                  onChange={(date: Date) => handleEndDateChange(date)}
-                  selectsEnd
-                  startDate={startDate}
-                  endDate={endDate}
-                  minDate={startDate}
-                />
-              </div>
+              <Text as="p">{ENCHINTL['modal']['schedule']['end-date-p'][intl]}</Text>
+              <DatePicker
+                locale={CALENDAR_LOCALES[intl]}
+                selected={endDate}
+                onChange={(date: Date) => handleEndDateChange(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+              />
             </Flex>
             <Flex direction="column" className='w-full'>
-              <div >{ENCHINTL['schedule']['modal']['type'][intl]}:</div>
-              <div className='w-full'>
-                <Select.Root defaultValue={kind} value={kind} onValueChange={handleChangeKind}>
-                  <Select.Trigger />
-                  <Select.Content>
-                    <Select.Group>
-                      {
-                        Object.keys(ENCHINTL.schedule.modal.types).map((v, i) => (
-                          <Select.Item key={i} value={v}>{ENCHINTL.schedule.modal.types[v as keyof ScheduleTypesDTO][intl]}</Select.Item>
-                        ))
-                      }
-                    </Select.Group>
-                  </Select.Content>
-                </Select.Root>
-              </div>
+              <Text as="p" >{ENCHINTL['modal']['schedule']['type-p'][intl]}:</Text>
+              <Select.Root defaultValue={kind} value={kind} onValueChange={handleChangeKind}>
+                <Select.Trigger />
+                <Select.Content>
+                  <Select.Group>
+                    {
+                      Object.keys(ENCHINTL.modal.schedule.types).map((v, i) => (
+                        <Select.Item key={i} value={v}>{ENCHINTL.modal.schedule.types[v as keyof ScheduleTypesDTO][intl]}</Select.Item>
+                      ))
+                    }
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
             </Flex>
           </Flex>
           <Flex direction="column" py="2" gap="1">
-            <Text as='p'>{ENCHINTL['schedule']['modal']['title'][intl]}:</Text>
+            <Text as='p'>{ENCHINTL['modal']['schedule']['title-p'][intl]}:</Text>
             <TextField.Root
               autoFocus={true}
               size="2"
-              placeholder={ENCHINTL['schedule']['modal']['title-holder'][intl]}
+              placeholder={ENCHINTL['modal']['schedule']['title-textfield-holder'][intl]}
               value={title}
               onChange={(e) => { setTitle(e.target.value) }} />
           </Flex>
           <Flex direction="column" py="2" gap="1">
-            <Text as='p'>{ENCHINTL['schedule']['modal']['description'][intl]}:</Text>
+            <Text as='p'>{ENCHINTL['modal']['schedule']['description-p'][intl]}</Text>
             <TextArea
               value={description}
               rows={5}
-              placeholder={ENCHINTL['schedule']['modal']['description-holder'][intl]}
+              placeholder={ENCHINTL['modal']['schedule']['description-textarea-holder'][intl]}
               onChange={(e) => { setDescription(e.target.value) }} />
           </Flex>
           <Flex direction="column" className='w-full'>
-            <p>{ENCHINTL['schedule']['modal']['color-bar'][intl]}:</p>
+            <Text as="p">{ENCHINTL['modal']['schedule']['color-bar-p'][intl]}</Text>
             <Flex className='row gap-2 flex-wrap w-full'>
               {
                 COLOR_PATTERN.map((v: string, i: number) => (
@@ -253,7 +247,7 @@ const ScheduleModal = (
             </Flex>
           </Flex>
           <Flex direction="column" className='w-full'>
-            <p>{ENCHINTL['schedule']['modal']['width-bar'][intl]}:</p>
+            <Text as="p">{ENCHINTL['modal']['schedule']['width-bar-p'][intl]}</Text>
             <Flex className='row gap-2 flex-wrap w-full'>
               <RadioCards.Root className='w-100' defaultValue={width.toString()} columns={{ initial: '1', sm: '5' }}>
                 {
@@ -268,11 +262,11 @@ const ScheduleModal = (
         <hr />
         <Flex gap="3" justify="end" className='pt-2'>
           <Button radius='full' color="indigo" onClick={handleSubmit}>
-            {ENCHINTL['schedule']['modal']['submit-btn'][intl]}
+            {ENCHINTL['modal']['schedule']['button']['submit'][intl]}
           </Button>
           <Dialog.Close>
             <Button radius='full' color="gray" onClick={handleDialogShow}>
-              {ENCHINTL['schedule']['modal']['close-btn'][intl]}
+              {ENCHINTL['modal']['schedule']['button']['close'][intl]}
             </Button>
           </Dialog.Close>
         </Flex>

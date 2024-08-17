@@ -170,8 +170,14 @@ const TodoListModal = (
                     />
                 </Flex>
                 <Flex direction="row" justify="between" py="2">
-                    <input type="time" value={startTime} onChange={(e) => handlerStartTimeChange(e.target.value)} />
-                    <input type="time" value={endTime} onChange={(e) => handlerEndTimeChange(e.target.value)} />
+                    <Flex gap="2">
+                        <Text as="p">{ENCHINTL['modal']['todolist']['start-time-p'][intl]}</Text>
+                        <input type="time" value={startTime} onChange={(e) => handlerStartTimeChange(e.target.value)} />
+                    </Flex>
+                    <Flex gap="2">
+                        <Text as="p">{ENCHINTL['modal']['todolist']['end-time-p'][intl]}</Text>
+                        <input type="time" value={endTime} onChange={(e) => handlerEndTimeChange(e.target.value)} />
+                    </Flex>
                 </Flex>
                 <Flex justify="end" gap="2">
                     <Button

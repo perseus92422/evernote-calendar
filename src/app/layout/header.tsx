@@ -16,7 +16,6 @@ import {
 } from '@radix-ui/react-icons'
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
 import {
-  SCHEDULE_MODAL_TYPE,
   MOMENT_LOCALES,
   CALENDAR_VIEW_MODE
 } from '../const';
@@ -81,7 +80,7 @@ const Header = () => {
 
   return (
     <Flex direction="row" justify="between" gap="4" py="2" pt="3">
-      {/* <Flex gap="3" pt="2">
+      <Flex gap="3" pt="2">
         <Flex gap="3" >
           <Button variant="soft" onClick={handleTodayBtn} className='cursor-pointer' >
             {ENCHINTL['header']['today-btn'][intl]}
@@ -127,7 +126,7 @@ const Header = () => {
         <IconButton className='cursor-pointer' radius="full" variant="soft">
           <ChevronRightIcon width="18" height="18" onClick={() => handlePrev2NextMonth(1)} />
         </IconButton>
-      </Flex> */}
+      </Flex>
       <Flex gap="6" align="center">
         <Tabs.Root defaultValue={viewMode}>
           <Tabs.List>

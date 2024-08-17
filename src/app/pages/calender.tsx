@@ -6,30 +6,26 @@ import {
   Flex,
   Tabs,
   Box,
-  Text,
-  Button,
-  Strong,
-  HoverCard
 } from '@radix-ui/themes';
 import {
   Cross1Icon
 } from '@radix-ui/react-icons';
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
 import Day from '../components/common/Day';
-import ENCHINTL from '@/app/lang/EN-CH.json';
 import ScheduleModal from '../components/schedule/ScheduleModal';
 import NoteModal from '../components/note/NoteModal';
 import TodoListModal from '../components/todolist/TodoListModal';
 import ScheduleTab from '../components/schedule/ScheduleTab';
 import NoteTab from '../components/note/NoteTab';
 import TodoListTab from '../components/todolist/TodoListTab';
+import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
   SCHEDULE_MODAL_TYPE,
   NOTE_MODAL_TYPE,
   TODOLIST_MODAL_TYPE,
   CALENDAR_VIEW_MODE,
 } from '../const';
-import { DayDTO, ScheduleDTO } from '../type';
+import { DayDTO } from '../type';
 import { dateToYYYYMMDDF } from '../helper/util';
 
 
@@ -45,9 +41,6 @@ const Calender = () => {
   const [todolistModal, setTodoListModal] = useState<boolean>(false);
   const [datebarShow, setDateBarShow] = useState<boolean>(false);
   const [activeDate, setActiveDate] = useState<string>(dateToYYYYMMDDF(new Date()));
-  const [scheduleList, setScheduleList] = useState<Array<ScheduleDTO>>([]);
-  const [noteList, setNotList] = useState();
-  const [todolist, setTodoList] = useState();
 
   const handleDateClick = (date: string) => {
     setActiveDate(date);

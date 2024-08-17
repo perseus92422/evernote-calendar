@@ -63,7 +63,6 @@ export default function Home() {
         pauseOnHover
         theme="colored"
       />
-      {/* <MenuBar /> */}
     </div >
   );
 }

@@ -1,167 +1,4 @@
 {
-    "schedule":{
-        "modal":{
-            "create-title":[
-                "New Schedule",
-                "新时间表"
-            ],
-            "update-title":[
-                "Edit Schedule",
-                "編輯時間表"
-            ],
-           "start-date": [
-                "Start Date",
-                "开始日期"
-            ],
-            "end-date": [
-                "End Date",
-                "结束日期"
-            ],
-            "type":[
-                "Type",
-                "类型"
-            ],
-            "title":[
-                "Title",
-                "标题"
-            ],
-            "title-holder":[
-                "Title",
-                "标题"
-            ],
-            "description":[
-                "Description",
-                "描述"
-            ],
-            "description-holder":[
-                "Description",
-                "描述"
-            ],
-            "color-bar":[
-                "Line Color",
-                "线条颜色"
-            ],
-            "width-bar":[
-                "Line Thickness",
-                "线的粗细"
-            ],
-            "submit-btn":[
-                "Submit",
-                "提交"
-            ],
-           "close-btn":[
-                "Close",
-                "关闭"
-            ],
-            "error":{
-                "date-invalid":[
-                    "End date must be after start date",
-                    "结束日期必须晚于开始日期"
-                ],
-                "title-invalid":[
-                    "Title must be required.",
-                    "标题必须填写。"
-                ],
-                "description-invalid":[
-                    "Description must be required.",
-                    "必須要求說明。"
-                ]
-            },
-            "types":{
-                "meeting":[
-                    "Meeting",
-                    "会议"
-                ],
-                "birthday":[
-                    "Birthday",
-                    "生日"
-                ],
-                "work":[
-                    "Work",
-                    "工作"
-                ],
-                "holiday":[
-                    "Holiday",
-                    "假期"
-                ],
-                "travel":[
-                    "Travel",
-                    "旅行"
-                ],
-                "memory":[
-                    "Memory",
-                    "记忆"
-                ],
-                "date":[
-                    "Date",
-                    "约会"
-                ]
-            },
-            "toast":{
-                "create-schedule-success":[
-                    "Schedule is added newly.",
-                    "新添加的计划。"
-                ],
-                "update-schedule-success":[
-                    "Schedule is updated.",
-                    "计划已更新。"
-                ]
-            }
-        },
-        "types":{
-                "meeting":[
-                    "Meeting",
-                    "会议"
-                ],
-                "birthday":[
-                    "Birthday",
-                    "生日"
-                ],
-                "work":[
-                    "Work",
-                    "工作"
-                ],
-                "holiday":[
-                    "Holiday",
-                    "假期"
-                ],
-                "travel":[
-                    "Travel",
-                    "旅行"
-                ],
-                "memory":[
-                    "Memory",
-                    "记忆"
-                ],
-                "date":[
-                    "Date",
-                    "约会"
-                ]
-            }
-    },
-    "note":{
-        "modal":{
-            "create-title":[
-                "New Note",
-                "新笔记"
-            ],
-            "update-title":[
-                "Edit Note",
-                "編輯譯註釋"
-            ],
-            "title":[
-                "Title",
-                "标题"
-            ],
-            "title-holder":[
-                "Title",
-                "标题"
-            ]
-        }
-    },
-    "todolist":{
-        "modal":{}
-    },
     "header":{
         "create-btn":[
             "New Schedule",
@@ -245,43 +82,43 @@
     "toast":{
         "schedule":{
             "create-success":[
-                "Schedule is added successfully.",
-                "时间表添加成功。"
+                "The event is added successfully.",
+                "活动添加成功。"
             ],
             "update-success":[
-                "Schedule is updated successfully.",
-                "时间表已成功更新。"
+                "The event is updated successfully.",
+                "活动更新成功。"
             ],
             "remove-success":[
-                "Schedule is removed successfully.",
-                "已成功删除时间表。"
+                "The event is removed successfully.",
+                "事件已成功删除。"
             ]
         },
         "note":{
             "create-success":[
-                "Note is added successfully.",
+                "The note is added successfully.",
                 "注释已成功添加。"
             ],
             "update-success":[
-                "Note is updated successfully.",
+                "The note is updated successfully.",
                 "注释已成功更新。"
             ],
             "remove-success":[
-                "Note is removed successfully.",
+                "The note is removed successfully.",
                 "注释已成功删除。"
             ]
         },
         "todolist":{
             "create-success":[
-                "Task is added successfully.",
+                "The task is added successfully.",
                 "任务添加成功。"
             ],
             "update-success":[
-                "Task is updated successfully.",
+                "The task is updated successfully.",
                 "任务更新成功。"
             ],
             "remove-success":[
-                "Task is removed successfully.",
+                "The task is removed successfully.",
                 "任务已成功删除。"
             ]
         }
@@ -326,6 +163,62 @@
             }
         },
         "schedule":{
+            "title-d":{
+                "create":[
+                    "New Event",
+                    "新活动"
+                ],
+                "update":[
+                    "Edit Event",
+                    "編輯事件"
+                ]
+            },
+            "start-date-p":[
+                "Start Date",
+                "开始日期"
+            ],
+            "end-date-p":[
+                "End Date",
+                "结束日期"
+            ],
+            "type-p":[
+                "Type",
+                "类型"
+            ],
+            "title-p":[
+                "Title",
+                "标题"
+            ],
+            "title-textfield-holder":[
+                "Title",
+                "标题"
+            ],
+            "description-p":[
+                "Description",
+                "描述"
+            ],
+            "description-textarea-holder":[
+                "Description",
+                "描述"
+            ],
+            "color-bar-p":[
+                "Line Color",
+                "线条颜色"
+            ],
+            "width-bar-p":[
+                "Line Thickness",
+                "线的粗细"
+            ],
+            "button":{
+                "submit":[
+                    "Submit",
+                    "提交"
+                ],
+                "close":[
+                    "Close",
+                    "关闭"
+                ]
+            },
             "types":{
                 "meeting":[
                     "Meeting",
@@ -384,6 +277,14 @@
                 "Description",
                 "描述"
             ],
+            "start-time-p":[
+                "Start Time",
+                "开始时间"
+            ],
+            "end-time-p":[
+                "End Time",
+                "结束时间"
+            ],
             "button":{
                 "submit":[
                     "Submit",
@@ -400,12 +301,16 @@
         "schedule":{
             "modal":{
                 "empty-title":[
-                    "Title is empty.",
+                    "The title is empty.",
                     "标题为空。"
                 ],
                 "empty-content":[
-                    "Content is empty",
-                    "内容为空。"
+                    "The description is empty.",
+                    "描述为空。"
+                ],
+                "invalid-end-date":[
+                    "The end date must be after the start date.",
+                    "结束日期必须晚于开始日期。"
                 ]
             }
         },
