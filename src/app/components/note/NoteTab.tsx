@@ -33,23 +33,23 @@ const NoteTab = (
         }
 ) => {
 
+    const token = localStorage.getItem('token');
     const [visible, setVisible] = useState<boolean>(false);
     const [allNoteList, setAllNoteList] = useState<Array<NoteDTO>>([]);
     const [activeDayNoteList, setActiveDayNoteList] = useState<Array<NoteDTO>>([]);
     const [activeNote, setActiveNote] = useState<NoteDTO>();
 
     async function getAllNote() {
-        const { data, status } = await findAllNote();
+        const { data, status } = await findAllNote(token);
         if (status >= 400) {
 
         } else {
             setAllNoteList([...data]);
         }
-
     }
 
     async function getAllNoteByDay() {
-        const { data, status } = await findAllNoteByDay(activeDate);
+        const { data, status } = await findAllNoteByDay(activeDate, token);
         if (status >= 400) {
 
         } else {
@@ -58,7 +58,7 @@ const NoteTab = (
     }
 
     async function handlerRemoveBtnClick(id: number) {
-        const { status, data } = await removeNote(id);
+        const { status, data } = await removeNote(id, token);
         setShowDateBar(false);
         if (status >= 400) {
 

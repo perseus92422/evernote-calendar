@@ -32,9 +32,6 @@ import {
 } from "../../const";
 import ENCHIntl from '@/app/lang/EN-CH.json';
 
-
-
-
 const NoteModal = (
     {
         type,
@@ -52,6 +49,7 @@ const NoteModal = (
         setShowDateBar: (arg: boolean) => void;
     }) => {
 
+    const token = localStorage.getItem('token');
     const { intl } = useAppSelector(state => state.calendar);
     const [visible, setVisible] = useState<boolean>(true);
     const [title, setTitle] = useState<string>(note ? note.title : "");
@@ -88,7 +86,7 @@ const NoteModal = (
                 content,
                 date: activeDate
             };
-            const { data, status } = await createNote(payload);
+            const { data, status } = await createNote(payload, token);
             if (status >= 400) {
 
             } else {
@@ -101,7 +99,7 @@ const NoteModal = (
                 payload.title = title;
             if (content != note.content)
                 payload.content = content;
-            const { data, status } = await updateNote(note.id, payload);
+            const { data, status } = await updateNote(note.id, payload, token);
             if (status >= 400) {
 
             } else {
