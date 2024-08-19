@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAppSelector } from "../../redux/hook";
+import { useRouter } from "next/navigation";
 import {
     Dialog,
     Button,
@@ -13,8 +13,12 @@ import {
     convertToRaw,
     convertFromHTML,
 } from 'draft-js';
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import dratfToHtml from 'draftjs-to-html';
+import { useAppSelector, useAppDispatch } from "../../redux/hook";
+import { setUserProps } from "@/app/features/calendar.slice";
+import { eraseStorage } from "@/app/helper";
 import Editor from "./Editor";
 import Message from "../common/message";
 import {
@@ -49,6 +53,8 @@ const NoteModal = (
         setShowDateBar: (arg: boolean) => void;
     }) => {
 
+    const dispatch = useAppDispatch();
+    const router = useRouter();
     const token = localStorage.getItem('token');
     const { intl } = useAppSelector(state => state.calendar);
     const [visible, setVisible] = useState<boolean>(true);
@@ -86,11 +92,14 @@ const NoteModal = (
                 content,
                 date: activeDate
             };
-            const { data, status } = await createNote(payload, token);
-            if (status >= 400) {
-
-            } else {
+            const res = await createNote(payload, token);
+            if (res.status && res.status < 400) {
                 toast.success(ENCHIntl['toast']['note']['create-success'][intl]);
+            } else {
+                const err = res as AxiosError;
+                if (err.response.status == 401)
+                    toast.success(ENCHIntl['toast']['common']['token-expired'][intl]);
+                signOutAction();
             }
         }
         if (type == NOTE_MODAL_TYPE.Update) {
@@ -99,11 +108,14 @@ const NoteModal = (
                 payload.title = title;
             if (content != note.content)
                 payload.content = content;
-            const { data, status } = await updateNote(note.id, payload, token);
-            if (status >= 400) {
-
-            } else {
+            const res = await updateNote(note.id, payload, token);
+            if (res.status && res.status < 400) {
                 toast.success(ENCHIntl['toast']['note']['update-success'][intl]);
+            } else {
+                const err = res as AxiosError;
+                if (err.response.status == 401)
+                    toast.success(ENCHIntl['toast']['common']['token-expired'][intl]);
+                signOutAction();
             }
         }
         initState();
@@ -120,6 +132,12 @@ const NoteModal = (
         setVisible(false);
         setShowModal(false);
         setShowDateBar(false);
+    }
+
+    const signOutAction = () => {
+        dispatch(setUserProps(null));
+        eraseStorage();
+        router.push('/auth/signin');
     }
 
     return (

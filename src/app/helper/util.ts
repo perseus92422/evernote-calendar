@@ -22,16 +22,3 @@ export const getEndDayOfMonth = (): string => {
 export const getYear = (date: Date): number => {
     return moment(date).year();
 }
-
-export const getFullDescriptionOfMonth = (date: Date, intl: number) => {
-    console.log("month ", moment(date).format('YYYY-MMMM-DD'))
-    console.log("intl ", intl)
-    if (intl == 1) {
-        moment.locale('zh-cn');
-    }
-    return moment(date).locale('zh-cn').format('MMMM');
-}
-
-export const getDaysOfMonth = () => {
-
-}

@@ -189,6 +189,12 @@
                 "Email or Password is wrong.",
                 "Email 或密码错误。"
             ]
+        },
+        "common":{
+            "token-expired":[
+                "Please sign in again.",
+                "请重新登录。"
+            ]
         }
     },
     "modal":{

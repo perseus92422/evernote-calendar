@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
     Flex,
     Text,
@@ -6,8 +7,10 @@ import {
     Strong
 } from "@radix-ui/themes";
 import { toast } from "react-toastify";
+import { AxiosResponse, AxiosError } from "axios";
 import NoteModal from "./NoteModal";
 import NoteBar from "./NoteBar";
+import { useAppDispatch } from "@/app/redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
     findAllNote,
@@ -16,7 +19,8 @@ import {
 } from "../../api/note.api";
 import { NoteDTO } from "../../type";
 import { NOTE_MODAL_TYPE } from "@/app/const";
-
+import { setUserProps } from "@/app/features/calendar.slice";
+import { eraseStorage } from "@/app/helper";
 
 const NoteTab = (
     {
@@ -33,6 +37,8 @@ const NoteTab = (
         }
 ) => {
 
+    const dispatch = useAppDispatch();
+    const router = useRouter();
     const token = localStorage.getItem('token');
     const [visible, setVisible] = useState<boolean>(false);
     const [allNoteList, setAllNoteList] = useState<Array<NoteDTO>>([]);
@@ -40,36 +46,54 @@ const NoteTab = (
     const [activeNote, setActiveNote] = useState<NoteDTO>();
 
     async function getAllNote() {
-        const { data, status } = await findAllNote(token);
-        if (status >= 400) {
-
-        } else {
-            setAllNoteList([...data]);
+        const res = await findAllNote(token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setAllNoteList([...result.data]);
+        }
+        else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
         }
     }
 
     async function getAllNoteByDay() {
-        const { data, status } = await findAllNoteByDay(activeDate, token);
-        if (status >= 400) {
-
+        const res = await findAllNoteByDay(activeDate, token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setActiveDayNoteList([...result.data]);
         } else {
-            setActiveDayNoteList([...data]);
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
         }
     }
 
     async function handlerRemoveBtnClick(id: number) {
-        const { status, data } = await removeNote(id, token);
-        setShowDateBar(false);
-        if (status >= 400) {
-
-        } else {
+        const res = await removeNote(id, token);
+        if (res.status && res.status < 400) {
             toast.success(ENCHINTL['toast']['note']['remove-success'][intl]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
         }
+        setShowDateBar(false);
     }
 
     const handlerEditBtnClick = (note: NoteDTO) => {
         setVisible(true);
         setActiveNote(note);
+    }
+
+    const signOutAction = () => {
+        eraseStorage();
+        dispatch(setUserProps(null));
+        router.push('/auth/signin');
     }
 
     useEffect(() => {
