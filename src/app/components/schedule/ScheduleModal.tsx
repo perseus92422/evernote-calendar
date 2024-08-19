@@ -1,5 +1,7 @@
 'use client'
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
 import {
   Dialog,
   Button,
@@ -12,7 +14,7 @@ import {
 } from '@radix-ui/themes'
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
-import { useAppSelector } from '../../redux/hook'
+import { useAppSelector, useAppDispatch } from '../../redux/hook'
 import ColorIcon from './colorIcon';
 import LineThickness from './lineThickness';
 import Message from "../common/message"
@@ -30,14 +32,16 @@ import {
   ScheduleTypesDTO
 } from '../../type';
 import {
+  eraseStorage,
   dateToYYYYMMDDF,
   compareDate
-} from '../../helper/util';
+} from '@/app/helper';
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
   createSchedule,
   updateSchedule
 } from '../../api';
+import { setUserProps } from '@/app/features/calendar.slice';
 
 const ScheduleModal = (
   {
@@ -56,6 +60,10 @@ const ScheduleModal = (
     }
 ) => {
 
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const token = localStorage.getItem('token');
+
   const { intl } = useAppSelector((state) => state.calendar);
   const [visible, setVisible] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -66,7 +74,6 @@ const ScheduleModal = (
   const [description, setDescription] = useState<string>(activeSchedule ? activeSchedule.description : "");
   const [color, setColor] = useState<string>(activeSchedule ? activeSchedule.color : COLOR_PATTERN[0]);
   const [width, setWidth] = useState<number>(activeSchedule ? activeSchedule.width : LINE_WIDTH_PATTERN[0]);
-
   const handleDialogShow = () => {
     setVisible(!visible);
     setShowModal(!visible);
@@ -95,11 +102,14 @@ const ScheduleModal = (
         startDate: dateToYYYYMMDDF(startDate),
         endDate: dateToYYYYMMDDF(endDate)
       }
-      let { data, status }: { data: ScheduleDTO, status: number } = await createSchedule(payload);
-      if (status >= 400) {
-
-      } else {
+      let res = await createSchedule(payload, token);
+      if (res.status && res.status < 400) {
         toast.success(ENCHINTL['toast']['schedule']['create-success'][intl]);
+      } else {
+        const err = res as AxiosError;
+        if (err.response.status == 401)
+          toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+        signOutAction();
       }
     }
     if (type == SCHEDULE_MODAL_TYPE.Update && activeSchedule) {
@@ -118,12 +128,15 @@ const ScheduleModal = (
         payload.width = width;
       if (activeSchedule?.type != kind)
         payload.type = kind;
-      const { data, status } = await updateSchedule(activeSchedule.id, payload);
-      if (status >= 400) {
-
-      }
-      else
+      const res = await updateSchedule(activeSchedule.id, payload, token);
+      if (res.status && res.status < 400) {
         toast.success(ENCHINTL['toast']['schedule']['update-success'][intl]);
+      } else {
+        const err = res as AxiosError;
+        if (err.response.status == 401)
+          toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+        signOutAction();
+      }
     }
     setShowDateBar(false);
     initState();
@@ -160,6 +173,12 @@ const ScheduleModal = (
     setDescription("");
     setColor(COLOR_PATTERN[0]);
     setWidth(LINE_WIDTH_PATTERN[0]);
+  }
+
+  const signOutAction = () => {
+    eraseStorage();
+    dispatch(setUserProps(null));
+    router.push('/auth/signin');
   }
 
   return (

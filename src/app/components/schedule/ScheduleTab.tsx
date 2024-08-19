@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
     Flex,
     Button,
@@ -6,8 +7,10 @@ import {
     Strong
 } from "@radix-ui/themes";
 import { toast } from "react-toastify";
+import { AxiosResponse, AxiosError } from "axios";
 import ScheduleModal from "./ScheduleModal";
 import ScheduleBar from "./ScheduleBar";
+import { useAppDispatch } from "@/app/redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { SCHEDULE_MODAL_TYPE } from "../../const";
 import {
@@ -16,6 +19,8 @@ import {
     removeSchedule
 } from "../../api";
 import { ScheduleDTO } from "../../type";
+import { eraseStorage } from "@/app/helper";
+import { setUserProps } from "@/app/features/calendar.slice";
 
 
 const ScheduleTab = (
@@ -33,19 +38,39 @@ const ScheduleTab = (
         }
 ) => {
 
+    const token = localStorage.getItem('token');
+    const dispatch = useAppDispatch();
+    const router = useRouter();
     const [visible, setVisible] = useState<boolean>(false);
     const [scheduleList, setScheduleList] = useState<Array<ScheduleDTO>>([]);
     const [activeDaySchedule, setActiveDaySchedule] = useState<Array<ScheduleDTO>>([]);
     const [activeSchedule, setActiveSchedule] = useState<ScheduleDTO>();
 
     async function getScheduleList() {
-        const { data, status } = await findAllSchedule();
-        setScheduleList([...data]);
+        const res = await findAllSchedule(token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setScheduleList([...result.data]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
+        }
+
     }
 
     async function getActiveDaySchedule() {
-        const { data, status } = await findAllScheduleBy(activeDate);
-        setActiveDaySchedule([...data])
+        const res = await findAllScheduleBy(activeDate, token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setActiveDaySchedule([...result.data])
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
+        }
     }
 
     const handleScheduleEdit = (schedule: ScheduleDTO) => {
@@ -55,14 +80,22 @@ const ScheduleTab = (
     }
 
     async function handleScheduleRemove(id: number) {
-        const { data, status } = await removeSchedule(id);
+        const res = await removeSchedule(id, token);
         setShowDateBar(false);
-        if (status >= 400) {
-
-        }
-        else {
+        if (res.status && res.status < 400) {
             toast.success(ENCHINTL['toast']['schedule']['remove-success'][intl]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
         }
+    }
+
+    const signOutAction = () => {
+        eraseStorage();
+        dispatch(setUserProps(null));
+        router.push('/auth/signin');
     }
 
     useEffect(() => {

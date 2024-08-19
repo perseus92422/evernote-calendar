@@ -1,23 +1,44 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import { BASE_URL } from "../config";
 import { NewScheduleDTO, UpdateScheduleDTO } from "../type";
 
-export async function createSchedule(payload: NewScheduleDTO): Promise<AxiosResponse> {
-    return await axios.post(BASE_URL + '/schedule', { ...payload });
+export async function createSchedule(payload: NewScheduleDTO, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.post(BASE_URL + '/schedule', payload, { headers: { Authorization: `Bearer ${token}` } });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+
 }
 
-export async function updateSchedule(id: number, payload: UpdateScheduleDTO): Promise<AxiosResponse> {
-    return await axios.put(BASE_URL + `/schedule/${id}`, { ...payload });
+export async function updateSchedule(id: number, payload: UpdateScheduleDTO, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.put(BASE_URL + `/schedule/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
 }
 
-export async function findAllSchedule(): Promise<AxiosResponse> {
-    return await axios.get(BASE_URL + `/schedule`);
+export async function findAllSchedule(token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(BASE_URL + `/schedule`, { headers: { Authorization: `Bearer ${token}` } });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
 }
 
-export async function removeSchedule(id: number): Promise<AxiosResponse> {
-    return await axios.delete(BASE_URL + `/schedule/${id}`);
+export async function removeSchedule(id: number, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.delete(BASE_URL + `/schedule/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
 }
 
-export async function findAllScheduleBy(day: string): Promise<AxiosResponse> {
-    return await axios.get(BASE_URL + `/schedule/day`, { params: { day } });
+export async function findAllScheduleBy(day: string, token: string): Promise<AxiosResponse | AxiosError> {
+    return await axios.get(BASE_URL + `/schedule/day`, { params: { day }, headers: { Authorization: `Bearer ${token}` } });
 }
