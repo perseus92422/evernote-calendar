@@ -1,5 +1,6 @@
 'use client'
 import { useState } from "react";
+import { useRouter } from 'next/navigation'
 import { useAppSelector } from "@/app/redux/hook";
 import {
     Box,
@@ -23,6 +24,7 @@ import { AxiosError } from "axios";
 
 const SignUp = () => {
 
+    const router = useRouter();
     const { intl } = useAppSelector(state => state.calendar);
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
@@ -84,7 +86,8 @@ const SignUp = () => {
         }
         const res = await signUp(payload);
         if (res.status && res.status < 400) {
-
+            toast.success(ENCHINTL['toast']['sign-up']['sign-up-success'][intl]);
+            router.push('/auth/signin');
         } else {
             const err = res as AxiosError;
             switch (err.response.status) {

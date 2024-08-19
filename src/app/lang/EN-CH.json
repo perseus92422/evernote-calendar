@@ -194,10 +194,17 @@
             "duplicate-email":[
                 "Email already is registered",
                 "Email 已经注册。"
+            ],
+            "sign-up-success":[
+                "Account is registered successfully.",
+                "账户注册成功。"
             ]
         },
         "sign-in":{
-
+            "incorrect-credential":[
+                "Email or Password is wrong.",
+                "Email 或密码错误。"
+            ]
         }
     },
     "modal":{

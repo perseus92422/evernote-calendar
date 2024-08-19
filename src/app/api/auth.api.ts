@@ -13,7 +13,12 @@ export async function signUp(payload: SignUpDTO): Promise<AxiosError | AxiosResp
 
 }
 
-export async function signIn(payload: SignInDTO): Promise<AxiosResponse> {
-    return await axios.post(`${BASE_URL}/auth/signin`, { ...payload });
+export async function signIn(payload: SignInDTO): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.post(`${BASE_URL}/auth/signin`, { ...payload });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
 }
 

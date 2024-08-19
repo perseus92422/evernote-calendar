@@ -2,14 +2,12 @@
 import { useEffect, useState } from 'react'
 import { registerLocale } from 'react-datepicker';
 import { zhCN, enUS } from 'date-fns/locale';
-import 'moment/locale/en-ca';
-import 'moment/locale/zh-cn';
+
 import Calender from "./pages/calender";
 import Header from "@/app/layout/header";
 import { ToastContainer } from 'react-toastify';
 import { useAppSelector, useAppDispatch } from "./redux/hook";
-import 'react-toastify/dist/ReactToastify.css';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
 
 
 export default function Home() {

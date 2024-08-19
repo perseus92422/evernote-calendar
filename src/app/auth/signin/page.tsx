@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/app/redux/hook";
 import {
     Box,
@@ -15,13 +16,17 @@ import {
     EyeOpenIcon,
     EyeClosedIcon
 } from "@radix-ui/react-icons";
+import { toast } from "react-toastify";
+import { AxiosError, AxiosResponse } from "axios";
 import Message from "@/app/components/common/message";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { signIn } from "@/app/api";
 import { SignInDTO } from "@/app/type";
 
+
 const SignIn = () => {
 
+    const router = useRouter();
     const { intl } = useAppSelector(state => state.calendar);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -61,7 +66,22 @@ const SignIn = () => {
             email,
             password
         }
-        const { status } = await signIn(payload);
+        const res = await signIn(payload);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            localStorage.setItem("token", result.data.token);
+            localStorage.setItem("user", JSON.stringify(result.data.user));
+            router.push('/');
+        } else {
+            const err = res as AxiosError;
+            switch (err.response.status) {
+                case 401:
+                    toast.error(ENCHINTL['toast']['sign-in']['incorrect-credential'][intl]);
+                    return;
+                default:
+                    return;
+            }
+        }
         initState();
     }
 
