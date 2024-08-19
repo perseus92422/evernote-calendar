@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AxiosError, AxiosResponse } from "axios";
 import {
     Flex,
     Button,
@@ -8,6 +10,7 @@ import {
 import { toast } from "react-toastify";
 import TodoListBar from "./TodoListBar";
 import TodoListModal from "./TodoListModal";
+import { useAppDispatch } from "@/app/redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
     findAllTask,
@@ -16,6 +19,8 @@ import {
 } from "@/app/api";
 import { TodoListDTO, TaskDTO } from "@/app/type";
 import { TODOLIST_MODAL_TYPE } from "@/app/const";
+import { setUserProps } from "@/app/features/calendar.slice";
+import { eraseStorage } from "@/app/helper";
 
 const TodoListTab = (
     {
@@ -31,19 +36,38 @@ const TodoListTab = (
     }
 ) => {
 
+    const token = localStorage.getItem('token');
+    const router = useRouter();
+    const dispatch = useAppDispatch();
     const [visible, setVisible] = useState<boolean>(false);
     const [allTodoList, setAllTodoList] = useState<Array<TodoListDTO>>([]);
     const [activeDateTodoList, setActiveDateTodoList] = useState<Array<TaskDTO>>([]);
     const [activeTodoList, setActiveTodoList] = useState<TaskDTO>();
 
     async function getAllData() {
-        const { data, status } = await findAllTask();
-        setAllTodoList(data);
+        const res = await findAllTask(token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setAllTodoList([...result.data]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
+        }
     }
 
     async function getActiveDateTodoList() {
-        const { status, data } = await findAllTaskByDay(activeDate);
-        setActiveDateTodoList(data);
+        const res = await findAllTaskByDay(activeDate, token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setActiveDateTodoList([...result.data]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
+        }
     }
 
     const handlerEditBtnClick = (task: TaskDTO) => {
@@ -52,14 +76,24 @@ const TodoListTab = (
     }
 
     async function handlerRemoveBtnClick(id: number) {
-        const { data, status } = await removeTask(id);
+        const res = await removeTask(id, token);
         setShowDateBar(false);
-        if (status >= 400) {
-
-        } else {
+        if (res.status && res.status < 400) {
             toast.success(ENCHINTL['toast']['todolist']['remove-success'][intl]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
         }
     }
+
+    const signOutAction = () => {
+        eraseStorage();
+        dispatch(setUserProps(null));
+        router.push('/auth/signin');
+    }
+
 
     useEffect(() => {
         getAllData();

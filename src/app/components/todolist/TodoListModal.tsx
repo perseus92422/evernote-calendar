@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 import {
     Flex,
     Text,
@@ -9,6 +11,7 @@ import {
 } from "@radix-ui/themes";
 import { toast } from "react-toastify";
 import Message from "../common/message";
+import { useAppDispatch } from "@/app/redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { createTask, updateTask } from "@/app/api/todolist.api";
 import { TODOLIST_MODAL_TYPE } from "@/app/const";
@@ -17,7 +20,8 @@ import {
     UpdateTaskDTO,
     TaskDTO
 } from "@/app/type";
-
+import { eraseStorage } from "@/app/helper";
+import { setUserProps } from "@/app/features/calendar.slice";
 
 const TodoListModal = (
     {
@@ -40,6 +44,9 @@ const TodoListModal = (
         }
 ) => {
 
+    const token = localStorage.getItem('token');
+    const router = useRouter();
+    const dispatch = useAppDispatch();
     const [visible, setVisible] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [title, setTitle] = useState<string>(task ? task.title : "");
@@ -98,11 +105,14 @@ const TodoListModal = (
                 startTime,
                 endTime
             }
-            const { data, status } = await createTask(payload);
-            if (status >= 400) {
-
-            } else {
+            const res = await createTask(payload, token);
+            if (res.status && res.status < 400) {
                 toast.success(ENCHINTL['toast']['todolist']['create-success'][intl]);
+            } else {
+                const err = res as AxiosError;
+                if (err.response.status == 401)
+                    toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
             }
         }
         if (type == TODOLIST_MODAL_TYPE.Update) {
@@ -115,11 +125,14 @@ const TodoListModal = (
                 payload.startTime = startTime;
             if (task.endTime != endTime)
                 payload.endTime = endTime;
-            const { data, status } = await updateTask(task.id, payload);
-            if (status >= 400) {
-
-            } else {
+            const res = await updateTask(task.id, payload, token);
+            if (res.status && res.status < 400) {
                 toast.success(ENCHINTL['toast']['todolist']['update-success'][intl]);
+            } else {
+                const err = res as AxiosError;
+                if (err.response.status == 401)
+                    toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
             }
         }
         initState();
@@ -134,6 +147,12 @@ const TodoListModal = (
         setVisible(false);
         setShowModal(false);
         setShowDateBar(false);
+    }
+
+    const signOutAction = () => {
+        eraseStorage();
+        dispatch(setUserProps(null));
+        router.push('/auth/signin');
     }
 
 
