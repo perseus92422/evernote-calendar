@@ -15,3 +15,8 @@ export interface NewWorkSpaceDTO {
     title: string;
     description: string;
 }
+
+export interface UpdateWorkSpaceDTO {
+    title?: string;
+    description?: string;
+}
