@@ -18,6 +18,8 @@ import {
 } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
 import { AxiosError, AxiosResponse } from "axios";
+import { useAppDispatch } from "@/app/redux/hook";
+import { setUserProps } from "@/app/features/calendar.slice";
 import Message from "@/app/components/common/message";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { signIn } from "@/app/api";
@@ -27,6 +29,7 @@ import { SignInDTO } from "@/app/type";
 const SignIn = () => {
 
     const router = useRouter();
+    const dispatch = useAppDispatch();
     const { intl } = useAppSelector(state => state.calendar);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -71,6 +74,7 @@ const SignIn = () => {
             const result = res as AxiosResponse;
             localStorage.setItem("token", result.data.token);
             localStorage.setItem("user", JSON.stringify(result.data.user));
+            dispatch(setUserProps(result.data.user));
             router.push('/');
         } else {
             const err = res as AxiosError;

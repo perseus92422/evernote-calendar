@@ -1,25 +1,9 @@
 {
     "header":{
-        "create-btn":[
-            "New Schedule",
-            "新时间表"
-        ],  
-        "today-btn":[
-            "Today",
-            "今天"
-        ],
-        "view-mode":{
-            "month1":[
-                "Month 1",
-                "月视图 1"
-            ],
-            "month2":[
-                "Month 2",
-                "月视图 2"
-            ],
-            "week":[
-                "Week",
-                "周视图"
+        "menu":{
+            "sign-out":[
+                "Sign Out",
+                "登出"
             ]
         }
     },
