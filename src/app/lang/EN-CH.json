@@ -463,5 +463,29 @@
         "sign-in":{
 
         }
+    },
+    "calendar":{
+        "toolbar":{
+            "view-mode":{
+                "month1":[
+                    "Month 1",
+                    "月视图 1"
+                ],
+                "month2":[
+                    "Month 2",
+                    "月视图 2"
+                ],
+                "week":[
+                    "Week",
+                    "周视图"
+                ]
+            },
+            "button":{
+                "today":[
+                    "Today",
+                    "今天"
+                ]
+            }
+        }
     }
 }

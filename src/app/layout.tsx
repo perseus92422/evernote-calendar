@@ -18,6 +18,7 @@ import './styles.css';
 import 'moment/locale/en-ca';
 import 'moment/locale/zh-cn';
 import { store } from './redux/store';
+import Header from './components/header/Header';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,22 +33,26 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body >
         <Provider store={store}>
           <Theme>
-            {children}
-            <ToastContainer
-              position="top-center"
-              autoClose={2000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="colored"
-            />
+            <div className='container mx-auto px-4'>
+              <Header />
+              {children}
+              <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+              />
+            </div>
+
           </Theme>
         </Provider>
       </body>
