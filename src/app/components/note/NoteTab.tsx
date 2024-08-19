@@ -54,12 +54,14 @@ const NoteTab = (
         else {
             const err = res as AxiosError;
             if (err.response.status == 401)
-                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
             signOutAction();
         }
     }
 
     async function getAllNoteByDay() {
+        if (!activeDate)
+            return;
         const res = await findAllNoteByDay(activeDate, token);
         if (res.status && res.status < 400) {
             const result = res as AxiosResponse;
@@ -67,7 +69,7 @@ const NoteTab = (
         } else {
             const err = res as AxiosError;
             if (err.response.status == 401)
-                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
             signOutAction();
         }
     }

@@ -96,7 +96,7 @@ const SignIn = () => {
     }
 
     return (
-        <Flex justify="center" className="h-screen items-center" >
+        <Flex justify="center" className="h-screen items-center">
             <Flex className="border-2 rounded-sm w-1/3" px="5" py="5" direction="column"  >
                 <Text as="p" size="5" className="py-3"><Strong>{ENCHINTL['sign-in']['title-p'][intl]}</Strong></Text>
                 {error ? (<Message message={error} />) : null}

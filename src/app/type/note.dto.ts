@@ -9,6 +9,9 @@ export interface NewNoteDTO {
     title: string;
     content: string;
     date: string;
+    workspace?: {
+        id: number;
+    };
 }
 
 export interface UpdateNoteDTO {

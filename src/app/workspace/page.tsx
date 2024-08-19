@@ -1,0 +1,91 @@
+'use client'
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Flex, Table } from "@radix-ui/themes";
+import { AxiosError, AxiosResponse } from "axios";
+import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../redux/hook";
+import ENCHINTL from '@/app/lang/EN-CH.json';
+import { findAllWorkSpace } from "../api";
+import { setUserProps } from "../features/calendar.slice";
+import { eraseStorage, dateToYYYYMMDDF } from "../helper";
+import { UserDTO, WorkSpaceDTO } from "../type";
+
+const WorkSpace = () => {
+
+    const dispatch = useAppDispatch();
+    const router = useRouter();
+    const { intl, user } = useAppSelector(state => state.calendar);
+
+    const [curUser, setCurUser] = useState<UserDTO>();
+    const [workspaceList, setWorkSpaceList] = useState<Array<WorkSpaceDTO>>([]);
+
+
+    async function getAllWorkSpace() {
+        const token = localStorage.getItem('token');
+        const res = await findAllWorkSpace(token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            console.log("result", result.data);
+            setWorkSpaceList([...result.data]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
+        }
+    }
+
+    const signOutAction = () => {
+        dispatch(setUserProps(null));
+        eraseStorage();
+        router.push('/auth/signin');
+    }
+
+    useEffect(() => {
+        getAllWorkSpace();
+    }, [])
+
+    useEffect(() => {
+        setCurUser(user);
+    }, [user])
+
+    return (
+        <Flex >
+            <Table.Root variant="surface" size="3" className="w-full">
+                <Table.Header>
+                    <Table.Row>
+                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['no'][intl]}</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['title'][intl]}</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['note'][intl]}</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['schedule'][intl]}</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['todolist'][intl]}</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['create-at'][intl]}</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['type'][intl]}</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['action'][intl]}</Table.ColumnHeaderCell>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {
+                        workspaceList.map((v, i) => (
+                            <Table.Row key={i}>
+                                <Table.Cell>{i + 1}</Table.Cell>
+                                <Table.Cell>{v.title}</Table.Cell>
+                                <Table.Cell>{ }</Table.Cell>
+                                <Table.Cell>{ }</Table.Cell>
+                                <Table.Cell>{ }</Table.Cell>
+                                <Table.Cell>{dateToYYYYMMDDF(new Date(v.createAt))}</Table.Cell>
+                                <Table.Cell>{user.id && user.id == v.ownerId ? ENCHINTL['workspace']['table']['type']['owner'][intl] : ENCHINTL['workspace']['table']['type']['invited'][intl]}</Table.Cell>
+                                <Table.Cell>
+
+                                </Table.Cell>
+                            </Table.Row>
+                        ))
+                    }
+                </Table.Body>
+            </Table.Root>
+        </Flex>
+    )
+}
+
+export default WorkSpace;

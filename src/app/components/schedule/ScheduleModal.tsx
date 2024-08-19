@@ -108,7 +108,7 @@ const ScheduleModal = (
       } else {
         const err = res as AxiosError;
         if (err.response.status == 401)
-          toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+          toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
         signOutAction();
       }
     }
@@ -134,7 +134,7 @@ const ScheduleModal = (
       } else {
         const err = res as AxiosError;
         if (err.response.status == 401)
-          toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+          toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
         signOutAction();
       }
     }

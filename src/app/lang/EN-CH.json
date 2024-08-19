@@ -5,6 +5,24 @@
                 "Sign Out",
                 "登出"
             ]
+        },
+        "nav-bar":{
+            "note":[
+                "Note",
+                "笔记"
+            ],
+            "schedule":[
+                "Schedule",
+                "日程"
+            ],
+            "task":[
+                "TodoList",
+                "待办事项列表"
+            ],
+            "workspace":[
+                "WorkSpace",
+                "工作区"
+            ]
         }
     },
     "sign-up":{
@@ -73,6 +91,54 @@
                 "Sign In",
                 "登录"
             ]
+        }
+    },
+    "workspace":{
+        "table":{
+            "header":{
+                "no":[
+                    "No",
+                    "No"
+                ],
+                "title":[
+                    "Title",
+                    "标题"
+                ],
+                "note":[
+                    "Note",
+                    "笔记"
+                ],
+                "schedule":[
+                    "Schedule",
+                    "日程"
+                ],
+                "todolist":[
+                    "TodoList",
+                    "待办事项列表"
+                ],
+                "create-at":[
+                    "Created At",
+                    "创建于"
+                ],
+                "type":[
+                    "Type",
+                    "类型"
+                ],
+                "action":[
+                    "Action",
+                    "行动"
+                ]
+            },
+            "type":{
+                "owner":[
+                    "Owner",
+                    "所有者"
+                ],
+                "invited":[
+                    "Invited",
+                    "受邀"
+                ]
+            }
         }
     },
     "side-bar":{

@@ -1,5 +1,6 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useLayoutEffect } from 'react'
+import { useRouter } from 'next/navigation';
 import moment from 'moment';
 import {
   Grid,
@@ -33,6 +34,7 @@ import { dateToYYYYMMDDF } from './helper/util';
 
 const Calender = () => {
 
+  const router = useRouter();
   const { intl } = useAppSelector(state => state.calendar);
   const [monthOfDays, setMonthOfDays] = useState<Array<Array<DayDTO>>>([]);
   const [weekOfDays, setWeekOfDays] = useState([]);
@@ -94,6 +96,12 @@ const Calender = () => {
     handlerInitCalendarDayList();
   }, [activeDate]);
 
+
+  useLayoutEffect(() => {
+    // // console.log("token", localStorage.getItem('token'))
+    // // if (localStorage.getItem('token') == null)
+    // router.push('/auth/signin');
+  }, [])
 
   return (
     <div>

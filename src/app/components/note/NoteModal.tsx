@@ -98,7 +98,7 @@ const NoteModal = (
             } else {
                 const err = res as AxiosError;
                 if (err.response.status == 401)
-                    toast.success(ENCHIntl['toast']['common']['token-expired'][intl]);
+                    toast.error(ENCHIntl['toast']['common']['token-expired'][intl]);
                 signOutAction();
             }
         }
@@ -114,7 +114,7 @@ const NoteModal = (
             } else {
                 const err = res as AxiosError;
                 if (err.response.status == 401)
-                    toast.success(ENCHIntl['toast']['common']['token-expired'][intl]);
+                    toast.error(ENCHIntl['toast']['common']['token-expired'][intl]);
                 signOutAction();
             }
         }
