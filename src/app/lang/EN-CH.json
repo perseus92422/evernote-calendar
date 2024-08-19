@@ -61,6 +61,36 @@
             ]
         }
     },
+    "sign-in":{
+        "title-p":[
+            "Sign In",
+            "登入"
+        ],
+        "email-label":[
+            "Email",
+            "Email"
+        ],
+        "password-label":[
+            "Password",
+            "密码"
+        ],
+        "text1-p":[
+            "Don't have an account?",
+            "沒有帳戶？"
+        ],
+        "link":{
+            "sign-up":[
+                "Sign Up",
+                "登记"
+            ]
+        },
+        "button":{
+            "sign-in":[
+                "Sign In",
+                "登录"
+            ]
+        }
+    },
     "side-bar":{
         "note":{
             "tab":[
@@ -159,6 +189,15 @@
                 "The task is removed successfully.",
                 "任务已成功删除。"
             ]
+        },
+        "sign-up":{
+            "duplicate-email":[
+                "Email already is registered",
+                "Email 已经注册。"
+            ]
+        },
+        "sign-in":{
+
         }
     },
     "modal":{
@@ -413,6 +452,9 @@
                 "Email is invalid.",
                 "Email 无效。"
             ]
+        },
+        "sign-in":{
+
         }
     }
 }

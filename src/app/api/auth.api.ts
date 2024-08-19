@@ -1,13 +1,19 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "../config";
 import { SignUpDTO, SignInDTO } from "../type";
 
 
-export async function regsiter(payload: SignUpDTO): Promise<AxiosResponse> {
-    return await axios.post(`${BASE_URL}/auth/signup`, { ...payload });
+export async function signUp(payload: SignUpDTO): Promise<AxiosError | AxiosResponse> {
+    try {
+        return await axios.post(`${BASE_URL}/auth/signup`, { ...payload });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+
 }
 
-export async function login(payload: SignInDTO): Promise<AxiosResponse> {
-    return await axios.post(`${BASE_URL}/auth/siginin`, { ...payload });
+export async function signIn(payload: SignInDTO): Promise<AxiosResponse> {
+    return await axios.post(`${BASE_URL}/auth/signin`, { ...payload });
 }
 

@@ -1,5 +1,4 @@
 'use client'
-
 import { useState } from "react";
 import { useAppSelector } from "@/app/redux/hook";
 import {
@@ -15,9 +14,12 @@ import {
     EyeOpenIcon,
     EyeClosedIcon
 } from "@radix-ui/react-icons";
+import { toast } from "react-toastify";
 import Message from "@/app/components/common/message";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { EMAIL_REGEX } from "@/app/const";
+import { signUp } from "@/app/api";
+import { SignUpDTO } from "@/app/type";
+import { AxiosError } from "axios";
 
 const SignUp = () => {
 
@@ -74,6 +76,35 @@ const SignUp = () => {
             setError(ENCHINTL['error']['sign-up']['invalid-email'][intl]);
             return;
         }
+        let payload: SignUpDTO = {
+            firstName,
+            lastName,
+            email,
+            password
+        }
+        const res = await signUp(payload);
+        if (res.status && res.status < 400) {
+
+        } else {
+            const err = res as AxiosError;
+            switch (err.response.status) {
+                case 400:
+                    toast.error(ENCHINTL['toast']['sign-up']['duplicate-email'][intl]);
+                    break;
+                default:
+                    break;
+            }
+        }
+        initState();
+    }
+
+    const initState = () => {
+        setError("");
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        setEyeShow(false);
     }
 
     return (
