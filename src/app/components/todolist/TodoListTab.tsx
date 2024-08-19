@@ -119,7 +119,7 @@ const TodoListTab = (
                 ) : null
             }
             <Flex justify="end">
-                <Button onClick={handleNewBtnClick}>{ENCHINTL['side-bar']['todolist']['new-btn'][intl]}</Button>
+                <Button color="cyan" variant="soft" onClick={handleNewBtnClick}>{ENCHINTL['side-bar']['todolist']['new-btn'][intl]}</Button>
             </Flex>
             <Text as='p' size="4"><Strong>{activeDate}</Strong></Text>
             <Flex direction="column" px="2">

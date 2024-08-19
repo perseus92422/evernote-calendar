@@ -64,7 +64,7 @@ const TodoListModal = (
         setTitle(value);
     }
 
-    const handlerDescriptoinChange = (value: string) => {
+    const handlerDescriptionChange = (value: string) => {
         setDescription(value);
     }
 
@@ -185,7 +185,7 @@ const TodoListModal = (
                         value={description}
                         rows={5}
                         placeholder={ENCHINTL['modal']['todolist']['description-textarea-holder'][intl]}
-                        onChange={(e) => handlerDescriptoinChange(e.target.value)}
+                        onChange={(e) => handlerDescriptionChange(e.target.value)}
                     />
                 </Flex>
                 <Flex direction="row" justify="between" py="2">

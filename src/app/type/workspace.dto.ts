@@ -4,4 +4,14 @@ export interface WorkSpaceDTO {
     description: string;
     ownerId: number;
     createAt: string;
+    _count: {
+        notes: number;
+        schedules: number;
+        todolists: number;
+    }
+}
+
+export interface NewWorkSpaceDTO {
+    title: string;
+    description: string;
 }

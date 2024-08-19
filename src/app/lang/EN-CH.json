@@ -138,8 +138,26 @@
                     "Invited",
                     "受邀"
                 ]
+            },
+            "tooltip":{
+                "invite":[
+                    "Invite",
+                    "邀请"
+                ],
+                "edit":[
+                    "Edit",
+                    "编辑"
+                ],
+                "remove":[
+                    "Remove",
+                    "消除"
+                ]
             }
-        }
+        },
+        "new-btn":[
+            "New",
+            "新工作区"
+        ]
     },
     "side-bar":{
         "note":{
@@ -424,6 +442,44 @@
             "end-time-p":[
                 "End Time",
                 "结束时间"
+            ],
+            "button":{
+                "submit":[
+                    "Submit",
+                    "提交"
+                ],
+                "close":[
+                    "Close",
+                    "关闭"
+                ]
+            }
+        },
+        "workspace":{
+            "title-d":{
+                "create":[
+                    "New WorkSpace",
+                    "新工作区"
+                ],
+                "update":[
+                    "Edit WorkSpace",
+                    "编辑工作区"
+                ]
+            },
+            "title-label":[
+                "Title",
+                "标题"
+            ],
+            "title-textfield-holder":[
+                "Title",
+                "标题"
+            ],
+            "description-label":[
+                "Description",
+                "描述"
+            ],
+            "description-textarea-holder":[
+                "Description",
+                "描述"
             ],
             "button":{
                 "submit":[

@@ -119,7 +119,7 @@ const ScheduleTab = (
                     />) : null
             }
             <Flex direction="row-reverse">
-                <Button onClick={handleNewClickBtn}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
+                <Button color="cyan" variant="soft" onClick={handleNewClickBtn}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
             </Flex>
             <Text as='p' size="4"><Strong>{activeDate}</Strong></Text>
             {

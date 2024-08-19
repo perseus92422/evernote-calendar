@@ -119,7 +119,7 @@ const NoteTab = (
                     /> : null
             }
             <Flex direction="row-reverse">
-                <Button onClick={handleNewBtnClick}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
+                <Button color="cyan" onClick={handleNewBtnClick}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
             </Flex>
             <Text as='p' size="4"><Strong>{activeDate}</Strong></Text>
             {
