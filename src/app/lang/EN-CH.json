@@ -258,6 +258,20 @@
                 "任务已成功删除。"
             ]
         },
+        "workspace":{
+            "create-success":[
+                "The workspace is created successfully.",
+                "工作区创建成功。"
+            ],
+            "update-success":[
+                "The workspace is updated successfully.",
+                "工作区已成功更新。"
+            ],
+            "remove-success":[
+                "The workspace is removed successfully.",
+                "工作区已成功删除。"
+            ]
+        },
         "sign-up":{
             "duplicate-email":[
                 "Email already is registered",
@@ -545,6 +559,16 @@
                     "结束时间必须晚于开始时间。"
                 ]
             }
+        },
+        "workspace":{
+            "empty-title":[
+                "The title is empty.",
+                "标题为空。"
+            ],
+            "empty-description":[
+                "The description is empty",
+                "描述为空。"
+            ]
         },
         "sign-up":{
             "empty-firstname":[

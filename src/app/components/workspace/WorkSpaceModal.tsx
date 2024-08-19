@@ -1,27 +1,44 @@
 import { useState } from "react";
-import { Flex, Dialog, Button, Text, Strong, TextField, TextArea } from "@radix-ui/themes";
+import { useRouter } from "next/navigation";
+import { AxiosError, AxiosResponse } from "axios";
+import { Flex, Dialog, Button, Text, TextField, TextArea } from "@radix-ui/themes";
 import Message from "../common/message";
+import { useAppDispatch } from "@/app/redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { WORKSPACE_MODAL_TYPE } from "@/app/const";
+import { eraseStorage } from "@/app/helper";
+import { setUserProps } from "@/app/features/calendar.slice";
+import { NewWorkSpaceDTO, UpdateWorkSpaceDTO, WorkSpaceDTO } from "@/app/type";
+import { createWorkSpace, updateWorkSpace } from "@/app/api";
+import { toast } from "react-toastify";
 
 const WorkSpaceModal = (
     {
         intl,
         type,
         show,
-        setShow
+        workspace,
+        workSpaceList,
+        setShow,
+        setWorkSpaceList
     }: {
         intl: number;
         type: WORKSPACE_MODAL_TYPE;
         show: boolean;
+        workspace?: WorkSpaceDTO;
+        workSpaceList: WorkSpaceDTO[];
         setShow: (arg: boolean) => void;
+        setWorkSpaceList: (arg: WorkSpaceDTO[]) => void;
     }
 ) => {
 
+    const token = localStorage.getItem('token');
+    const router = useRouter();
+    const dispatch = useAppDispatch();
     const [visible, setVisible] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [title, setTitle] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
+    const [title, setTitle] = useState<string>(workspace ? workspace.title : "");
+    const [description, setDescription] = useState<string>(workspace ? workspace.description : "");
 
     const handlerVisibleChange = () => {
         setVisible(false);
@@ -46,7 +63,47 @@ const WorkSpaceModal = (
             return;
         }
         if (type === WORKSPACE_MODAL_TYPE.Create) {
-
+            let payload: NewWorkSpaceDTO = {
+                title,
+                description
+            }
+            const res = await createWorkSpace(payload, token);
+            if (res.status && res.status < 400) {
+                const result = res as AxiosResponse;
+                setWorkSpaceList([result.data, ...workSpaceList])
+                toast.success(ENCHINTL['toast']['workspace']['create-success'][intl]);
+            } else {
+                const err = res as AxiosError;
+                if (err.response.status == 401) {
+                    toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                    signOutAction();
+                }
+            }
+        }
+        if (type == WORKSPACE_MODAL_TYPE.Update) {
+            let payload: UpdateWorkSpaceDTO = {};
+            if (title != workspace.title)
+                payload.title = title;
+            if (description != workspace.description)
+                payload.description = description;
+            console.log("payload ", payload)
+            const res = await updateWorkSpace(workspace.id, payload, token);
+            if (res.status && res.status < 400) {
+                const tmpWorkSpaceList = [...workSpaceList];
+                const update = tmpWorkSpaceList.find(
+                    a => a.id === workspace.id
+                );
+                update.title = title;
+                update.description = description;
+                setWorkSpaceList(tmpWorkSpaceList);
+                toast.success(ENCHINTL['toast']['workspace']['update-success'][intl]);
+            } else {
+                const err = res as AxiosError;
+                if (err.response.status == 401) {
+                    toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                    signOutAction();
+                }
+            }
         }
         initState();
     }
@@ -57,6 +114,12 @@ const WorkSpaceModal = (
         setError("");
         setShow(false);
         setVisible(false);
+    }
+
+    const signOutAction = () => {
+        eraseStorage();
+        dispatch(setUserProps(null));
+        router.push('/auth/signin');
     }
 
     return (

@@ -7,12 +7,12 @@ import {
     Pencil1Icon,
     PaperPlaneIcon
 } from "@radix-ui/react-icons";
-import { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
+import { AxiosError, AxiosResponse } from "axios";
 import WorkSpaceModal from "../components/workspace/WorkSpaceModal";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { findAllWorkSpace } from "../api";
+import { findAllWorkSpace, removeWorkSpace } from "../api";
 import { setUserProps } from "../features/calendar.slice";
 import { eraseStorage, dateToYYYYMMDDF } from "../helper";
 import { UserDTO, WorkSpaceDTO } from "../type";
@@ -28,6 +28,7 @@ const WorkSpace = () => {
     const [workspaceList, setWorkSpaceList] = useState<Array<WorkSpaceDTO>>([]);
     const [visible, setVisible] = useState<boolean>(false);
     const [modalType, setModalType] = useState<WORKSPACE_MODAL_TYPE>(WORKSPACE_MODAL_TYPE.Create);
+    const [activeWorkSpace, setActiveWorkSpace] = useState<WorkSpaceDTO>(null);
 
     async function getAllWorkSpace() {
         const token = localStorage.getItem('token');
@@ -50,16 +51,32 @@ const WorkSpace = () => {
     }
 
     const handlerNewBtnClick = () => {
+        setActiveWorkSpace(null);
         setModalType(WORKSPACE_MODAL_TYPE.Create);
         setVisible(true);
     }
 
-    const handlerRemoveBtnClick = () => {
-
+    async function handlerRemoveBtnClick(value: number) {
+        const token = localStorage.getItem('token');
+        const res = await removeWorkSpace(workspaceList[value].id, token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setWorkSpaceList(workspaceList.filter(
+                a => a.id !== workspaceList[value].id
+            ));
+            toast.error(ENCHINTL['toast']['workspace']['remove-success'][intl]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401)
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+            signOutAction();
+        }
     }
 
-    const handlerEditBtnClick = () => {
-
+    const handlerEditBtnClick = (value: number) => {
+        setActiveWorkSpace(workspaceList[value]);
+        setModalType(WORKSPACE_MODAL_TYPE.Update);
+        setVisible(true);
     }
 
     useEffect(() => {
@@ -78,6 +95,9 @@ const WorkSpace = () => {
                         intl={intl}
                         type={modalType}
                         show={visible}
+                        workSpaceList={workspaceList}
+                        workspace={activeWorkSpace}
+                        setWorkSpaceList={setWorkSpaceList}
                         setShow={setVisible}
                     />
                 ) : null
@@ -110,9 +130,9 @@ const WorkSpace = () => {
                             <Table.Row key={i}>
                                 <Table.Cell>{i + 1}</Table.Cell>
                                 <Table.Cell>{v.title}</Table.Cell>
-                                <Table.Cell>{v._count.notes}</Table.Cell>
-                                <Table.Cell>{v._count.schedules}</Table.Cell>
-                                <Table.Cell>{v._count.todolists}</Table.Cell>
+                                <Table.Cell>{v._count?.notes ? v._count?.notes : 0}</Table.Cell>
+                                <Table.Cell>{v._count?.schedules ? v._count?.schedules : 0}</Table.Cell>
+                                <Table.Cell>{v._count?.todolists ? v._count?.schedules : 0}</Table.Cell>
                                 <Table.Cell>{dateToYYYYMMDDF(new Date(v.createAt))}</Table.Cell>
                                 <Table.Cell>{curUser.id && curUser.id == v.ownerId ? ENCHINTL['workspace']['table']['type']['owner'][intl] : ENCHINTL['workspace']['table']['type']['invited'][intl]}</Table.Cell>
                                 <Table.Cell>
@@ -129,6 +149,7 @@ const WorkSpace = () => {
                                                 className="cursor-pointer"
                                                 height="20"
                                                 width="20"
+                                                onClick={() => handlerEditBtnClick(i)}
                                             />
                                         </Tooltip>
                                         <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
@@ -136,6 +157,7 @@ const WorkSpace = () => {
                                                 className="cursor-pointer"
                                                 height="20"
                                                 width="20"
+                                                onClick={() => handlerRemoveBtnClick(i)}
                                             />
                                         </Tooltip>
                                     </Flex>

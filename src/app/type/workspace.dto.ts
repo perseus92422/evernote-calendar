@@ -4,7 +4,7 @@ export interface WorkSpaceDTO {
     description: string;
     ownerId: number;
     createAt: string;
-    _count: {
+    _count?: {
         notes: number;
         schedules: number;
         todolists: number;
