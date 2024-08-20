@@ -51,6 +51,7 @@ const TodoListTab = (
             setAllTodoList([...result.data]);
         } else {
             const err = res as AxiosError;
+            console.log(err);
             if (err.response.status == 401)
                 toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
             signOutAction();
@@ -96,7 +97,7 @@ const TodoListTab = (
 
 
     useEffect(() => {
-        getAllData();
+        // getAllData();
     }, [])
 
     useEffect(() => {

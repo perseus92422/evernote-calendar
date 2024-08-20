@@ -157,7 +157,37 @@
         "new-btn":[
             "New",
             "新工作区"
-        ]
+        ],
+        "side-bar":{
+            "note":{
+                "tab":[
+                    "Note",
+                    "笔记"
+                ],
+                "new-btn":[
+                    "New",
+                    "新"
+                ]
+            },
+            "schedule":{
+                "tab":[
+                    "Schedule",
+                    "日程"
+                ]
+            },
+            "todolist":{
+                "tab":[
+                    "TodoList",
+                    "待办事项列表"
+                ]
+            },
+            "member":{
+                "tab":[
+                    "Members",
+                    "成员"
+                ]
+            }
+        }
     },
     "side-bar":{
         "note":{
@@ -292,6 +322,12 @@
             "token-expired":[
                 "Please sign in again.",
                 "请重新登录。"
+            ]
+        },
+        "invite":{
+            "invite-success":[
+                "Invited successfully.",
+                "邀请成功。"
             ]
         }
     },
@@ -494,6 +530,22 @@
             "description-textarea-holder":[
                 "Description",
                 "描述"
+            ],
+            "button":{
+                "submit":[
+                    "Submit",
+                    "提交"
+                ],
+                "close":[
+                    "Close",
+                    "关闭"
+                ]
+            }
+        },
+        "inivte":{
+            "title-d":[
+                "Invite People to WorkSpace",
+                "邀请人们加入工作区"
             ],
             "button":{
                 "submit":[

@@ -37,3 +37,48 @@ export async function removeWorkSpace(id: number, token: string): Promise<AxiosE
         return err;
     }
 }
+
+export async function inviteToWorkSpace(workspaceId: number, inviteEmail: string, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(`${BASE_URL}/workspace/invite`, { params: { email: inviteEmail, workspaceId }, headers: { Authorization: `Bearer ${token}` } })
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}
+
+export async function findAllNoteOnWorkSpace(workspaceId: number, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(`${BASE_URL}/workspace/note/${workspaceId}`, { headers: { Authorization: `Bearer ${token}` } })
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}
+
+export async function findAllScheduleOnWorkSpace(workspaceId: number, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(`${BASE_URL}/workspace/schedule/${workspaceId}`, { headers: { Authorization: `Bearer ${token}` } })
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}
+
+export async function findAllTodoListOnWorkSpace(workspaceId: number, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(`${BASE_URL}/workspace/todolist/${workspaceId}`, { headers: { Authorization: `Bearer ${token}` } })
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}
+
+export async function findAllMembersOnWorkSpace(workspaceId: number, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(`${BASE_URL}/workspace/member/${workspaceId}`, { headers: { Authorization: `Bearer ${token}` } })
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}

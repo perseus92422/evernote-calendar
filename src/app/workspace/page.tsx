@@ -1,15 +1,26 @@
 'use client'
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Flex, Table, Tooltip, Button } from "@radix-ui/themes";
+import {
+    Flex,
+    Table,
+    Tooltip,
+    Button,
+    Tabs,
+    Text,
+    Strong
+} from "@radix-ui/themes";
 import {
     TrashIcon,
     Pencil1Icon,
-    PaperPlaneIcon
+    PaperPlaneIcon,
+    Cross1Icon
 } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
 import { AxiosError, AxiosResponse } from "axios";
 import WorkSpaceModal from "../components/workspace/WorkSpaceModal";
+import InviteModal from "../components/workspace/InviteModal";
+import WorkSpaceNoteTab from "../components/workspace/WorkSpaceNoteTab";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { findAllWorkSpace, removeWorkSpace } from "../api";
@@ -26,9 +37,11 @@ const WorkSpace = () => {
 
     const [curUser, setCurUser] = useState<UserDTO>();
     const [workspaceList, setWorkSpaceList] = useState<Array<WorkSpaceDTO>>([]);
-    const [visible, setVisible] = useState<boolean>(false);
+    const [visibleWorkSpaceModal, setVisibleWorkSpaceModal] = useState<boolean>(false);
+    const [visibleInviteModal, setVisibleInviteModal] = useState<boolean>(false);
     const [modalType, setModalType] = useState<WORKSPACE_MODAL_TYPE>(WORKSPACE_MODAL_TYPE.Create);
     const [activeWorkSpace, setActiveWorkSpace] = useState<WorkSpaceDTO>(null);
+    const [visibleWorkSpaceBar, setVisibleWorkSpaceBar] = useState<boolean>(false);
 
     async function getAllWorkSpace() {
         const token = localStorage.getItem('token');
@@ -53,7 +66,7 @@ const WorkSpace = () => {
     const handlerNewBtnClick = () => {
         setActiveWorkSpace(null);
         setModalType(WORKSPACE_MODAL_TYPE.Create);
-        setVisible(true);
+        setVisibleWorkSpaceModal(true);
     }
 
     async function handlerRemoveBtnClick(value: number) {
@@ -73,10 +86,24 @@ const WorkSpace = () => {
         }
     }
 
+    const handlerInviteBtnClick = (value: number) => {
+        setActiveWorkSpace(workspaceList[value]);
+        setVisibleInviteModal(true);
+    }
+
     const handlerEditBtnClick = (value: number) => {
         setActiveWorkSpace(workspaceList[value]);
         setModalType(WORKSPACE_MODAL_TYPE.Update);
-        setVisible(true);
+        setVisibleWorkSpaceModal(true);
+    }
+
+    const handlerWorkSpaceClick = (value: number) => {
+        setActiveWorkSpace(workspaceList[value]);
+        setVisibleWorkSpaceBar(true);
+    }
+
+    const handlerWorkSpaceBarHide = () => {
+        setVisibleWorkSpaceBar(false);
     }
 
     useEffect(() => {
@@ -90,15 +117,25 @@ const WorkSpace = () => {
     return (
         <div >
             {
-                visible ? (
+                visibleWorkSpaceModal ? (
                     <WorkSpaceModal
                         intl={intl}
                         type={modalType}
-                        show={visible}
+                        show={visibleWorkSpaceModal}
                         workSpaceList={workspaceList}
                         workspace={activeWorkSpace}
                         setWorkSpaceList={setWorkSpaceList}
-                        setShow={setVisible}
+                        setShow={setVisibleWorkSpaceModal}
+                    />
+                ) : null
+            }
+            {
+                visibleInviteModal ? (
+                    <InviteModal
+                        intl={intl}
+                        workspace={activeWorkSpace}
+                        show={visibleWorkSpaceModal}
+                        setShow={setVisibleInviteModal}
                     />
                 ) : null
             }
@@ -111,62 +148,118 @@ const WorkSpace = () => {
                 >{ENCHINTL['workspace']['new-btn'][intl]}
                 </Button>
             </Flex>
-            <Table.Root variant="surface" size="3" className="w-full">
-                <Table.Header>
-                    <Table.Row>
-                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['no'][intl]}</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['title'][intl]}</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['note'][intl]}</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['schedule'][intl]}</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['todolist'][intl]}</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['create-at'][intl]}</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['type'][intl]}</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['action'][intl]}</Table.ColumnHeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {
-                        workspaceList.map((v, i) => (
-                            <Table.Row key={i}>
-                                <Table.Cell>{i + 1}</Table.Cell>
-                                <Table.Cell>{v.title}</Table.Cell>
-                                <Table.Cell>{v._count?.notes ? v._count?.notes : 0}</Table.Cell>
-                                <Table.Cell>{v._count?.schedules ? v._count?.schedules : 0}</Table.Cell>
-                                <Table.Cell>{v._count?.todolists ? v._count?.schedules : 0}</Table.Cell>
-                                <Table.Cell>{dateToYYYYMMDDF(new Date(v.createAt))}</Table.Cell>
-                                <Table.Cell>{curUser.id && curUser.id == v.ownerId ? ENCHINTL['workspace']['table']['type']['owner'][intl] : ENCHINTL['workspace']['table']['type']['invited'][intl]}</Table.Cell>
-                                <Table.Cell>
-                                    <Flex gap="3">
-                                        <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
-                                            <PaperPlaneIcon
-                                                className="cursor-pointer"
-                                                height="20"
-                                                width="20"
-                                            />
-                                        </Tooltip>
-                                        <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
-                                            <Pencil1Icon
-                                                className="cursor-pointer"
-                                                height="20"
-                                                width="20"
-                                                onClick={() => handlerEditBtnClick(i)}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
-                                            <TrashIcon
-                                                className="cursor-pointer"
-                                                height="20"
-                                                width="20"
-                                                onClick={() => handlerRemoveBtnClick(i)}
-                                            />
-                                        </Tooltip>
-                                    </Flex>
-                                </Table.Cell>
+            <Flex direction="row" gap="4">
+                <Flex className={visibleWorkSpaceBar ? "w-1/2" : "w-full"}>
+                    <Table.Root variant="surface" size="3" className="w-full" >
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['no'][intl]}</Table.ColumnHeaderCell>
+                                <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['title'][intl]}</Table.ColumnHeaderCell>
+                                <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['note'][intl]}</Table.ColumnHeaderCell>
+                                <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['schedule'][intl]}</Table.ColumnHeaderCell>
+                                <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['todolist'][intl]}</Table.ColumnHeaderCell>
+                                <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['create-at'][intl]}</Table.ColumnHeaderCell>
+                                <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['type'][intl]}</Table.ColumnHeaderCell>
+                                <Table.ColumnHeaderCell>{ENCHINTL['workspace']['table']['header']['action'][intl]}</Table.ColumnHeaderCell>
                             </Table.Row>
-                        ))
-                    }
-                </Table.Body>
-            </Table.Root>
+                        </Table.Header>
+                        <Table.Body>
+                            {
+                                workspaceList.map((v, i) => (
+                                    <Table.Row key={i}>
+                                        <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{i + 1}</Table.Cell>
+                                        <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{v.title}</Table.Cell>
+                                        <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{v._count?.notes ? v._count?.notes : 0}</Table.Cell>
+                                        <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{v._count?.schedules ? v._count?.schedules : 0}</Table.Cell>
+                                        <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{v._count?.todolists ? v._count?.schedules : 0}</Table.Cell>
+                                        <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{dateToYYYYMMDDF(new Date(v.createAt))}</Table.Cell>
+                                        <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{curUser.id && curUser.id == v.ownerId ? ENCHINTL['workspace']['table']['type']['owner'][intl] : ENCHINTL['workspace']['table']['type']['invited'][intl]}</Table.Cell>
+                                        <Table.Cell>
+                                            <Flex gap="3">
+                                                <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
+                                                    <PaperPlaneIcon
+                                                        className="cursor-pointer"
+                                                        height="20"
+                                                        width="20"
+                                                        onClick={() => handlerInviteBtnClick(i)}
+                                                    />
+                                                </Tooltip>
+                                                <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
+                                                    <Pencil1Icon
+                                                        className="cursor-pointer"
+                                                        height="20"
+                                                        width="20"
+                                                        onClick={() => handlerEditBtnClick(i)}
+                                                    />
+                                                </Tooltip>
+                                                <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
+                                                    <TrashIcon
+                                                        className="cursor-pointer"
+                                                        height="20"
+                                                        width="20"
+                                                        onClick={() => handlerRemoveBtnClick(i)}
+                                                    />
+                                                </Tooltip>
+                                            </Flex>
+                                        </Table.Cell>
+                                    </Table.Row>
+                                ))
+                            }
+                        </Table.Body>
+                    </Table.Root>
+                </Flex>
+                {
+                    visibleWorkSpaceBar ? (
+                        <Flex direction="column" className="w-1/2">
+                            <Flex justify="end" py="2" px="2">
+                                <Cross1Icon className="cursor-pointer" height="20" width="20" onClick={handlerWorkSpaceBarHide} />
+                            </Flex>
+                            <Text align="center" as="p" size="7"><Strong>{activeWorkSpace.title}</Strong></Text>
+                            <Tabs.Root defaultValue="note">
+                                <Tabs.List>
+                                    <Tabs.Trigger value="note">
+                                        {ENCHINTL['workspace']['side-bar']['note']['tab'][intl]}
+                                    </Tabs.Trigger>
+                                    <Tabs.Trigger value="schedule">
+                                        {ENCHINTL['workspace']['side-bar']['schedule']['tab'][intl]}
+                                    </Tabs.Trigger>
+                                    <Tabs.Trigger value="todolist">
+                                        {ENCHINTL['workspace']['side-bar']['todolist']['tab'][intl]}
+                                    </Tabs.Trigger>
+                                    {
+                                        activeWorkSpace?.ownerId == curUser?.id ? (
+                                            <Tabs.Trigger value="member">
+                                                {ENCHINTL['workspace']['side-bar']['member']['tab'][intl]}
+                                            </Tabs.Trigger>
+                                        ) : null
+                                    }
+                                </Tabs.List>
+                                <Tabs.Content value="note">
+                                    <WorkSpaceNoteTab
+                                        intl={intl}
+                                        workspace={activeWorkSpace}
+                                    />
+                                </Tabs.Content>
+                                <Tabs.Content value="schedule">
+
+                                </Tabs.Content>
+                                <Tabs.Content value="todolist">
+
+                                </Tabs.Content>
+                                {
+                                    activeWorkSpace?.ownerId == curUser?.id ? (
+                                        <Tabs.Content value="member">
+
+                                        </Tabs.Content>
+                                    ) : null
+                                }
+                            </Tabs.Root>
+                        </Flex>
+                    ) : null
+                }
+            </Flex>
+
+
         </div>
     )
 }

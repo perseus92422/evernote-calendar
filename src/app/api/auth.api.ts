@@ -22,3 +22,11 @@ export async function signIn(payload: SignInDTO): Promise<AxiosResponse | AxiosE
     }
 }
 
+export async function getUserList(token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(`${BASE_URL}/`)
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}

@@ -59,10 +59,10 @@ const Header = () => {
             <Flex gap="6">
                 {
                     curUser ? (<>
-                        <Text as="span" size="4"><Link href="/note"><Strong>{ENCHINTL['header']['nav-bar']['note'][intl]}</Strong></Link></Text>
+                        {/* <Text as="span" size="4"><Link href="/note"><Strong>{ENCHINTL['header']['nav-bar']['note'][intl]}</Strong></Link></Text>
                         <Text as="span" size="4"><Link href="/schedule"><Strong>{ENCHINTL['header']['nav-bar']['schedule'][intl]}</Strong></Link></Text>
-                        <Text as="span" size="4"><Link href="/task"><Strong>{ENCHINTL['header']['nav-bar']['task'][intl]}</Strong></Link></Text>
-                        <Text as="span" size="4"><Link href="/workspace"><Strong>{ENCHINTL['header']['nav-bar']['workspace'][intl]}</Strong></Link></Text>
+                        <Text as="span" size="4"><Link href="/task"><Strong>{ENCHINTL['header']['nav-bar']['task'][intl]}</Strong></Link></Text> */}
+                        {/* <Text as="span" size="4"><Link href="/workspace"><Strong>{ENCHINTL['header']['nav-bar']['workspace'][intl]}</Strong></Link></Text> */}
                     </>) : null
                 }
             </Flex>
@@ -88,6 +88,7 @@ const Header = () => {
                                     </Flex>
                                 </DropdownMenu.Trigger>
                                 <DropdownMenu.Content>
+                                    <DropdownMenu.Item onClick={() => router.push('/workspace')}>{ENCHINTL['header']['nav-bar']['workspace'][intl]}</DropdownMenu.Item>
                                     <DropdownMenu.Item onClick={handlerSignOutClick}>{ENCHINTL['header']['menu']['sign-out'][curIntl]}</DropdownMenu.Item>
                                 </DropdownMenu.Content>
                             </DropdownMenu.Root>

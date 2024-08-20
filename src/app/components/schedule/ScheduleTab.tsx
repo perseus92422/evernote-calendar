@@ -76,7 +76,6 @@ const ScheduleTab = (
     const handleScheduleEdit = (schedule: ScheduleDTO) => {
         setActiveSchedule(schedule);
         setVisible(true);
-        setShowDateBar(false);
     }
 
     async function handleScheduleRemove(id: number) {

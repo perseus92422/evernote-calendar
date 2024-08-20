@@ -3,6 +3,8 @@ export interface NoteDTO {
     title: string;
     content: string;
     date: string;
+    ownerId?: number;
+    workspaceId?: number;
 }
 
 export interface NewNoteDTO {
