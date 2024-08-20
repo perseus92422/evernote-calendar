@@ -7,6 +7,8 @@ export interface ScheduleDTO {
     color: string;
     width: number;
     type: string;
+    ownerId?: number;
+    workspaceId?: number;
 }
 
 export interface NewScheduleDTO {

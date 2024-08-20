@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { AxiosError, AxiosResponse } from "axios";
 import {
     Flex,
@@ -10,76 +9,116 @@ import {
 import { toast } from "react-toastify";
 import TodoListBar from "./TodoListBar";
 import TodoListModal from "./TodoListModal";
-import { useAppDispatch } from "@/app/redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
-    findAllTask,
+    createTask,
+    updateTask,
     findAllTaskByDay,
     removeTask,
 } from "@/app/api";
-import { TodoListDTO, TaskDTO } from "@/app/type";
-import { TODOLIST_MODAL_TYPE } from "@/app/const";
-import { setUserProps } from "@/app/features/calendar.slice";
-import { eraseStorage } from "@/app/helper";
+import {
+    NewTaskDTO,
+    UpdateTaskDTO,
+    TaskDTO
+} from "@/app/type";
+import { MODAL_TYPE, PUBLIC_TYPE } from "@/app/const";
+
 
 const TodoListTab = (
     {
         intl,
+        token,
         activeDate,
-        handleNewBtnClick,
-        setShowDateBar
+        signOutAction
     }: {
         intl: number;
+        token: string;
         activeDate: string;
-        handleNewBtnClick: () => void;
-        setShowDateBar: (arg: boolean) => void;
+        signOutAction: () => void;
     }
 ) => {
-
-    const token = localStorage.getItem('token');
-    const router = useRouter();
-    const dispatch = useAppDispatch();
     const [visible, setVisible] = useState<boolean>(false);
-    const [allTodoList, setAllTodoList] = useState<Array<TodoListDTO>>([]);
-    const [activeDateTodoList, setActiveDateTodoList] = useState<Array<TaskDTO>>([]);
-    const [activeTodoList, setActiveTodoList] = useState<TaskDTO>();
+    const [modalType, setModalType] = useState<MODAL_TYPE>(null);
+    const [privateTodoList, setPrivateTodoList] = useState<Array<TaskDTO>>([]);
+    const [workspaceTodoList, setWorkSpaceTodoList] = useState<Array<TaskDTO>>([]);
+    const [activeTask, setActiveTask] = useState<TaskDTO>();
 
-    async function getAllData() {
-        const res = await findAllTask(token);
-        if (res.status && res.status < 400) {
-            const result = res as AxiosResponse;
-            setAllTodoList([...result.data]);
-        } else {
-            const err = res as AxiosError;
-            console.log(err);
-            if (err.response.status == 401)
-                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-            signOutAction();
-        }
-    }
-
-    async function getActiveDateTodoList() {
-        const res = await findAllTaskByDay(activeDate, token);
-        if (res.status && res.status < 400) {
-            const result = res as AxiosResponse;
-            setActiveDateTodoList([...result.data]);
-        } else {
-            const err = res as AxiosError;
-            if (err.response.status == 401)
-                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-            signOutAction();
-        }
+    const handlerNewBtnClick = () => {
+        setModalType(MODAL_TYPE.Create);
+        setActiveTask(null);
+        setVisible(true);
     }
 
     const handlerEditBtnClick = (task: TaskDTO) => {
+        setModalType(MODAL_TYPE.Update);
+        setActiveTask(task);
         setVisible(true);
-        setActiveTodoList(task);
     }
+
+    async function handlerCreateTask(payload: NewTaskDTO) {
+        const res = await createTask(payload, token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setPrivateTodoList([result.data, ...privateTodoList]);
+            toast.error(ENCHINTL['toast']['todolist']['create-success'][intl]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+        }
+    }
+
+    async function handlerUpdateTask(payload: UpdateTaskDTO) {
+        const res = await updateTask(activeTask.id, payload, token);
+        if (res.status && res.status < 400) {
+            const tmpTodoList = [...privateTodoList];
+            const update = tmpTodoList.find(
+                a => a.id === activeTask.id
+            );
+            Object.keys(payload).map(v => {
+                update[v] = payload[v];
+            })
+            setPrivateTodoList(tmpTodoList);
+            toast.error(ENCHINTL['toast']['todolist']['update-success'][intl]);
+        } else {
+            const err = res as AxiosError;
+            console.log(err);
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+        }
+    }
+
+    async function handlerFindAllPrivateTodoList() {
+        const res = await findAllTaskByDay(activeDate, token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setPrivateTodoList([...result.data]);
+        } else {
+            const err = res as AxiosError;
+            console.log(err);
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+        }
+    }
+
+    async function handlerFindAllWorkSpaceTodoList() {
+
+    }
+
+
 
     async function handlerRemoveBtnClick(id: number) {
         const res = await removeTask(id, token);
-        setShowDateBar(false);
         if (res.status && res.status < 400) {
+            setPrivateTodoList(privateTodoList.filter(
+                a => a.id !== activeTask.id
+            ));
             toast.success(ENCHINTL['toast']['todolist']['remove-success'][intl]);
         } else {
             const err = res as AxiosError;
@@ -89,19 +128,8 @@ const TodoListTab = (
         }
     }
 
-    const signOutAction = () => {
-        eraseStorage();
-        dispatch(setUserProps(null));
-        router.push('/auth/signin');
-    }
-
-
     useEffect(() => {
-        // getAllData();
-    }, [])
-
-    useEffect(() => {
-        getActiveDateTodoList();
+        handlerFindAllPrivateTodoList();
     }, [activeDate])
 
     return (
@@ -110,22 +138,23 @@ const TodoListTab = (
                 visible ? (
                     <TodoListModal
                         intl={intl}
-                        type={TODOLIST_MODAL_TYPE.Update}
+                        type={modalType}
+                        publicMode={PUBLIC_TYPE.Private}
                         activeDate={activeDate}
-                        isShow={visible}
                         setShowModal={setVisible}
-                        setShowDateBar={setShowDateBar}
-                        task={activeTodoList}
+                        createTask={handlerCreateTask}
+                        updateTask={handlerUpdateTask}
+                        task={activeTask}
                     />
                 ) : null
             }
             <Flex justify="end">
-                <Button color="cyan" variant="soft" onClick={handleNewBtnClick}>{ENCHINTL['side-bar']['todolist']['new-btn'][intl]}</Button>
+                <Button color="cyan" variant="soft" onClick={handlerNewBtnClick}>{ENCHINTL['side-bar']['todolist']['new-btn'][intl]}</Button>
             </Flex>
-            <Text as='p' size="4"><Strong>{activeDate}</Strong></Text>
+            <Text as='p' size="5" className="py-2"><Strong>{ENCHINTL['side-bar']['todolist']['personal-todolist-p'][intl]}</Strong></Text>
             <Flex direction="column" px="2">
                 {
-                    activeDateTodoList.map((v, i) => (
+                    privateTodoList.map((v, i) => (
                         <TodoListBar
                             key={i}
                             task={v}
@@ -135,26 +164,7 @@ const TodoListTab = (
                     ))
                 }
             </Flex>
-            <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['todolist']['all-p'][intl]}</Strong></Text>
-            {
-                allTodoList.map((v, i) => (
-                    <Flex direction="column" key={i}>
-                        <Text as="p"><Strong>{v.date}</Strong></Text>
-                        <Flex direction="column" px="2">
-                            {
-                                v.todolist.map((t, j) => (
-                                    <TodoListBar
-                                        key={j}
-                                        task={t}
-                                        handlerEditBtnClick={handlerEditBtnClick}
-                                        handlerRemoveBtnClick={handlerRemoveBtnClick}
-                                    />
-                                ))
-                            }
-                        </Flex>
-                    </Flex>
-                ))
-            }
+            <Text as='p' size="5" className="py-2"><Strong>{ENCHINTL['side-bar']['todolist']['workspace-todolist-p'][intl]}</Strong></Text>
         </div>
     )
 }

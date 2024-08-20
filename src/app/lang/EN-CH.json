@@ -235,13 +235,13 @@
                 "New",
                 "新"
             ],
-            "today-p":[
-                "Today",
-                "今天"
+            "personal-todolist-p":[
+                "Personal TodoList",
+                "个人待办事项列表"
             ],
-            "all-p":[
-                "All",
-                "全部"
+            "workspace-todolist-p":[
+                "WorkSpace TodoList",
+                "工作空间待办事项列表"
             ]
         }
     },

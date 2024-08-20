@@ -14,7 +14,6 @@ import {
     createNote,
     updateNote,
     findAllNote,
-    findAllNoteByDay,
     removeNote
 } from "../../api/note.api";
 import {
@@ -80,18 +79,7 @@ const NoteTab = (
     }
 
     async function handlerFindAllWorkSpaceNote() {
-        // const res = await findAllNote(token);
-        // if (res.status && res.status < 400) {
-        //     const result = res as AxiosResponse;
-        //     setPrivateNoteList([...result.data]);
-        // }
-        // else {
-        //     const err = res as AxiosError;
-        //     if (err.response.status == 401) {
-        //         toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-        //         signOutAction();
-        //     }
-        // }
+
     }
 
     async function handlerUpdateNote(payload: UpdateNoteDTO) {
@@ -124,9 +112,10 @@ const NoteTab = (
             toast.success(ENCHINTL['toast']['note']['remove-success'][intl]);
         } else {
             const err = res as AxiosError;
-            if (err.response.status == 401)
+            if (err.response.status == 401) {
                 toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
-            signOutAction();
+                signOutAction();
+            }
         }
     }
 

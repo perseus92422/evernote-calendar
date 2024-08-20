@@ -160,18 +160,6 @@ const Calender = () => {
         {
           datebarShow ? (
             <div className='w-1/2 max-h-[800px] overflow-auto'>
-              {
-                todolistModal ? (
-                  <TodoListModal
-                    intl={intl}
-                    isShow={todolistModal}
-                    type={TODOLIST_MODAL_TYPE.Create}
-                    activeDate={activeDate}
-                    setShowModal={setTodoListModal}
-                    setShowDateBar={setDateBarShow}
-                  />
-                ) : null
-              }
               <Flex direction="row-reverse">
                 <Cross1Icon onClick={handleDateBarShow} />
               </Flex>
@@ -200,9 +188,9 @@ const Calender = () => {
                   <Tabs.Content value="todolist">
                     <TodoListTab
                       intl={intl}
+                      token={accessToken}
                       activeDate={activeDate}
-                      handleNewBtnClick={handleNewTaskBtnClick}
-                      setShowDateBar={setDateBarShow}
+                      signOutAction={signOutAction}
                     />
                   </Tabs.Content>
                 </Box>

@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { AxiosError } from "axios";
+import { useState } from "react";
 import {
     Flex,
     Text,
@@ -9,44 +7,36 @@ import {
     TextField,
     TextArea,
 } from "@radix-ui/themes";
-import { toast } from "react-toastify";
 import Message from "../common/message";
-import { useAppDispatch } from "@/app/redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { createTask, updateTask } from "@/app/api/todolist.api";
-import { TODOLIST_MODAL_TYPE } from "@/app/const";
-import {
-    NewTaskDTO,
-    UpdateTaskDTO,
-    TaskDTO
-} from "@/app/type";
-import { eraseStorage } from "@/app/helper";
-import { setUserProps } from "@/app/features/calendar.slice";
+import { MODAL_TYPE, PUBLIC_TYPE } from "@/app/const";
+import { TaskDTO, NewTaskDTO, UpdateTaskDTO } from "@/app/type";
 
 const TodoListModal = (
     {
         intl,
         type,
-        isShow,
+        publicMode,
         activeDate,
         task,
+        workspaceId,
         setShowModal,
-        setShowDateBar,
+        createTask,
+        updateTask
     }:
         {
             intl: number;
-            type: TODOLIST_MODAL_TYPE;
-            isShow: boolean;
+            type: MODAL_TYPE;
+            publicMode: PUBLIC_TYPE
             activeDate: string;
             task?: TaskDTO;
+            workspaceId?: number;
             setShowModal: (arg: boolean) => void;
-            setShowDateBar: (arg: boolean) => void;
+            createTask: (payload: NewTaskDTO) => void;
+            updateTask: (payload: UpdateTaskDTO) => void;
         }
 ) => {
 
-    const token = localStorage.getItem('token');
-    const router = useRouter();
-    const dispatch = useAppDispatch();
     const [visible, setVisible] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [title, setTitle] = useState<string>(task ? task.title : "");
@@ -55,12 +45,12 @@ const TodoListModal = (
     const [endTime, setEndTime] = useState<string>(task ? task.endTime : "");
 
 
-    const handleModalShow = () => {
+    const handlerModalShow = () => {
         setVisible(false);
         setShowModal(false);
     }
 
-    const handleTitleChange = (value: string) => {
+    const handlerTitleChange = (value: string) => {
         setTitle(value);
     }
 
@@ -97,7 +87,7 @@ const TodoListModal = (
             setError(ENCHINTL['error']['todolist']['modal']['invalid-endtime'][intl])
             return;
         }
-        if (type == TODOLIST_MODAL_TYPE.Create) {
+        if (type == MODAL_TYPE.Create) {
             let payload: NewTaskDTO = {
                 title,
                 description,
@@ -105,17 +95,13 @@ const TodoListModal = (
                 startTime,
                 endTime
             }
-            const res = await createTask(payload, token);
-            if (res.status && res.status < 400) {
-                toast.success(ENCHINTL['toast']['todolist']['create-success'][intl]);
-            } else {
-                const err = res as AxiosError;
-                if (err.response.status == 401)
-                    toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-                signOutAction();
-            }
+            if (workspaceId && publicMode == PUBLIC_TYPE.Private)
+                payload.workspace = {
+                    id: workspaceId
+                };
+            createTask(payload);
         }
-        if (type == TODOLIST_MODAL_TYPE.Update) {
+        if (type == MODAL_TYPE.Update) {
             let payload: UpdateTaskDTO = {};
             if (task.title != title)
                 payload.title = title;
@@ -125,15 +111,7 @@ const TodoListModal = (
                 payload.startTime = startTime;
             if (task.endTime != endTime)
                 payload.endTime = endTime;
-            const res = await updateTask(task.id, payload, token);
-            if (res.status && res.status < 400) {
-                toast.success(ENCHINTL['toast']['todolist']['update-success'][intl]);
-            } else {
-                const err = res as AxiosError;
-                if (err.response.status == 401)
-                    toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-                signOutAction();
-            }
+            updateTask(payload);
         }
         initState();
     }
@@ -146,22 +124,14 @@ const TodoListModal = (
         setEndTime("");
         setVisible(false);
         setShowModal(false);
-        setShowDateBar(false);
     }
-
-    const signOutAction = () => {
-        // eraseStorage();
-        // dispatch(setUserProps(null));
-        // router.push('/auth/signin');
-    }
-
 
     return (
-        <Dialog.Root open={visible} onOpenChange={handleModalShow}>
+        <Dialog.Root open={visible} onOpenChange={handlerModalShow}>
             <Dialog.Content>
                 <Dialog.Title>
-                    {type == TODOLIST_MODAL_TYPE.Create ? ENCHINTL['modal']['todolist']['title-d']['create'][intl] : null}
-                    {type == TODOLIST_MODAL_TYPE.Update ? ENCHINTL['modal']['todolist']['title-d']['update'][intl] : null}
+                    {type == MODAL_TYPE.Create ? ENCHINTL['modal']['todolist']['title-d']['create'][intl] : null}
+                    {type == MODAL_TYPE.Update ? ENCHINTL['modal']['todolist']['title-d']['update'][intl] : null}
                 </Dialog.Title>
                 <Dialog.Description>
 
@@ -176,7 +146,7 @@ const TodoListModal = (
                         size="2"
                         placeholder={ENCHINTL['modal']['todolist']['title-textfield-holder'][intl]}
                         value={title}
-                        onChange={e => handleTitleChange(e.target.value)}
+                        onChange={e => handlerTitleChange(e.target.value)}
                     />
                 </Flex>
                 <Flex direction="column" py="2" gap="1">
@@ -210,7 +180,7 @@ const TodoListModal = (
                         <Button
                             radius="full"
                             color="gray"
-                            onClick={handleModalShow}
+                            onClick={handlerModalShow}
                         >
                             {ENCHINTL['modal']['todolist']['button']['close'][intl]}
                         </Button>

@@ -12,7 +12,6 @@ import ScheduleBar from "./ScheduleBar";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { MODAL_TYPE, PUBLIC_TYPE } from "../../const";
 import {
-    findAllSchedule,
     findAllScheduleBy,
     removeSchedule
 } from "../../api";
@@ -46,9 +45,6 @@ const ScheduleTab = (
     const [modalType, setModalType] = useState<MODAL_TYPE>(null);
     const [privateScheduleList, setPrivateScheduleList] = useState<Array<ScheduleDTO>>([]);
     const [workspaceScheduleList, setWorkSpaceScheduleList] = useState<Array<ScheduleDTO>>([]);
-
-    // const [scheduleList, setScheduleList] = useState<Array<ScheduleDTO>>([]);
-    // const [activeDaySchedule, setActiveDaySchedule] = useState<Array<ScheduleDTO>>([]);
     const [activeSchedule, setActiveSchedule] = useState<ScheduleDTO>();
 
     const handlerNewBtnClick = () => {
@@ -78,15 +74,16 @@ const ScheduleTab = (
     }
 
     async function handlerFindAllPrivateSchedule() {
-        const res = await findAllSchedule(token);
+        const res = await findAllScheduleBy(activeDate, token);
         if (res.status && res.status < 400) {
             const result = res as AxiosResponse;
             setPrivateScheduleList([...result.data]);
         } else {
             const err = res as AxiosError;
-            if (err.response.status == 401)
+            if (err.response.status == 401) {
                 toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
-            signOutAction();
+                signOutAction();
+            }
         }
     }
 
@@ -123,9 +120,10 @@ const ScheduleTab = (
             toast.success(ENCHINTL['toast']['schedule']['remove-success'][intl]);
         } else {
             const err = res as AxiosError;
-            if (err.response.status == 401)
+            if (err.response.status == 401) {
                 toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-            signOutAction();
+                signOutAction();
+            }
         }
     }
 

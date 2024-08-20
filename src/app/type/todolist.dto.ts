@@ -6,6 +6,8 @@ export interface TaskDTO {
     startTime: string;
     endTime: string;
     complete: boolean;
+    ownerId?: number;
+    workspaceId?: number;
 }
 
 export interface NewTaskDTO {
@@ -14,6 +16,9 @@ export interface NewTaskDTO {
     dueDate: string;
     startTime: string;
     endTime: string;
+    workspace?: {
+        id: number;
+    };
 }
 
 export interface UpdateTaskDTO {
