@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
     Dialog,
     Button,
@@ -12,7 +11,7 @@ import {
     ContentState,
     convertToRaw,
 } from 'draft-js';
-import htmlToDraft from 'html-to-draftjs';
+import htmlToDraft from "./htmlToDraft";
 import dratfToHtml from 'draftjs-to-html';
 import Editor from "./Editor";
 import Message from "../common/message";
@@ -35,7 +34,6 @@ const NoteModal = (
         publicMode,
         note,
         workspaceId,
-        activeDate,
         setShowModal,
         createNote,
         updateNote,
@@ -45,7 +43,6 @@ const NoteModal = (
         publicMode?: PUBLIC_TYPE;
         workspaceId?: number;
         note?: NoteDTO;
-        activeDate?: string;
         setShowModal: (arg: boolean) => void;
         createNote: (payload: NewNoteDTO) => void;
         updateNote: (payload: UpdateNoteDTO) => void;

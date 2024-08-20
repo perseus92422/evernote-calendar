@@ -28,13 +28,11 @@ const NoteTab = (
     {
         intl,
         token,
-        activeDate,
         signOutAction
     }:
         {
             intl: number;
             token: string;
-            activeDate: string;
             signOutAction: () => void;
         }
 ) => {
@@ -43,8 +41,6 @@ const NoteTab = (
     const [modalType, setModalType] = useState<MODAL_TYPE>();
     const [privateNoteList, setPrivateNoteList] = useState<Array<NoteDTO>>([]);
     const [workSpaceNoteList, setWorkSpaceNoteList] = useState<Array<NoteDTO>>([]);
-    const [allNoteList, setAllNoteList] = useState<Array<NoteDTO>>([]);
-    const [activeDayNoteList, setActiveDayNoteList] = useState<Array<NoteDTO>>([]);
     const [activeNote, setActiveNote] = useState<NoteDTO>(null);
 
     const handlerNewBtnClick = () => {
