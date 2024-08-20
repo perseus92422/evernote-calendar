@@ -101,10 +101,9 @@ const NoteTab = (
             const update = tmpNotes.find(
                 a => a.id === activeNote.id
             )
-            if (payload.title)
-                update.title = payload.title;
-            if (payload.content)
-                update.content = payload.content;
+            Object.keys(payload).map((v) => {
+                update[v] = payload[v];
+            })
             setPrivateNoteList(tmpNotes);
             toast.success(ENCHINTL['toast']['note']['update-success'][intl]);
         } else {

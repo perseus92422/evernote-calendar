@@ -67,7 +67,7 @@ const NoteModal = (
         setTitle(value);
     }
 
-    async function handleSubmitBtnClick() {
+    const handlerSubmitBtnClick = () => {
         let content = dratfToHtml(convertToRaw(editorState.getCurrentContent()));
         if (title == "") {
             setError(ENCHIntl['error']['note']['modal']['empty-title'][intl]);
@@ -157,7 +157,7 @@ const NoteModal = (
                     <Button
                         radius='full'
                         color="indigo"
-                        onClick={handleSubmitBtnClick}
+                        onClick={handlerSubmitBtnClick}
                     >
                         {ENCHIntl['modal']['note']['button']['submit'][intl]}
                     </Button>

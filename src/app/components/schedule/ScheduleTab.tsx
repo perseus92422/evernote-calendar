@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
     Flex,
     Button,
@@ -10,78 +9,117 @@ import { toast } from "react-toastify";
 import { AxiosResponse, AxiosError } from "axios";
 import ScheduleModal from "./ScheduleModal";
 import ScheduleBar from "./ScheduleBar";
-import { useAppDispatch } from "@/app/redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { SCHEDULE_MODAL_TYPE } from "../../const";
+import { MODAL_TYPE, PUBLIC_TYPE } from "../../const";
 import {
     findAllSchedule,
     findAllScheduleBy,
     removeSchedule
 } from "../../api";
-import { ScheduleDTO } from "../../type";
-import { eraseStorage } from "@/app/helper";
-import { setUserProps } from "@/app/features/calendar.slice";
+import {
+    NewScheduleDTO,
+    UpdateScheduleDTO,
+    ScheduleDTO
+} from "../../type";
+import {
+    createSchedule,
+    updateSchedule
+} from "../../api";
 
 
 const ScheduleTab = (
     {
         intl,
+        token,
         activeDate,
-        setShowDateBar,
-        handleNewClickBtn
+        signOutAction
     }:
         {
             intl: number;
+            token: string;
             activeDate: string;
-            setShowDateBar: (arg: boolean) => void;
-            handleNewClickBtn: () => void;
+            signOutAction: () => void;
         }
 ) => {
 
-    const token = localStorage.getItem('token');
-    const dispatch = useAppDispatch();
-    const router = useRouter();
     const [visible, setVisible] = useState<boolean>(false);
-    const [scheduleList, setScheduleList] = useState<Array<ScheduleDTO>>([]);
-    const [activeDaySchedule, setActiveDaySchedule] = useState<Array<ScheduleDTO>>([]);
+    const [modalType, setModalType] = useState<MODAL_TYPE>(null);
+    const [privateScheduleList, setPrivateScheduleList] = useState<Array<ScheduleDTO>>([]);
+    const [workspaceScheduleList, setWorkSpaceScheduleList] = useState<Array<ScheduleDTO>>([]);
+
+    // const [scheduleList, setScheduleList] = useState<Array<ScheduleDTO>>([]);
+    // const [activeDaySchedule, setActiveDaySchedule] = useState<Array<ScheduleDTO>>([]);
     const [activeSchedule, setActiveSchedule] = useState<ScheduleDTO>();
 
-    async function getScheduleList() {
+    const handlerNewBtnClick = () => {
+        setModalType(MODAL_TYPE.Create);
+        setActiveSchedule(null);
+        setVisible(true);
+    }
+
+    const handlerScheduleEdit = (schedule: ScheduleDTO) => {
+        setModalType(MODAL_TYPE.Update);
+        setActiveSchedule(schedule);
+        setVisible(true);
+    }
+
+    async function handlerCreateSchedule(payload: NewScheduleDTO) {
+        const res = await createSchedule(payload, token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setPrivateScheduleList([result.data, ...privateScheduleList]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+        }
+    }
+
+    async function handlerFindAllPrivateSchedule() {
         const res = await findAllSchedule(token);
         if (res.status && res.status < 400) {
             const result = res as AxiosResponse;
-            setScheduleList([...result.data]);
+            setPrivateScheduleList([...result.data]);
         } else {
             const err = res as AxiosError;
             if (err.response.status == 401)
                 toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
             signOutAction();
         }
+    }
+
+    async function handlerFindAllWorkSpaceSchdeuld() {
 
     }
 
-    async function getActiveDaySchedule() {
-        const res = await findAllScheduleBy(activeDate, token);
+    async function handlerUpdateSchedule(payload: UpdateScheduleDTO) {
+        const res = await updateSchedule(activeSchedule.id, payload, token);
         if (res.status && res.status < 400) {
-            const result = res as AxiosResponse;
-            setActiveDaySchedule([...result.data])
+            const tmpSchedules = [...privateScheduleList];
+            const update = tmpSchedules.find(
+                a => a.id === activeSchedule.id
+            );
+            Object.keys(payload).map((v) => {
+                update[v] = payload[v];
+            });
+            setPrivateScheduleList(tmpSchedules);
         } else {
             const err = res as AxiosError;
-            if (err.response.status == 401)
+            if (err.response.status == 401) {
                 toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-            signOutAction();
+                signOutAction();
+            }
         }
     }
 
-    const handleScheduleEdit = (schedule: ScheduleDTO) => {
-        setActiveSchedule(schedule);
-        setVisible(true);
-    }
-
-    async function handleScheduleRemove(id: number) {
+    async function handlerScheduleRemove(id: number) {
         const res = await removeSchedule(id, token);
-        setShowDateBar(false);
         if (res.status && res.status < 400) {
+            setPrivateScheduleList(privateScheduleList.filter(
+                a => a.id !== id
+            ));
             toast.success(ENCHINTL['toast']['schedule']['remove-success'][intl]);
         } else {
             const err = res as AxiosError;
@@ -91,18 +129,8 @@ const ScheduleTab = (
         }
     }
 
-    const signOutAction = () => {
-        eraseStorage();
-        dispatch(setUserProps(null));
-        router.push('/auth/signin');
-    }
-
     useEffect(() => {
-        getScheduleList();
-    }, [])
-
-    useEffect(() => {
-        getActiveDaySchedule();
+        handlerFindAllPrivateSchedule();
     }, [activeDate])
 
     return (
@@ -110,42 +138,31 @@ const ScheduleTab = (
             {
                 visible ? (
                     <ScheduleModal
-                        type={SCHEDULE_MODAL_TYPE.Update}
-                        isShow={visible}
+                        intl={intl}
+                        type={modalType}
+                        publicMode={PUBLIC_TYPE.Private}
                         setShowModal={setVisible}
-                        setShowDateBar={setShowDateBar}
-                        activeSchedule={activeSchedule}
+                        schedule={activeSchedule}
+                        createSchedule={handlerCreateSchedule}
+                        updateSchedule={handlerUpdateSchedule}
                     />) : null
             }
             <Flex direction="row-reverse">
-                <Button color="cyan" variant="soft" onClick={handleNewClickBtn}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
+                <Button color="cyan" variant="soft" onClick={handlerNewBtnClick}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
             </Flex>
-            <Text as='p' size="4"><Strong>{activeDate}</Strong></Text>
+            <Text as='p' size="4" className="py-2"><Strong>{ENCHINTL['side-bar']['schedule']['personal-schedule-p'][intl]}</Strong></Text>
             {
-                activeDaySchedule.map((v, i) => (
+                privateScheduleList.map((v, i) => (
                     <ScheduleBar
                         key={i}
                         schedule={v}
                         intl={intl}
-                        handlerEditBtn={handleScheduleEdit}
-                        handlerRemoveBtn={handleScheduleRemove}
+                        handlerEditBtn={handlerScheduleEdit}
+                        handlerRemoveBtn={handlerScheduleRemove}
                     />
                 ))
             }
-            <Text as='p' size="4"><Strong>{ENCHINTL['side-bar']['note']['all-p'][intl]}</Strong></Text>
-            <Flex direction="column" pt="3" pb="3">
-                {
-                    scheduleList.map((v, i) => (
-                        <ScheduleBar
-                            key={i}
-                            schedule={v}
-                            intl={intl}
-                            handlerEditBtn={handleScheduleEdit}
-                            handlerRemoveBtn={handleScheduleRemove}
-                        />
-                    ))
-                }
-            </Flex>
+            <Text as='p' size="4" className="py-2"><Strong>{ENCHINTL['side-bar']['schedule']['workspace-schedule-p'][intl]}</Strong></Text>
         </div>
     )
 }

@@ -217,13 +217,13 @@
                 "New",
                 "新"
             ],
-            "today-p":[
-                "Today",
-                "今天"
+            "personal-schedule-p":[
+                "Personal Schedule",
+                "个人日程"
             ],
-            "all-p":[
-                "All",
-                "全部"
+            "workspace-schedule-p":[
+                "WorkSpace Schedule",
+                "工作空间安排"
             ]
         },
         "todolist":{

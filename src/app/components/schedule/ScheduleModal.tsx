@@ -1,7 +1,5 @@
 'use client'
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation';
-import { AxiosError } from 'axios';
 import {
   Dialog,
   Button,
@@ -13,15 +11,14 @@ import {
   Text
 } from '@radix-ui/themes'
 import DatePicker from "react-datepicker";
-import { toast } from 'react-toastify';
-import { useAppSelector, useAppDispatch } from '../../redux/hook'
 import ColorIcon from './colorIcon';
 import LineThickness from './lineThickness';
 import Message from "../common/message"
 import {
   COLOR_PATTERN,
   LINE_WIDTH_PATTERN,
-  SCHEDULE_MODAL_TYPE,
+  MODAL_TYPE,
+  PUBLIC_TYPE,
   SCHEDULE_TYPES,
   CALENDAR_LOCALES
 } from '../../const';
@@ -32,54 +29,51 @@ import {
   ScheduleTypesDTO
 } from '../../type';
 import {
-  eraseStorage,
   dateToYYYYMMDDF,
   compareDate
 } from '@/app/helper';
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import {
-  createSchedule,
-  updateSchedule
-} from '../../api';
-import { setUserProps } from '@/app/features/calendar.slice';
+
 
 const ScheduleModal = (
   {
+    intl,
     type,
-    isShow,
-    activeSchedule,
+    publicMode,
+    workspaceId,
+    schedule,
     setShowModal,
-    setShowDateBar,
+    createSchedule,
+    updateSchedule
   }:
     {
-      type: SCHEDULE_MODAL_TYPE;
-      isShow?: boolean;
-      activeSchedule?: ScheduleDTO;
+      intl: number;
+      type: MODAL_TYPE;
+      publicMode: PUBLIC_TYPE;
+      workspaceId?: number;
+      schedule?: ScheduleDTO;
       setShowModal: (arg: boolean) => void;
-      setShowDateBar: (arg: boolean) => void;
+      createSchedule: (payload: NewScheduleDTO) => void;
+      updateSchedule: (payload: UpdateScheduleDTO) => void;
     }
 ) => {
 
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const token = localStorage.getItem('token');
-
-  const { intl } = useAppSelector((state) => state.calendar);
   const [visible, setVisible] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [startDate, setStartDate] = useState<Date>(activeSchedule ? new Date(activeSchedule.startDate) : new Date());
-  const [endDate, setEndDate] = useState<Date>(activeSchedule ? new Date(activeSchedule.endDate) : new Date());
-  const [kind, setKind] = useState<string>(activeSchedule ? activeSchedule.type : SCHEDULE_TYPES[0]);
-  const [title, setTitle] = useState<string>(activeSchedule ? activeSchedule.title : "");
-  const [description, setDescription] = useState<string>(activeSchedule ? activeSchedule.description : "");
-  const [color, setColor] = useState<string>(activeSchedule ? activeSchedule.color : COLOR_PATTERN[0]);
-  const [width, setWidth] = useState<number>(activeSchedule ? activeSchedule.width : LINE_WIDTH_PATTERN[0]);
-  const handleDialogShow = () => {
+  const [startDate, setStartDate] = useState<Date>(schedule ? new Date(schedule.startDate) : new Date());
+  const [endDate, setEndDate] = useState<Date>(schedule ? new Date(schedule.endDate) : new Date());
+  const [kind, setKind] = useState<string>(schedule ? schedule.type : SCHEDULE_TYPES[0]);
+  const [title, setTitle] = useState<string>(schedule ? schedule.title : "");
+  const [description, setDescription] = useState<string>(schedule ? schedule.description : "");
+  const [color, setColor] = useState<string>(schedule ? schedule.color : COLOR_PATTERN[0]);
+  const [width, setWidth] = useState<number>(schedule ? schedule.width : LINE_WIDTH_PATTERN[0]);
+
+  const handlerDialogShow = () => {
     setVisible(!visible);
     setShowModal(!visible);
   }
 
-  async function handleSubmit() {
+  const handlerSubmit = () => {
     if (!compareDate(startDate, endDate)) {
       setError(ENCHINTL['error']['schedule']['modal']['invalid-end-date'][intl]);
       return;
@@ -92,7 +86,7 @@ const ScheduleModal = (
       setError(ENCHINTL['error']['schedule']['modal']['empty-content'][intl]);
       return;
     }
-    if (type == SCHEDULE_MODAL_TYPE.Create) {
+    if (type == MODAL_TYPE.Create) {
       let payload: NewScheduleDTO = {
         title,
         description,
@@ -102,43 +96,28 @@ const ScheduleModal = (
         startDate: dateToYYYYMMDDF(startDate),
         endDate: dateToYYYYMMDDF(endDate)
       }
-      let res = await createSchedule(payload, token);
-      if (res.status && res.status < 400) {
-        toast.success(ENCHINTL['toast']['schedule']['create-success'][intl]);
-      } else {
-        const err = res as AxiosError;
-        if (err.response.status == 401)
-          toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-        signOutAction();
-      }
+      if (workspaceId && publicMode == PUBLIC_TYPE.Private)
+        payload.workspace = { id: workspaceId };
+      createSchedule(payload);
     }
-    if (type == SCHEDULE_MODAL_TYPE.Update && activeSchedule) {
+    if (type == MODAL_TYPE.Update) {
       let payload: UpdateScheduleDTO = {};
-      if (activeSchedule?.title != title)
+      if (schedule?.title != title)
         payload.title = title;
-      if (activeSchedule?.description != description)
+      if (schedule?.description != description)
         payload.description = description;
-      if (activeSchedule?.startDate != dateToYYYYMMDDF(startDate))
+      if (schedule?.startDate != dateToYYYYMMDDF(startDate))
         payload.startDate = dateToYYYYMMDDF(startDate);
-      if (activeSchedule?.endDate != dateToYYYYMMDDF(endDate))
+      if (schedule?.endDate != dateToYYYYMMDDF(endDate))
         payload.endDate = dateToYYYYMMDDF(endDate);
-      if (activeSchedule?.color != color)
+      if (schedule?.color != color)
         payload.color = color;
-      if (activeSchedule?.width != width)
+      if (schedule?.width != width)
         payload.width = width;
-      if (activeSchedule?.type != kind)
+      if (schedule?.type != kind)
         payload.type = kind;
-      const res = await updateSchedule(activeSchedule.id, payload, token);
-      if (res.status && res.status < 400) {
-        toast.success(ENCHINTL['toast']['schedule']['update-success'][intl]);
-      } else {
-        const err = res as AxiosError;
-        if (err.response.status == 401)
-          toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-        signOutAction();
-      }
+      updateSchedule(payload);
     }
-    setShowDateBar(false);
     initState();
   }
 
@@ -175,21 +154,15 @@ const ScheduleModal = (
     setWidth(LINE_WIDTH_PATTERN[0]);
   }
 
-  const signOutAction = () => {
-    eraseStorage();
-    dispatch(setUserProps(null));
-    router.push('/auth/signin');
-  }
-
   return (
-    <Dialog.Root open={visible} onOpenChange={handleDialogShow} >
+    <Dialog.Root open={visible} onOpenChange={handlerDialogShow} >
       <Dialog.Content >
         <Dialog.Title>
           {
-            type == SCHEDULE_MODAL_TYPE.Create ? ENCHINTL['modal']['schedule']['title-d']['create'][intl] : null
+            type == MODAL_TYPE.Create ? ENCHINTL['modal']['schedule']['title-d']['create'][intl] : null
           }
           {
-            type == SCHEDULE_MODAL_TYPE.Update ? ENCHINTL['modal']['schedule']['title-d']['update'][intl] : null
+            type == MODAL_TYPE.Update ? ENCHINTL['modal']['schedule']['title-d']['update'][intl] : null
           }
         </Dialog.Title>
         <Dialog.Description size="2" mb="4">
@@ -280,11 +253,11 @@ const ScheduleModal = (
         </Flex>
         <hr />
         <Flex gap="3" justify="end" className='pt-2'>
-          <Button radius='full' color="indigo" onClick={handleSubmit}>
+          <Button radius='full' color="indigo" onClick={handlerSubmit}>
             {ENCHINTL['modal']['schedule']['button']['submit'][intl]}
           </Button>
           <Dialog.Close>
-            <Button radius='full' color="gray" onClick={handleDialogShow}>
+            <Button radius='full' color="gray" onClick={handlerDialogShow}>
               {ENCHINTL['modal']['schedule']['button']['close'][intl]}
             </Button>
           </Dialog.Close>

@@ -13,7 +13,6 @@ import {
 } from '@radix-ui/react-icons';
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
 import Day from './components/calendar/Day';
-import ScheduleModal from './components/schedule/ScheduleModal';
 import TodoListModal from './components/todolist/TodoListModal';
 import ScheduleTab from './components/schedule/ScheduleTab';
 import NoteTab from './components/note/NoteTab';
@@ -21,7 +20,6 @@ import TodoListTab from './components/todolist/TodoListTab';
 import ToolTar from './components/calendar/ToolBar';
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
-  SCHEDULE_MODAL_TYPE,
   TODOLIST_MODAL_TYPE,
   CALENDAR_VIEW_MODE,
 } from './const';
@@ -39,7 +37,6 @@ const Calender = () => {
   const { intl } = useAppSelector(state => state.calendar);
   const [monthOfDays, setMonthOfDays] = useState<Array<Array<DayDTO>>>([]);
   const [weekOfDays, setWeekOfDays] = useState([]);
-  const [scheduleModal, setScheduleModal] = useState<boolean>(false);
   const [todolistModal, setTodoListModal] = useState<boolean>(false);
   const [datebarShow, setDateBarShow] = useState<boolean>(false);
   const [activeDate, setActiveDate] = useState<string>(dateToYYYYMMDDF(new Date()));
@@ -51,43 +48,13 @@ const Calender = () => {
     setDateBarShow(true);
   }
 
-  const handleNewScheduleBtnClick = () => {
-
-    setScheduleModal(true);
-  }
-
-  async function handlerCreateSchedule() {
-
-  }
-
-  async function handlerUpdateSchedule() {
-
-  }
-
-  async function handlerRemoveSchedule() {
-
-  }
-
   const handleNewTaskBtnClick = () => {
     setTodoListModal(true);
-  }
-
-  async function handlerCreateTask() {
-
-  }
-
-  async function handlerUpdateTask() {
-
-  }
-
-  async function handlerRemoveTask() {
-
   }
 
   const handleDateBarShow = () => {
     setDateBarShow(false);
   }
-
 
   const handlerInitCalendarDayList = () => {
     let tmpMonth: Array<Array<DayDTO>> = [];
@@ -194,16 +161,6 @@ const Calender = () => {
           datebarShow ? (
             <div className='w-1/2 max-h-[800px] overflow-auto'>
               {
-                scheduleModal ? (
-                  <ScheduleModal
-                    isShow={scheduleModal}
-                    setShowModal={setScheduleModal}
-                    setShowDateBar={setDateBarShow}
-                    type={SCHEDULE_MODAL_TYPE.Create}
-                  />) : null
-              }
-
-              {
                 todolistModal ? (
                   <TodoListModal
                     intl={intl}
@@ -235,9 +192,9 @@ const Calender = () => {
                   <Tabs.Content value="schedule">
                     <ScheduleTab
                       intl={intl}
+                      token={accessToken}
                       activeDate={activeDate}
-                      setShowDateBar={setDateBarShow}
-                      handleNewClickBtn={handleNewScheduleBtnClick}
+                      signOutAction={signOutAction}
                     />
                   </Tabs.Content>
                   <Tabs.Content value="todolist">

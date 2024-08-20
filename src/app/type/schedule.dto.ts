@@ -17,6 +17,9 @@ export interface NewScheduleDTO {
     color: string;
     width: number;
     type: string;
+    workspace?: {
+        id: number;
+    };
 }
 
 export interface UpdateScheduleDTO {
