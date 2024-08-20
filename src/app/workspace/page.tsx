@@ -21,6 +21,7 @@ import { AxiosError, AxiosResponse } from "axios";
 import WorkSpaceModal from "../components/workspace/WorkSpaceModal";
 import InviteModal from "../components/workspace/InviteModal";
 import WorkSpaceNoteTab from "../components/workspace/WorkSpaceNoteTab";
+import WorkSpaceScheduleTab from "../components/workspace/WorkSpaceScheduleTab";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
@@ -308,7 +309,12 @@ const WorkSpace = () => {
                                     />
                                 </Tabs.Content>
                                 <Tabs.Content value="schedule">
-
+                                    <WorkSpaceScheduleTab
+                                        intl={intl}
+                                        token={accessToken}
+                                        workspace={activeWorkSpace}
+                                        signOutAction={signOutAction}
+                                    />
                                 </Tabs.Content>
                                 <Tabs.Content value="todolist">
 

@@ -96,8 +96,8 @@ const ScheduleModal = (
         startDate: dateToYYYYMMDDF(startDate),
         endDate: dateToYYYYMMDDF(endDate)
       }
-      if (workspaceId && publicMode == PUBLIC_TYPE.Private)
-        payload.workspace = { id: workspaceId };
+      if (workspaceId && publicMode == PUBLIC_TYPE.WorkSpace)
+        payload.workspaceId = workspaceId;
       createSchedule(payload);
     }
     if (type == MODAL_TYPE.Update) {

@@ -173,18 +173,30 @@
                 "tab":[
                     "Schedule",
                     "日程"
+                ],
+                "new-btn":[
+                    "New",
+                    "新"
                 ]
             },
             "todolist":{
                 "tab":[
                     "TodoList",
                     "待办事项列表"
+                ],
+                "new-btn":[
+                    "New",
+                    "新"
                 ]
             },
             "member":{
                 "tab":[
                     "Members",
                     "成员"
+                ],
+                "invite-btn":[
+                    "invite",
+                    "邀请"
                 ]
             }
         }
