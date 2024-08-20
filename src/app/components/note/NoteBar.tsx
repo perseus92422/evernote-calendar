@@ -11,12 +11,10 @@ import { NoteDTO } from "../../type";
 
 const NoteBar = ({
     note,
-    todayFlag,
     handlerEditBtnClick,
     handlerRemoveBtnClick
 }: {
     note: NoteDTO;
-    todayFlag: boolean;
     handlerEditBtnClick: (arg: NoteDTO) => void;
     handlerRemoveBtnClick: (id: number) => void;
 }) => {

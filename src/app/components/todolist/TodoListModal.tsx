@@ -66,7 +66,7 @@ const TodoListModal = (
         setEndTime(value);
     }
 
-    async function handlerSubmitClick() {
+    const handlerSubmitClick = () => {
         if (!title) {
             setError(ENCHINTL['error']['todolist']['modal']['empty-title'][intl])
             return;

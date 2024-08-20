@@ -620,7 +620,13 @@
             "empty-description":[
                 "The description is empty",
                 "描述为空。"
-            ]
+            ],
+            "invite":{
+                "invalid-email":[
+                    "Email is invalid.",
+                    "Email 无效。"
+                ]
+            }
         },
         "sign-up":{
             "empty-firstname":[

@@ -82,9 +82,8 @@ const NoteModal = (
                 title,
                 content
             };
-            if (publicMode == PUBLIC_TYPE.WorkSpace) {
-                payload.workspace = { id: workspaceId }
-            }
+            if (publicMode == PUBLIC_TYPE.WorkSpace)
+                payload.workspaceId = workspaceId;
             createNote(payload);
         }
         if (type == MODAL_TYPE.Update) {

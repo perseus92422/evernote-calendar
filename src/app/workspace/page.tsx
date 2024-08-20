@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
     Flex,
@@ -20,15 +20,25 @@ import { toast } from "react-toastify";
 import { AxiosError, AxiosResponse } from "axios";
 import WorkSpaceModal from "../components/workspace/WorkSpaceModal";
 import InviteModal from "../components/workspace/InviteModal";
-import NoteModal from "../components/note/NoteModal";
 import WorkSpaceNoteTab from "../components/workspace/WorkSpaceNoteTab";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { findAllWorkSpace, removeWorkSpace } from "../api";
+import {
+    createWorkSpace,
+    updateWorkSpace,
+    findAllWorkSpace,
+    removeWorkSpace,
+    inviteToWorkSpace
+} from "../api";
 import { setUserProps } from "../features/calendar.slice";
 import { eraseStorage, dateToYYYYMMDDF } from "../helper";
-import { UserDTO, WorkSpaceDTO } from "../type";
-import { WORKSPACE_MODAL_TYPE } from "../const";
+import {
+    UserDTO,
+    WorkSpaceDTO,
+    NewWorkSpaceDTO,
+    UpdateWorkSpaceDTO
+} from "../type";
+import { MODAL_TYPE } from "../const";
 
 const WorkSpace = () => {
 
@@ -36,18 +46,65 @@ const WorkSpace = () => {
     const router = useRouter();
     const { intl, user } = useAppSelector(state => state.calendar);
 
+    const [accessToken, setAccessToken] = useState<string>("");
     const [curUser, setCurUser] = useState<UserDTO>();
-    const [workspaceList, setWorkSpaceList] = useState<Array<WorkSpaceDTO>>([]);
     const [visibleWorkSpaceModal, setVisibleWorkSpaceModal] = useState<boolean>(false);
     const [visibleInviteModal, setVisibleInviteModal] = useState<boolean>(false);
-    const [visibleNoteModal, setVisibleNoteModal] = useState<boolean>(false);
-    const [visibleScheduleModal, setVisibleScheduleModal] = useState<boolean>(false);
-    const [visibleTodoListModal, setVisibleTodoListModal] = useState<boolean>(false);
-    const [modalType, setModalType] = useState<WORKSPACE_MODAL_TYPE>(WORKSPACE_MODAL_TYPE.Create);
-    const [activeWorkSpace, setActiveWorkSpace] = useState<WorkSpaceDTO>(null);
     const [visibleWorkSpaceBar, setVisibleWorkSpaceBar] = useState<boolean>(false);
+    const [modalType, setModalType] = useState<MODAL_TYPE>(null);
+    const [workspaceList, setWorkSpaceList] = useState<Array<WorkSpaceDTO>>([]);
+    const [activeWorkSpace, setActiveWorkSpace] = useState<WorkSpaceDTO>(null);
 
-    async function getAllWorkSpace() {
+
+    const handlerNewBtnClick = () => {
+        setActiveWorkSpace(null);
+        setModalType(MODAL_TYPE.Create);
+        setVisibleWorkSpaceModal(true);
+    }
+
+
+    const handlerInviteBtnClick = (value: number) => {
+        setActiveWorkSpace(workspaceList[value]);
+        setVisibleInviteModal(true);
+    }
+
+    const handlerEditBtnClick = (value: number) => {
+        setActiveWorkSpace(workspaceList[value]);
+        setModalType(MODAL_TYPE.Update);
+        setVisibleWorkSpaceModal(true);
+    }
+
+    const handlerWorkSpaceClick = (value: number) => {
+        setActiveWorkSpace(workspaceList[value]);
+        setVisibleWorkSpaceBar(true);
+    }
+
+    const handlerWorkSpaceBarHide = () => {
+        setVisibleWorkSpaceBar(false);
+    }
+
+    const signOutAction = () => {
+        dispatch(setUserProps(null));
+        eraseStorage();
+        router.push('/auth/signin');
+    }
+
+    async function handlerCreateWorkSpace(payload: NewWorkSpaceDTO) {
+        const res = await createWorkSpace(payload, accessToken);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setWorkSpaceList([result.data, ...workspaceList]);
+            toast.success(ENCHINTL['toast']['workspace']['create-success'][intl]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+        }
+    }
+
+    async function handlerFindAllWorkSpace() {
         const token = localStorage.getItem('token');
         const res = await findAllWorkSpace(token);
         if (res.status && res.status < 400) {
@@ -61,62 +118,71 @@ const WorkSpace = () => {
         }
     }
 
-    const signOutAction = () => {
-        dispatch(setUserProps(null));
-        eraseStorage();
-        router.push('/auth/signin');
-    }
-
-    const handlerNewBtnClick = () => {
-        setActiveWorkSpace(null);
-        setModalType(WORKSPACE_MODAL_TYPE.Create);
-        setVisibleWorkSpaceModal(true);
-    }
-
-    async function handlerRemoveBtnClick(value: number) {
-        const token = localStorage.getItem('token');
-        const res = await removeWorkSpace(workspaceList[value].id, token);
+    async function handlerUpdateWorkSpace(payload: UpdateWorkSpaceDTO) {
+        const res = await updateWorkSpace(activeWorkSpace.id, payload, accessToken);
         if (res.status && res.status < 400) {
-            const result = res as AxiosResponse;
-            setWorkSpaceList(workspaceList.filter(
-                a => a.id !== workspaceList[value].id
-            ));
-            toast.error(ENCHINTL['toast']['workspace']['remove-success'][intl]);
+            const tmpWorkSpaces = [...workspaceList];
+            const update = tmpWorkSpaces.find(
+                a => a.id === activeWorkSpace.id
+            );
+            Object.keys(payload).map(v => {
+                update[v] = payload[v];
+            });
+            setWorkSpaceList(tmpWorkSpaces);
+            toast.success(ENCHINTL['toast']['workspace']['create-success'][intl]);
         } else {
             const err = res as AxiosError;
-            if (err.response.status == 401)
+            if (err.response.status == 401) {
                 toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
-            signOutAction();
+                signOutAction();
+            }
         }
     }
 
-    const handlerInviteBtnClick = (value: number) => {
-        setActiveWorkSpace(workspaceList[value]);
-        setVisibleInviteModal(true);
+    async function handlerRemoveBtnClick(value: number) {
+        const res = await removeWorkSpace(workspaceList[value].id, accessToken);
+        if (res.status && res.status < 400) {
+            setWorkSpaceList(workspaceList.filter(
+                a => a.id !== workspaceList[value].id
+            ));
+            toast.success(ENCHINTL['toast']['workspace']['remove-success'][intl]);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+        }
     }
 
-    const handlerEditBtnClick = (value: number) => {
-        setActiveWorkSpace(workspaceList[value]);
-        setModalType(WORKSPACE_MODAL_TYPE.Update);
-        setVisibleWorkSpaceModal(true);
-    }
+    async function handlerInvitePeople() {
+        // const res = await inviteToWorkSpace();
+        // if (res.status && res.status < 400) {
 
-    const handlerWorkSpaceClick = (value: number) => {
-        setActiveWorkSpace(workspaceList[value]);
-        setVisibleWorkSpaceBar(true);
-    }
-
-    const handlerWorkSpaceBarHide = () => {
-        setVisibleWorkSpaceBar(false);
+        // } else {
+        //     const err = res as AxiosError;
+        //     if (err.response.status == 401) {
+        //         toast.success(ENCHINTL['toast']['invite']['invite-success'][intl]);
+        //         signOutAction();
+        //     }
+        // }
     }
 
     useEffect(() => {
-        getAllWorkSpace();
+        handlerFindAllWorkSpace();
     }, [])
 
     useEffect(() => {
         setCurUser(user);
     }, [user])
+
+    useLayoutEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token)
+            router.push('/auth/signin');
+        else
+            setAccessToken(token);
+    }, [])
 
     return (
         <div >
@@ -125,11 +191,10 @@ const WorkSpace = () => {
                     <WorkSpaceModal
                         intl={intl}
                         type={modalType}
-                        show={visibleWorkSpaceModal}
-                        workSpaceList={workspaceList}
                         workspace={activeWorkSpace}
-                        setWorkSpaceList={setWorkSpaceList}
                         setShow={setVisibleWorkSpaceModal}
+                        createWorkSpace={handlerCreateWorkSpace}
+                        updateWorkSpace={handlerUpdateWorkSpace}
                     />
                 ) : null
             }
@@ -138,18 +203,11 @@ const WorkSpace = () => {
                     <InviteModal
                         intl={intl}
                         workspace={activeWorkSpace}
-                        show={visibleWorkSpaceModal}
                         setShow={setVisibleInviteModal}
+                        invitePeople={handlerInvitePeople}
                     />
                 ) : null
             }
-            {/* {
-                visibleNoteModal ? (
-                    <NoteModal
-                        
-                    />
-                ):null
-            } */}
             <Flex justify="end" py="3">
                 <Button
                     color="cyan"
@@ -237,18 +295,16 @@ const WorkSpace = () => {
                                     <Tabs.Trigger value="todolist">
                                         {ENCHINTL['workspace']['side-bar']['todolist']['tab'][intl]}
                                     </Tabs.Trigger>
-                                    {
-                                        activeWorkSpace?.ownerId == curUser?.id ? (
-                                            <Tabs.Trigger value="member">
-                                                {ENCHINTL['workspace']['side-bar']['member']['tab'][intl]}
-                                            </Tabs.Trigger>
-                                        ) : null
-                                    }
+                                    <Tabs.Trigger value="member">
+                                        {ENCHINTL['workspace']['side-bar']['member']['tab'][intl]}
+                                    </Tabs.Trigger>
                                 </Tabs.List>
                                 <Tabs.Content value="note">
                                     <WorkSpaceNoteTab
                                         intl={intl}
+                                        token={accessToken}
                                         workspace={activeWorkSpace}
+                                        signOutAction={signOutAction}
                                     />
                                 </Tabs.Content>
                                 <Tabs.Content value="schedule">
@@ -257,13 +313,9 @@ const WorkSpace = () => {
                                 <Tabs.Content value="todolist">
 
                                 </Tabs.Content>
-                                {
-                                    activeWorkSpace?.ownerId == curUser?.id ? (
-                                        <Tabs.Content value="member">
+                                <Tabs.Content value="member">
 
-                                        </Tabs.Content>
-                                    ) : null
-                                }
+                                </Tabs.Content>
                             </Tabs.Root>
                         </Flex>
                     ) : null

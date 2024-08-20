@@ -13,14 +13,12 @@ import {
 } from '@radix-ui/react-icons';
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
 import Day from './components/calendar/Day';
-import TodoListModal from './components/todolist/TodoListModal';
 import ScheduleTab from './components/schedule/ScheduleTab';
 import NoteTab from './components/note/NoteTab';
 import TodoListTab from './components/todolist/TodoListTab';
 import ToolTar from './components/calendar/ToolBar';
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
-  TODOLIST_MODAL_TYPE,
   CALENDAR_VIEW_MODE,
 } from './const';
 import {
@@ -46,10 +44,6 @@ const Calender = () => {
   const handleDateClick = (date: string) => {
     setActiveDate(date);
     setDateBarShow(true);
-  }
-
-  const handleNewTaskBtnClick = () => {
-    setTodoListModal(true);
   }
 
   const handleDateBarShow = () => {

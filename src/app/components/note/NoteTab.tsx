@@ -152,7 +152,6 @@ const NoteTab = (
                     <NoteBar
                         key={i}
                         note={v}
-                        todayFlag={true}
                         handlerEditBtnClick={handlerEditBtnClick}
                         handlerRemoveBtnClick={handlerRemoveBtnClick}
                     />

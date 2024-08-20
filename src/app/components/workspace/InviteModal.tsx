@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
     Dialog,
     Flex,
@@ -7,36 +6,34 @@ import {
     Text,
     TextField
 } from "@radix-ui/themes";
-import { useAppDispatch } from "@/app/redux/hook";
+import Message from "../common/message";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { eraseStorage } from "@/app/helper";
 import { inviteToWorkSpace } from "@/app/api";
 import { WorkSpaceDTO } from "@/app/type";
-import { toast } from "react-toastify";
 
 
 const InviteModal = ({
     intl,
-    show,
     workspace,
-    setShow
+    setShow,
+    invitePeople
 }: {
     intl: number;
-    show: boolean;
     workspace: WorkSpaceDTO,
     setShow: (arg: boolean) => void;
+    invitePeople: () => void;
 }) => {
 
-    const router = useRouter();
-    const dispatch = useAppDispatch();
-    const token = localStorage.getItem('token');
     const [visible, setVisible] = useState<boolean>(true);
+    const [error, setError] = useState<string>("");
     const [email, setEmail] = useState<string>("");
 
-    async function handlerSubmitClick() {
-        const res = await inviteToWorkSpace(workspace.id, email, token);
-        if (res.status && res.status < 400)
-            toast.success(ENCHINTL['toast']['invite']['invite-success'][intl]);
+    const handlerSubmitClick = () => {
+        if (!/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(email)) {
+            setError(ENCHINTL['error']['workspace']['invite']['invalid-email'][intl]);
+            return;
+        }
+        invitePeople();
         setEmail("");
         setVisible(false);
         setShow(false);
@@ -51,8 +48,6 @@ const InviteModal = ({
         setEmail(value);
     }
 
-
-
     return (
         <Dialog.Root open={visible} onOpenChange={handlerVisibleChange}>
             <Dialog.Content>
@@ -61,6 +56,7 @@ const InviteModal = ({
                 </Dialog.Title>
                 <Dialog.Description>
                 </Dialog.Description>
+                {error ? (<Message message={error} />) : null}
                 <Flex direction="column" gap="1" py="2">
                     <Text as="label">Email</Text>
                     <TextField.Root
