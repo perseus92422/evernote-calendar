@@ -23,25 +23,22 @@ const NoteBar = ({
 
     return (
         <Flex maxHeight="250" direction="column" py="1" className="w-full rounded-[4px] border-2 px-2 py-2 border-[#00c7fe83] my-1 overflow-auto">
-            <Flex direction="row" justify="between" gap="2" py="1">
-                <Text as="p"><Strong>{!todayFlag ? note.date : ""}</Strong></Text>
-                <Flex direction="row" gap="2">
-                    <Pencil1Icon
-                        radius="full"
-                        className="cursor-pointer"
-                        width="20"
-                        height="20"
-                        onClick={() => handlerEditBtnClick(note)}
-                    />
-                    <TrashIcon
-                        className="cursor-pointer"
-                        width="20"
-                        height="20"
-                        onClick={() => handlerRemoveBtnClick(note.id)}
-                    />
-                </Flex>
+            <Flex direction="row" justify="end" gap="2" py="1">
+                <Pencil1Icon
+                    radius="full"
+                    className="cursor-pointer"
+                    width="20"
+                    height="20"
+                    onClick={() => handlerEditBtnClick(note)}
+                />
+                <TrashIcon
+                    className="cursor-pointer"
+                    width="20"
+                    height="20"
+                    onClick={() => handlerRemoveBtnClick(note.id)}
+                />
             </Flex>
-            <Text as="p" size="3" className="py-1"><Strong>{note.title}</Strong> </Text>
+            <Text as="p" size="5" className="py-1"><Strong>{note.title}</Strong> </Text>
             <div dangerouslySetInnerHTML={{ __html: note.content }} />
         </Flex>
     )

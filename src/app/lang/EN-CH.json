@@ -199,13 +199,13 @@
                 "New",
                 "新"
             ],
-            "today-p":[
-                "Today",
-                "今天"
+            "personal-note-p":[
+                "Personal Notes",
+                "个人笔记"
             ],
-            "all-p":[
-                "All",
-                "全部"
+            "workspace-note-p":[
+                "WorkSpace Notes",
+                "工作区备注"
             ]
         },
         "schedule":{

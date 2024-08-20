@@ -150,9 +150,9 @@ const TodoListModal = (
     }
 
     const signOutAction = () => {
-        eraseStorage();
-        dispatch(setUserProps(null));
-        router.push('/auth/signin');
+        // eraseStorage();
+        // dispatch(setUserProps(null));
+        // router.push('/auth/signin');
     }
 
 

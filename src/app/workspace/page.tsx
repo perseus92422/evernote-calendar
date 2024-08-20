@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import { AxiosError, AxiosResponse } from "axios";
 import WorkSpaceModal from "../components/workspace/WorkSpaceModal";
 import InviteModal from "../components/workspace/InviteModal";
+import NoteModal from "../components/note/NoteModal";
 import WorkSpaceNoteTab from "../components/workspace/WorkSpaceNoteTab";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
@@ -39,6 +40,9 @@ const WorkSpace = () => {
     const [workspaceList, setWorkSpaceList] = useState<Array<WorkSpaceDTO>>([]);
     const [visibleWorkSpaceModal, setVisibleWorkSpaceModal] = useState<boolean>(false);
     const [visibleInviteModal, setVisibleInviteModal] = useState<boolean>(false);
+    const [visibleNoteModal, setVisibleNoteModal] = useState<boolean>(false);
+    const [visibleScheduleModal, setVisibleScheduleModal] = useState<boolean>(false);
+    const [visibleTodoListModal, setVisibleTodoListModal] = useState<boolean>(false);
     const [modalType, setModalType] = useState<WORKSPACE_MODAL_TYPE>(WORKSPACE_MODAL_TYPE.Create);
     const [activeWorkSpace, setActiveWorkSpace] = useState<WorkSpaceDTO>(null);
     const [visibleWorkSpaceBar, setVisibleWorkSpaceBar] = useState<boolean>(false);
@@ -139,6 +143,13 @@ const WorkSpace = () => {
                     />
                 ) : null
             }
+            {/* {
+                visibleNoteModal ? (
+                    <NoteModal
+                        
+                    />
+                ):null
+            } */}
             <Flex justify="end" py="3">
                 <Button
                     color="cyan"

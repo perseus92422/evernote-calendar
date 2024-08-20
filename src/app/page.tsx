@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import moment from 'moment';
+import { AxiosError, AxiosResponse } from 'axios';
 import {
   Grid,
   Flex,
@@ -11,6 +12,7 @@ import {
 import {
   Cross1Icon
 } from '@radix-ui/react-icons';
+import { toast } from 'react-toastify';
 import { useAppSelector, useAppDispatch } from '@/app/redux/hook';
 import Day from './components/calendar/Day';
 import ScheduleModal from './components/schedule/ScheduleModal';
@@ -22,44 +24,92 @@ import TodoListTab from './components/todolist/TodoListTab';
 import ToolTar from './components/calendar/ToolBar';
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
+  MODAL_TYPE,
+  PUBLIC_TYPE,
   SCHEDULE_MODAL_TYPE,
-  NOTE_MODAL_TYPE,
   TODOLIST_MODAL_TYPE,
   CALENDAR_VIEW_MODE,
 } from './const';
-import { DayDTO } from './type';
-import { dateToYYYYMMDDF } from './helper/util';
-
+import {
+  NewNoteDTO,
+  UpdateNoteDTO,
+  NoteDTO,
+  DayDTO
+} from './type';
+import { createNote, updateNote } from './api';
+import { eraseStorage, dateToYYYYMMDDF } from './helper';
+import { setUserProps } from './features/calendar.slice';
 
 
 const Calender = () => {
 
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { intl } = useAppSelector(state => state.calendar);
   const [monthOfDays, setMonthOfDays] = useState<Array<Array<DayDTO>>>([]);
   const [weekOfDays, setWeekOfDays] = useState([]);
+  const [visibleNoteModal, setVisibleNoteModal] = useState<boolean>(false);
+  const [visibleScheduleModal, setVisibleScheduleModal] = useState<boolean>(false);
+  const [visibleTodoListModal, setVisibleTodoListModal] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<MODAL_TYPE>();
   const [noteModal, setNoteModal] = useState<boolean>(false);
   const [scheduleModal, setScheduleModal] = useState<boolean>(false);
   const [todolistModal, setTodoListModal] = useState<boolean>(false);
   const [datebarShow, setDateBarShow] = useState<boolean>(false);
   const [activeDate, setActiveDate] = useState<string>(dateToYYYYMMDDF(new Date()));
   const [viewMode, setViewMode] = useState<CALENDAR_VIEW_MODE>(CALENDAR_VIEW_MODE.month1)
+  const [accessToken, setAccessToken] = useState<string>("");
+  const [noteList, setNoteList] = useState<Array<NoteDTO>>([]);
 
   const handleDateClick = (date: string) => {
     setActiveDate(date);
     setDateBarShow(true);
   }
 
-  const handleNewScheduleBtnClick = () => {
-    setScheduleModal(true);
-  }
 
   const handleNewNoteBtnClick = () => {
+    setModalType(MODAL_TYPE.Create);
     setNoteModal(true);
   }
 
-  const handleNewTodoListBtnClick = () => {
+
+
+
+  async function handlerRemoveNote() {
+
+  }
+
+  const handleNewScheduleBtnClick = () => {
+    setModalType(MODAL_TYPE.Create);
+    setScheduleModal(true);
+  }
+
+  async function handlerCreateSchedule() {
+
+  }
+
+  async function handlerUpdateSchedule() {
+
+  }
+
+  async function handlerRemoveSchedule() {
+
+  }
+
+  const handleNewTaskBtnClick = () => {
     setTodoListModal(true);
+  }
+
+  async function handlerCreateTask() {
+
+  }
+
+  async function handlerUpdateTask() {
+
+  }
+
+  async function handlerRemoveTask() {
+
   }
 
   const handleDateBarShow = () => {
@@ -92,15 +142,23 @@ const Calender = () => {
     setMonthOfDays(tmpMonth);
   }
 
+  const signOutAction = () => {
+    eraseStorage();
+    dispatch(setUserProps(null));
+    router.push('/auth/signin');
+  }
+
   useEffect(() => {
     handlerInitCalendarDayList();
   }, [activeDate]);
 
 
   useLayoutEffect(() => {
-    // // console.log("token", localStorage.getItem('token'))
-    // // if (localStorage.getItem('token') == null)
-    // router.push('/auth/signin');
+    const token = localStorage.getItem('token');
+    if (!token)
+      router.push('/auth/signin');
+    else
+      setAccessToken(token);
   }, [])
 
   return (
@@ -172,17 +230,7 @@ const Calender = () => {
                     type={SCHEDULE_MODAL_TYPE.Create}
                   />) : null
               }
-              {
-                noteModal ? (
-                  <NoteModal
-                    isShow={noteModal}
-                    setShowModal={setNoteModal}
-                    setShowDateBar={setDateBarShow}
-                    activeDate={activeDate}
-                    type={NOTE_MODAL_TYPE.Create}
-                  />
-                ) : null
-              }
+
               {
                 todolistModal ? (
                   <TodoListModal
@@ -208,9 +256,9 @@ const Calender = () => {
                   <Tabs.Content value="note">
                     <NoteTab
                       intl={intl}
+                      token={accessToken}
                       activeDate={activeDate}
-                      setShowDateBar={setDateBarShow}
-                      handleNewBtnClick={handleNewNoteBtnClick}
+                      signOutAction={signOutAction}
                     />
                   </Tabs.Content>
                   <Tabs.Content value="schedule">
@@ -225,7 +273,7 @@ const Calender = () => {
                     <TodoListTab
                       intl={intl}
                       activeDate={activeDate}
-                      handleNewBtnClick={handleNewTodoListBtnClick}
+                      handleNewBtnClick={handleNewTaskBtnClick}
                       setShowDateBar={setDateBarShow}
                     />
                   </Tabs.Content>

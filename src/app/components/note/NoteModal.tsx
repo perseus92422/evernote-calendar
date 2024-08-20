@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
     Dialog,
@@ -11,58 +11,52 @@ import {
     EditorState,
     ContentState,
     convertToRaw,
-    convertFromHTML,
 } from 'draft-js';
-import { AxiosError } from "axios";
-import { toast } from "react-toastify";
+import htmlToDraft from 'html-to-draftjs';
 import dratfToHtml from 'draftjs-to-html';
-import { useAppSelector, useAppDispatch } from "../../redux/hook";
-import { setUserProps } from "@/app/features/calendar.slice";
-import { eraseStorage } from "@/app/helper";
 import Editor from "./Editor";
 import Message from "../common/message";
-import {
-    createNote,
-    updateNote
-} from "../../api/note.api";
 import {
     NewNoteDTO,
     UpdateNoteDTO,
     NoteDTO
 } from "../../type/note.dto";
 import {
-    NOTE_MODAL_TYPE,
+    MODAL_TYPE,
+    PUBLIC_TYPE,
     WYSIWYG_LOCALES
 } from "../../const";
 import ENCHIntl from '@/app/lang/EN-CH.json';
 
 const NoteModal = (
     {
+        intl,
         type,
-        isShow,
+        publicMode,
         note,
+        workspaceId,
         activeDate,
         setShowModal,
-        setShowDateBar,
+        createNote,
+        updateNote,
     }: {
-        type: NOTE_MODAL_TYPE;
-        isShow: boolean;
+        intl: number;
+        type: MODAL_TYPE;
+        publicMode?: PUBLIC_TYPE;
+        workspaceId?: number;
         note?: NoteDTO;
         activeDate?: string;
         setShowModal: (arg: boolean) => void;
-        setShowDateBar: (arg: boolean) => void;
+        createNote: (payload: NewNoteDTO) => void;
+        updateNote: (payload: UpdateNoteDTO) => void;
     }) => {
 
-    const dispatch = useAppDispatch();
-    const router = useRouter();
-    const token = localStorage.getItem('token');
-    const { intl } = useAppSelector(state => state.calendar);
     const [visible, setVisible] = useState<boolean>(true);
     const [title, setTitle] = useState<string>(note ? note.title : "");
     const [error, setError] = useState<string>("");
     const [editorState, setEditorState] = useState<EditorState>(
         note ?
-            EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(note.content).contentBlocks))
+            EditorState.createWithContent(ContentState.createFromBlockArray(htmlToDraft(note.content).contentBlocks))
             :
             EditorState.createEmpty()
     );
@@ -86,37 +80,23 @@ const NoteModal = (
             setError(ENCHIntl['error']['note']['modal']['empty-content'][intl]);
             return;
         }
-        if (type == NOTE_MODAL_TYPE.Create) {
+        if (type == MODAL_TYPE.Create) {
             let payload: NewNoteDTO = {
                 title,
-                content,
-                date: activeDate
+                content
             };
-            const res = await createNote(payload, token);
-            if (res.status && res.status < 400) {
-                toast.success(ENCHIntl['toast']['note']['create-success'][intl]);
-            } else {
-                const err = res as AxiosError;
-                if (err.response.status == 401)
-                    toast.error(ENCHIntl['toast']['common']['token-expired'][intl]);
-                signOutAction();
+            if (publicMode == PUBLIC_TYPE.WorkSpace) {
+                payload.workspace = { id: workspaceId }
             }
+            createNote(payload);
         }
-        if (type == NOTE_MODAL_TYPE.Update) {
+        if (type == MODAL_TYPE.Update) {
             let payload: UpdateNoteDTO = {};
             if (title != note.title)
                 payload.title = title;
             if (content != note.content)
                 payload.content = content;
-            const res = await updateNote(note.id, payload, token);
-            if (res.status && res.status < 400) {
-                toast.success(ENCHIntl['toast']['note']['update-success'][intl]);
-            } else {
-                const err = res as AxiosError;
-                if (err.response.status == 401)
-                    toast.error(ENCHIntl['toast']['common']['token-expired'][intl]);
-                signOutAction();
-            }
+            updateNote(payload);
         }
         initState();
     }
@@ -131,21 +111,14 @@ const NoteModal = (
         setError("");
         setVisible(false);
         setShowModal(false);
-        setShowDateBar(false);
-    }
-
-    const signOutAction = () => {
-        dispatch(setUserProps(null));
-        eraseStorage();
-        router.push('/auth/signin');
     }
 
     return (
         <Dialog.Root open={visible} onOpenChange={handleModalShow}  >
             <Dialog.Content size="4" className="max-w-[800px]">
                 <Dialog.Title>
-                    {type == NOTE_MODAL_TYPE.Create ? ENCHIntl['modal']['note']['title-d']['create'][intl] : null}
-                    {type == NOTE_MODAL_TYPE.Update ? ENCHIntl['modal']['note']['title-d']['update'][intl] : null}
+                    {type == MODAL_TYPE.Create ? ENCHIntl['modal']['note']['title-d']['create'][intl] : null}
+                    {type == MODAL_TYPE.Update ? ENCHIntl['modal']['note']['title-d']['update'][intl] : null}
                 </Dialog.Title>
                 <Dialog.Description>
 

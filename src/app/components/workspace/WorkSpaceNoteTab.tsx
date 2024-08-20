@@ -36,6 +36,7 @@ const WorkSpaceNoteTab = (
         <div>
             <Flex justify="end" px="2" py="2">
                 <Button color="cyan" variant="soft" >{ENCHINTL['workspace']['side-bar']['note']['new-btn'][intl]}</Button>
+
             </Flex>
         </div>
     )

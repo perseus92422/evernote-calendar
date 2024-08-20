@@ -48,12 +48,17 @@ export const SCHEDULE_TYPES = [
 
 export const EMAIL_REGEX = '/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/';
 
-export const enum SCHEDULE_MODAL_TYPE {
-    Create = 'Create',
-    Update = 'Update'
+export const enum MODAL_TYPE {
+    Create = 'create',
+    Update = 'update'
 }
 
-export const enum NOTE_MODAL_TYPE {
+export const enum PUBLIC_TYPE {
+    Private = 'private',
+    WorkSpace = 'workspace'
+}
+
+export const enum SCHEDULE_MODAL_TYPE {
     Create = 'Create',
     Update = 'Update'
 }
