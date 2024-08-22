@@ -340,6 +340,18 @@
             "invite-success":[
                 "Invited successfully.",
                 "邀请成功。"
+            ],
+            "already-invited":[
+                "Already invited",
+                "已受邀。"
+            ],
+            "no-user":[
+                "Email is not registered.",
+                "EMAIL 未注册。"
+            ],
+            "no-workspace":[
+                "Workspace does't exist.",
+                "工作区不存在。"
             ]
         }
     },
@@ -496,6 +508,10 @@
             "description-textarea-holder":[
                 "Description",
                 "描述"
+            ],
+            "due-date-p":[
+                "Due Date",
+                "到期日"
             ],
             "start-time-p":[
                 "Start Time",

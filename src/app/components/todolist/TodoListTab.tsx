@@ -81,7 +81,7 @@ const TodoListTab = (
                 update[v] = payload[v];
             })
             setPrivateTodoList(tmpTodoList);
-            toast.error(ENCHINTL['toast']['todolist']['update-success'][intl]);
+            toast.success(ENCHINTL['toast']['todolist']['update-success'][intl]);
         } else {
             const err = res as AxiosError;
             console.log(err);
@@ -123,7 +123,7 @@ const TodoListTab = (
         } else {
             const err = res as AxiosError;
             if (err.response.status == 401)
-                toast.success(ENCHINTL['toast']['common']['token-expired'][intl]);
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
             signOutAction();
         }
     }

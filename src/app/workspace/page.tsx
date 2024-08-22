@@ -19,9 +19,11 @@ import {
 import { toast } from "react-toastify";
 import { AxiosError, AxiosResponse } from "axios";
 import WorkSpaceModal from "../components/workspace/WorkSpaceModal";
-import InviteModal from "../components/workspace/InviteModal";
+// import InviteModal from "../components/workspace/InviteModal";
 import WorkSpaceNoteTab from "../components/workspace/WorkSpaceNoteTab";
 import WorkSpaceScheduleTab from "../components/workspace/WorkSpaceScheduleTab";
+import WorkSpaceTodoListTab from "../components/workspace/WorkSpaceTodoListTab";
+import WorkSpaceMemberTab from "../components/workspace/WorkSpaceMemberTab";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import {
@@ -29,15 +31,18 @@ import {
     updateWorkSpace,
     findAllWorkSpace,
     removeWorkSpace,
-    inviteToWorkSpace
+    inviteToWorkSpace,
+    removeInvite,
+    findAllMembersOnWorkSpace
 } from "../api";
 import { setUserProps } from "../features/calendar.slice";
 import { eraseStorage, dateToYYYYMMDDF } from "../helper";
 import {
-    UserDTO,
     WorkSpaceDTO,
     NewWorkSpaceDTO,
-    UpdateWorkSpaceDTO
+    UpdateWorkSpaceDTO,
+    ExceptionDTO,
+    UserDTO
 } from "../type";
 import { MODAL_TYPE } from "../const";
 
@@ -48,14 +53,12 @@ const WorkSpace = () => {
     const { intl, user } = useAppSelector(state => state.calendar);
 
     const [accessToken, setAccessToken] = useState<string>("");
-    const [curUser, setCurUser] = useState<UserDTO>();
     const [visibleWorkSpaceModal, setVisibleWorkSpaceModal] = useState<boolean>(false);
     const [visibleInviteModal, setVisibleInviteModal] = useState<boolean>(false);
     const [visibleWorkSpaceBar, setVisibleWorkSpaceBar] = useState<boolean>(false);
     const [modalType, setModalType] = useState<MODAL_TYPE>(null);
     const [workspaceList, setWorkSpaceList] = useState<Array<WorkSpaceDTO>>([]);
     const [activeWorkSpace, setActiveWorkSpace] = useState<WorkSpaceDTO>(null);
-
 
     const handlerNewBtnClick = () => {
         setActiveWorkSpace(null);
@@ -64,8 +67,7 @@ const WorkSpace = () => {
     }
 
 
-    const handlerInviteBtnClick = (value: number) => {
-        setActiveWorkSpace(workspaceList[value]);
+    const handlerInviteBtnClick = () => {
         setVisibleInviteModal(true);
     }
 
@@ -156,26 +158,28 @@ const WorkSpace = () => {
         }
     }
 
-    async function handlerInvitePeople() {
-        // const res = await inviteToWorkSpace();
-        // if (res.status && res.status < 400) {
-
-        // } else {
-        //     const err = res as AxiosError;
-        //     if (err.response.status == 401) {
-        //         toast.success(ENCHINTL['toast']['invite']['invite-success'][intl]);
-        //         signOutAction();
-        //     }
-        // }
+    async function handlerInvitePeople(email: string) {
+        const res = await inviteToWorkSpace(activeWorkSpace.id, email, accessToken);
+        if (res.status && res.status < 400) {
+            toast.success(ENCHINTL['toast']['invite']['invite-success'][intl]);
+        } else {
+            const err = res as AxiosError;
+            const exception = err.response.data as ExceptionDTO;
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+            if (err.response.status == 400) {
+                toast.error(ENCHINTL['toast']['invite'][exception.message][intl]);
+            }
+        }
     }
+
+
 
     useEffect(() => {
         handlerFindAllWorkSpace();
     }, [])
-
-    useEffect(() => {
-        setCurUser(user);
-    }, [user])
 
     useLayoutEffect(() => {
         const token = localStorage.getItem('token');
@@ -199,7 +203,7 @@ const WorkSpace = () => {
                     />
                 ) : null
             }
-            {
+            {/* {
                 visibleInviteModal ? (
                     <InviteModal
                         intl={intl}
@@ -208,7 +212,7 @@ const WorkSpace = () => {
                         invitePeople={handlerInvitePeople}
                     />
                 ) : null
-            }
+            } */}
             <Flex justify="end" py="3">
                 <Button
                     color="cyan"
@@ -243,17 +247,17 @@ const WorkSpace = () => {
                                         <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{v._count?.schedules ? v._count?.schedules : 0}</Table.Cell>
                                         <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{v._count?.todolists ? v._count?.schedules : 0}</Table.Cell>
                                         <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{dateToYYYYMMDDF(new Date(v.createAt))}</Table.Cell>
-                                        <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{curUser.id && curUser.id == v.ownerId ? ENCHINTL['workspace']['table']['type']['owner'][intl] : ENCHINTL['workspace']['table']['type']['invited'][intl]}</Table.Cell>
+                                        <Table.Cell className="cursor-pointer" onClick={() => handlerWorkSpaceClick(i)}>{user?.id && user?.id == v.ownerId ? ENCHINTL['workspace']['table']['type']['owner'][intl] : ENCHINTL['workspace']['table']['type']['invited'][intl]}</Table.Cell>
                                         <Table.Cell>
                                             <Flex gap="3">
-                                                <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
+                                                {/* <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
                                                     <PaperPlaneIcon
                                                         className="cursor-pointer"
                                                         height="20"
                                                         width="20"
-                                                        onClick={() => handlerInviteBtnClick(i)}
+                                                        onClick={handlerInviteBtnClick}
                                                     />
-                                                </Tooltip>
+                                                </Tooltip> */}
                                                 <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
                                                     <Pencil1Icon
                                                         className="cursor-pointer"
@@ -317,18 +321,26 @@ const WorkSpace = () => {
                                     />
                                 </Tabs.Content>
                                 <Tabs.Content value="todolist">
-
+                                    <WorkSpaceTodoListTab
+                                        intl={intl}
+                                        token={accessToken}
+                                        workspace={activeWorkSpace}
+                                        signOutAction={signOutAction}
+                                    />
                                 </Tabs.Content>
                                 <Tabs.Content value="member">
-
+                                    <WorkSpaceMemberTab
+                                        intl={intl}
+                                        token={accessToken}
+                                        workspace={activeWorkSpace}
+                                        signOutAction={signOutAction}
+                                    />
                                 </Tabs.Content>
                             </Tabs.Root>
                         </Flex>
                     ) : null
                 }
             </Flex>
-
-
         </div>
     )
 }

@@ -20,3 +20,10 @@ export interface UpdateWorkSpaceDTO {
     title?: string;
     description?: string;
 }
+
+export interface WorkSpaceMemberDTO {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+}

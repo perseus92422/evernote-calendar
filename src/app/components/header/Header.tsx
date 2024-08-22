@@ -33,10 +33,10 @@ const Header = () => {
     }
 
     const handlerSignOutClick = () => {
+        router.push('/auth/signin');
         eraseStorage();
         setCurUser(null);
         dispatch(setUserProps(null));
-        router.push('/auth/signin');
     }
 
     useEffect(() => {

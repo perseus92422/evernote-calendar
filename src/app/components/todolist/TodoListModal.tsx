@@ -7,10 +7,12 @@ import {
     TextField,
     TextArea,
 } from "@radix-ui/themes";
+import DatePicker from "react-datepicker";
 import Message from "../common/message";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { MODAL_TYPE, PUBLIC_TYPE } from "@/app/const";
+import { MODAL_TYPE, PUBLIC_TYPE, CALENDAR_LOCALES } from "@/app/const";
 import { TaskDTO, NewTaskDTO, UpdateTaskDTO } from "@/app/type";
+import { dateToYYYYMMDDF } from "@/app/helper";
 
 const TodoListModal = (
     {
@@ -28,7 +30,7 @@ const TodoListModal = (
             intl: number;
             type: MODAL_TYPE;
             publicMode: PUBLIC_TYPE
-            activeDate: string;
+            activeDate?: string;
             task?: TaskDTO;
             workspaceId?: number;
             setShowModal: (arg: boolean) => void;
@@ -43,7 +45,7 @@ const TodoListModal = (
     const [description, setDescription] = useState<string>(task ? task.description : "");
     const [startTime, setStartTime] = useState<string>(task ? task.startTime : "");
     const [endTime, setEndTime] = useState<string>(task ? task.endTime : "");
-
+    const [dueDate, setDueDate] = useState<Date>(task ? new Date(task.dueDate) : new Date());
 
     const handlerModalShow = () => {
         setVisible(false);
@@ -56,6 +58,10 @@ const TodoListModal = (
 
     const handlerDescriptionChange = (value: string) => {
         setDescription(value);
+    }
+
+    const handlerDueDateChange = (date: Date) => {
+        setDueDate(date);
     }
 
     const handlerStartTimeChange = (value: string) => {
@@ -91,14 +97,12 @@ const TodoListModal = (
             let payload: NewTaskDTO = {
                 title,
                 description,
-                dueDate: activeDate,
+                dueDate: dateToYYYYMMDDF(dueDate),
                 startTime,
                 endTime
             }
-            if (workspaceId && publicMode == PUBLIC_TYPE.Private)
-                payload.workspace = {
-                    id: workspaceId
-                };
+            if (workspaceId && publicMode == PUBLIC_TYPE.WorkSpace)
+                payload.workspaceId = workspaceId;
             createTask(payload);
         }
         if (type == MODAL_TYPE.Update) {
@@ -156,6 +160,14 @@ const TodoListModal = (
                         rows={5}
                         placeholder={ENCHINTL['modal']['todolist']['description-textarea-holder'][intl]}
                         onChange={(e) => handlerDescriptionChange(e.target.value)}
+                    />
+                </Flex>
+                <Flex direction="row" justify="between" py="2">
+                    <Text as="p">{ENCHINTL['modal']['todolist']['due-date-p'][intl]}</Text>
+                    <DatePicker
+                        locale={CALENDAR_LOCALES[intl]}
+                        selected={dueDate}
+                        onChange={(date: Date) => handlerDueDateChange(date)}
                     />
                 </Flex>
                 <Flex direction="row" justify="between" py="2">

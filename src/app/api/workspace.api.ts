@@ -40,7 +40,16 @@ export async function removeWorkSpace(id: number, token: string): Promise<AxiosE
 
 export async function inviteToWorkSpace(workspaceId: number, inviteEmail: string, token: string): Promise<AxiosResponse | AxiosError> {
     try {
-        return await axios.get(`${BASE_URL}/workspace/invite`, { params: { email: inviteEmail, workspaceId }, headers: { Authorization: `Bearer ${token}` } })
+        return await axios.get(`${BASE_URL}/workspace/invite/${workspaceId}`, { params: { email: inviteEmail }, headers: { Authorization: `Bearer ${token}` } })
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}
+
+export async function removeInvite(workspaceId: number, userId: number, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(`${BASE_URL}/workspace/remove-invite/${workspaceId}`, { params: { user: userId }, headers: { Authorization: `Bearer ${token}` } });
     } catch (e) {
         const err = e as AxiosError;
         return err;

@@ -16,9 +16,7 @@ export interface NewTaskDTO {
     dueDate: string;
     startTime: string;
     endTime: string;
-    workspace?: {
-        id: number;
-    };
+    workspaceId?: number;
 }
 
 export interface UpdateTaskDTO {

@@ -8,7 +8,6 @@ import {
 } from "@radix-ui/themes";
 import Message from "../common/message";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import { inviteToWorkSpace } from "@/app/api";
 import { WorkSpaceDTO } from "@/app/type";
 
 
@@ -21,7 +20,7 @@ const InviteModal = ({
     intl: number;
     workspace: WorkSpaceDTO,
     setShow: (arg: boolean) => void;
-    invitePeople: () => void;
+    invitePeople: (email: string) => void;
 }) => {
 
     const [visible, setVisible] = useState<boolean>(true);
@@ -33,7 +32,7 @@ const InviteModal = ({
             setError(ENCHINTL['error']['workspace']['invite']['invalid-email'][intl]);
             return;
         }
-        invitePeople();
+        invitePeople(email);
         setEmail("");
         setVisible(false);
         setShow(false);
