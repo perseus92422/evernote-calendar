@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
 import { AxiosResponse, AxiosError } from 'axios';
-import { Flex, Button } from "@radix-ui/themes";
+import { Flex, Button, Text, Strong } from "@radix-ui/themes";
 import { toast } from "react-toastify";
+import TodoListModal from "../todolist/TodoListModal";
+import TodoListBar from "../todolist/TodoListBar";
 import { MODAL_TYPE, PUBLIC_TYPE } from "@/app/const";
-import { NewTaskDTO, UpdateTaskDTO, TaskDTO, WorkSpaceDTO } from "@/app/type";
+import {
+    NewTaskDTO,
+    UpdateTaskDTO,
+    TaskDTO,
+    WorkSpaceDTO,
+    WorkSpaceTodoListDTO
+} from "@/app/type";
 import {
     createTask,
     updateTask,
@@ -11,8 +19,6 @@ import {
     findAllTodoListOnWorkSpace
 } from "@/app/api";
 import ENCHINTL from '@/app/lang/EN-CH.json';
-import TodoListModal from "../todolist/TodoListModal";
-import TodoListBar from "../todolist/TodoListBar";
 
 const WorkSpaceTodoListTab = (
     {
@@ -30,7 +36,7 @@ const WorkSpaceTodoListTab = (
 
     const [visible, setVisible] = useState<boolean>(false);
     const [modalType, setModalType] = useState<MODAL_TYPE>(null);
-    const [todoList, setTodoList] = useState<Array<TaskDTO>>([]);
+    const [todoList, setTodoList] = useState<Array<WorkSpaceTodoListDTO>>([]);
     const [activeTask, setActiveTask] = useState<TaskDTO>(null);
 
     const handlerNewBtnClick = () => {
@@ -49,7 +55,19 @@ const WorkSpaceTodoListTab = (
         const res = await createTask(payload, token);
         if (res.status && res.status < 400) {
             const result = res as AxiosResponse;
-            setTodoList([result.data, ...todoList]);
+            const newTask = result.data as TaskDTO;
+            const tmpTodoList = [...todoList];
+            const todoListUpdate = tmpTodoList.find(
+                a => a.dueDate === newTask.dueDate
+            );
+            todoListUpdate.todolist.push(newTask);
+            todoListUpdate.todolist.sort((a, b) => {
+                if (a.startTime < b.startTime)
+                    return 1;
+                else
+                    return -1;
+            })
+            setTodoList(tmpTodoList);
             toast.success(ENCHINTL['toast']['todolist']['create-success'][intl]);
         } else {
             const err = res as AxiosError;
@@ -63,10 +81,15 @@ const WorkSpaceTodoListTab = (
         const res = await updateTask(activeTask.id, payload, token);
         if (res.status && res.status < 400) {
             const tmpTodoList = [...todoList];
-            const update = tmpTodoList.find(
-                a => a.id === activeTask.id
+            const todoListUpdate = tmpTodoList.find(
+                a => a.todolist.find(
+                    b => b.id === activeTask.id
+                )
             );
-            Object.keys(payload).map(v => update[v] = payload[v]);
+            const taskUpdate = todoListUpdate.todolist.find(
+                a => a.id == activeTask.id
+            );
+            Object.keys(payload).map(v => taskUpdate[v] = payload[v]);
             setTodoList(tmpTodoList);
             toast.success(ENCHINTL['toast']['todolist']['update-success'][intl]);
         } else {
@@ -93,9 +116,17 @@ const WorkSpaceTodoListTab = (
     async function handlerRemoveBtnClick(id: number) {
         const res = await removeTask(id, token);
         if (res.status && res.status < 400) {
-            setTodoList(todoList.filter(
+            const tmpTodoList = [...todoList];
+            const todoListUpdate = todoList.find(
+                a => a.todolist.find(
+                    a => a.id === id
+                )
+            );
+            const taskUpdate = todoListUpdate.todolist.filter(
                 a => a.id !== id
-            ));
+            );
+            todoListUpdate.todolist = taskUpdate;
+            setTodoList(tmpTodoList);
             toast.success(ENCHINTL['toast']['todolist']['remove-success'][intl]);
         } else {
             const err = res as AxiosError;
@@ -131,12 +162,19 @@ const WorkSpaceTodoListTab = (
             <Flex direction="column" px="2" >
                 {
                     todoList.map((v, i) => (
-                        <TodoListBar
-                            key={i}
-                            task={v}
-                            handlerEditBtnClick={handlerEditBtnClick}
-                            handlerRemoveBtnClick={handlerRemoveBtnClick}
-                        />
+                        <div key={i}>
+                            <Text as="p" size="5"> <Strong>{v.dueDate}</Strong></Text>
+                            <Flex direction="column">
+                                {v.todolist.map((task, j) => (
+                                    <TodoListBar
+                                        key={j}
+                                        task={task}
+                                        handlerEditBtnClick={handlerEditBtnClick}
+                                        handlerRemoveBtnClick={handlerRemoveBtnClick}
+                                    />
+                                ))}
+                            </Flex>
+                        </div>
                     ))
                 }
             </Flex>

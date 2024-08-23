@@ -32,8 +32,6 @@ import {
     findAllWorkSpace,
     removeWorkSpace,
     inviteToWorkSpace,
-    removeInvite,
-    findAllMembersOnWorkSpace
 } from "../api";
 import { setUserProps } from "../features/calendar.slice";
 import { eraseStorage, dateToYYYYMMDDF } from "../helper";
@@ -42,7 +40,6 @@ import {
     NewWorkSpaceDTO,
     UpdateWorkSpaceDTO,
     ExceptionDTO,
-    UserDTO
 } from "../type";
 import { MODAL_TYPE } from "../const";
 
@@ -54,7 +51,6 @@ const WorkSpace = () => {
 
     const [accessToken, setAccessToken] = useState<string>("");
     const [visibleWorkSpaceModal, setVisibleWorkSpaceModal] = useState<boolean>(false);
-    const [visibleInviteModal, setVisibleInviteModal] = useState<boolean>(false);
     const [visibleWorkSpaceBar, setVisibleWorkSpaceBar] = useState<boolean>(false);
     const [modalType, setModalType] = useState<MODAL_TYPE>(null);
     const [workspaceList, setWorkSpaceList] = useState<Array<WorkSpaceDTO>>([]);
@@ -64,11 +60,6 @@ const WorkSpace = () => {
         setActiveWorkSpace(null);
         setModalType(MODAL_TYPE.Create);
         setVisibleWorkSpaceModal(true);
-    }
-
-
-    const handlerInviteBtnClick = () => {
-        setVisibleInviteModal(true);
     }
 
     const handlerEditBtnClick = (value: number) => {
@@ -258,22 +249,28 @@ const WorkSpace = () => {
                                                         onClick={handlerInviteBtnClick}
                                                     />
                                                 </Tooltip> */}
-                                                <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
-                                                    <Pencil1Icon
-                                                        className="cursor-pointer"
-                                                        height="20"
-                                                        width="20"
-                                                        onClick={() => handlerEditBtnClick(i)}
-                                                    />
-                                                </Tooltip>
-                                                <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
-                                                    <TrashIcon
-                                                        className="cursor-pointer"
-                                                        height="20"
-                                                        width="20"
-                                                        onClick={() => handlerRemoveBtnClick(i)}
-                                                    />
-                                                </Tooltip>
+                                                {
+                                                    user.id == v.ownerId ? (
+                                                        <>
+                                                            <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
+                                                                <Pencil1Icon
+                                                                    className="cursor-pointer"
+                                                                    height="20"
+                                                                    width="20"
+                                                                    onClick={() => handlerEditBtnClick(i)}
+                                                                />
+                                                            </Tooltip>
+                                                            <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
+                                                                <TrashIcon
+                                                                    className="cursor-pointer"
+                                                                    height="20"
+                                                                    width="20"
+                                                                    onClick={() => handlerRemoveBtnClick(i)}
+                                                                />
+                                                            </Tooltip>
+                                                        </>
+                                                    ) : null
+                                                }
                                             </Flex>
                                         </Table.Cell>
                                     </Table.Row>
@@ -334,6 +331,7 @@ const WorkSpace = () => {
                                         token={accessToken}
                                         workspace={activeWorkSpace}
                                         signOutAction={signOutAction}
+                                        user={user}
                                     />
                                 </Tabs.Content>
                             </Tabs.Root>

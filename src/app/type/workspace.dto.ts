@@ -1,3 +1,5 @@
+import { TaskDTO } from "./todolist.dto";
+
 export interface WorkSpaceDTO {
     id: number;
     title: string;
@@ -26,4 +28,9 @@ export interface WorkSpaceMemberDTO {
     firstName: string;
     lastName: string;
     email: string;
+}
+
+export interface WorkSpaceTodoListDTO {
+    dueDate: string;
+    todolist: TaskDTO[];
 }

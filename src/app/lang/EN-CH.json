@@ -341,6 +341,10 @@
                 "Invited successfully.",
                 "邀请成功。"
             ],
+            "remove-invite-success":[
+                "Removed invitation successfully.",
+                "已成功删除邀请。"
+            ],
             "already-invited":[
                 "Already invited",
                 "已受邀。"
@@ -352,6 +356,10 @@
             "no-workspace":[
                 "Workspace does't exist.",
                 "工作区不存在。"
+            ],
+            "owner":[
+                "You are owner of the workspace.",
+                "您是该工作区的所有者。"
             ]
         }
     },
