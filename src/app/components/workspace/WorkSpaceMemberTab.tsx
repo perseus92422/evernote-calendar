@@ -116,13 +116,15 @@ const WorkSpaceMemberTab = (
             <Grid columns="3" gap="5" pt="2">
                 {
                     members.map((v, i) => (
-                        <MemberBar
-                            key={i}
-                            member={v}
-                            user={user}
-                            workspace={workspace}
-                            handlerRemoveClick={handlerRemoveInvite}
-                        />
+                        v.id != user.id ? (
+                            <MemberBar
+                                key={i}
+                                member={v}
+                                user={user}
+                                workspace={workspace}
+                                handlerRemoveClick={handlerRemoveInvite}
+                            />
+                        ) : null
                     ))
                 }
             </Grid>

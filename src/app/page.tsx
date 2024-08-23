@@ -32,7 +32,7 @@ const Calender = () => {
 
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { intl } = useAppSelector(state => state.calendar);
+  const { intl, user } = useAppSelector(state => state.calendar);
   const [monthOfDays, setMonthOfDays] = useState<Array<Array<DayDTO>>>([]);
   const [weekOfDays, setWeekOfDays] = useState([]);
   const [todolistModal, setTodoListModal] = useState<boolean>(false);
@@ -168,6 +168,7 @@ const Calender = () => {
                     <NoteTab
                       intl={intl}
                       token={accessToken}
+                      user={user}
                       signOutAction={signOutAction}
                     />
                   </Tabs.Content>

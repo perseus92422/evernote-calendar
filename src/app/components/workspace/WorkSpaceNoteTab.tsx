@@ -9,13 +9,14 @@ import {
     createNote,
     updateNote,
     removeNote,
-    findAllNoteOnWorkSpace
+    findAllNoteOnWorkSpace,
 } from "@/app/api";
 import {
     WorkSpaceDTO,
     NoteDTO,
     NewNoteDTO,
-    UpdateNoteDTO
+    UpdateNoteDTO,
+    UserDTO
 } from "@/app/type";
 import { MODAL_TYPE, PUBLIC_TYPE } from "@/app/const";
 
@@ -23,12 +24,14 @@ import { MODAL_TYPE, PUBLIC_TYPE } from "@/app/const";
 const WorkSpaceNoteTab = (
     {
         intl,
+        user,
         token,
         workspace,
         signOutAction
     }:
         {
             intl: number;
+            user: UserDTO;
             token: string;
             workspace: WorkSpaceDTO;
             signOutAction: () => void;
@@ -138,6 +141,8 @@ const WorkSpaceNoteTab = (
                     <NoteBar
                         key={i}
                         note={v}
+                        editable={user.id === v.ownerId ? true : false}
+                        removable={user.id === v.ownerId ? true : false}
                         handlerEditBtnClick={handlerEditBtnClick}
                         handlerRemoveBtnClick={handlerRemoveBtnClick}
                     />

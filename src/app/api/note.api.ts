@@ -47,3 +47,12 @@ export async function findAllNoteByDay(day: string, token: string): Promise<Axio
         return err;
     }
 }
+
+export async function findAllNoteOnWorkspaces(token: string): Promise<AxiosError | AxiosResponse> {
+    try {
+        return await axios.get(`${BASE_URL}/note/workspace`, { headers: { Authorization: `Bearer ${token}` } });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}

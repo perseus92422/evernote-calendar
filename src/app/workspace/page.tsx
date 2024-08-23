@@ -304,6 +304,7 @@ const WorkSpace = () => {
                                 <Tabs.Content value="note">
                                     <WorkSpaceNoteTab
                                         intl={intl}
+                                        user={user}
                                         token={accessToken}
                                         workspace={activeWorkSpace}
                                         signOutAction={signOutAction}

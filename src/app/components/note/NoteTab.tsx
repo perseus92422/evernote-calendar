@@ -14,23 +14,28 @@ import {
     createNote,
     updateNote,
     findAllNote,
-    removeNote
+    findAllNoteOnWorkspaces,
+    removeNote,
 } from "../../api/note.api";
 import {
     NewNoteDTO,
     UpdateNoteDTO,
-    NoteDTO
+    NoteDTO,
+    NotesOnWorkSpaces,
+    UserDTO
 } from "../../type";
 import { MODAL_TYPE, PUBLIC_TYPE } from "@/app/const";
 
 const NoteTab = (
     {
         intl,
+        user,
         token,
         signOutAction
     }:
         {
             intl: number;
+            user: UserDTO;
             token: string;
             signOutAction: () => void;
         }
@@ -39,7 +44,7 @@ const NoteTab = (
     const [visible, setVisible] = useState<boolean>(false);
     const [modalType, setModalType] = useState<MODAL_TYPE>();
     const [privateNoteList, setPrivateNoteList] = useState<Array<NoteDTO>>([]);
-    const [workSpaceNoteList, setWorkSpaceNoteList] = useState<Array<NoteDTO>>([]);
+    const [workSpaceNoteList, setWorkSpaceNoteList] = useState<Array<NotesOnWorkSpaces>>([]);
     const [activeNote, setActiveNote] = useState<NoteDTO>(null);
 
     const handlerNewBtnClick = () => {
@@ -79,7 +84,17 @@ const NoteTab = (
     }
 
     async function handlerFindAllWorkSpaceNote() {
-
+        const res = await findAllNoteOnWorkspaces(token);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setWorkSpaceNoteList(result.data);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+        }
     }
 
     async function handlerUpdateNote(payload: UpdateNoteDTO) {
@@ -127,6 +142,7 @@ const NoteTab = (
 
     useEffect(() => {
         handlerFindAllPrivateNote();
+        handlerFindAllWorkSpaceNote();
     }, [])
 
     return (
@@ -152,12 +168,35 @@ const NoteTab = (
                     <NoteBar
                         key={i}
                         note={v}
+                        editable={true}
+                        removable={true}
                         handlerEditBtnClick={handlerEditBtnClick}
                         handlerRemoveBtnClick={handlerRemoveBtnClick}
                     />
                 ))
             }
             <Text as='p' size="4" className="py-3"><Strong>{ENCHINTL['side-bar']['note']['workspace-note-p'][intl]}</Strong></Text>
+            {
+                workSpaceNoteList.map((v, i) => (
+                    <Flex direction="column" key={i}>
+                        <Text as="p" size="5"><Strong>{v.title}</Strong></Text>
+                        <Flex direction="column" px="3" pt="2">
+                            {
+                                v.notes.map((note, j) => (
+                                    <NoteBar
+                                        key={j}
+                                        note={note}
+                                        editable={user.id == note.ownerId ? true : false}
+                                        removable={user.id == note.ownerId ? true : false}
+                                        handlerEditBtnClick={handlerEditBtnClick}
+                                        handlerRemoveBtnClick={handlerRemoveBtnClick}
+                                    />
+                                ))
+                            }
+                        </Flex>
+                    </Flex>
+                ))
+            }
         </div>
     )
 }
