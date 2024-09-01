@@ -41,3 +41,9 @@ export interface ScheduleTypesDTO {
     memory: string[];
     date: string[];
 }
+
+export interface ScheduleOnWorkSpaces {
+    id: number;
+    title: string;
+    schedules: Array<ScheduleDTO>;
+}

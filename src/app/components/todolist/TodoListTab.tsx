@@ -15,11 +15,14 @@ import {
     updateTask,
     findAllTaskByDay,
     removeTask,
+    findAllTodoListOnWorkSpaces
 } from "@/app/api";
 import {
     NewTaskDTO,
     UpdateTaskDTO,
-    TaskDTO
+    TaskDTO,
+    UserDTO,
+    TodoListOnWorkSpaces
 } from "@/app/type";
 import { MODAL_TYPE, PUBLIC_TYPE } from "@/app/const";
 
@@ -27,11 +30,13 @@ import { MODAL_TYPE, PUBLIC_TYPE } from "@/app/const";
 const TodoListTab = (
     {
         intl,
+        user,
         token,
         activeDate,
         signOutAction
     }: {
         intl: number;
+        user: UserDTO;
         token: string;
         activeDate: string;
         signOutAction: () => void;
@@ -40,7 +45,7 @@ const TodoListTab = (
     const [visible, setVisible] = useState<boolean>(false);
     const [modalType, setModalType] = useState<MODAL_TYPE>(null);
     const [privateTodoList, setPrivateTodoList] = useState<Array<TaskDTO>>([]);
-    const [workspaceTodoList, setWorkSpaceTodoList] = useState<Array<TaskDTO>>([]);
+    const [workspaceTodoList, setWorkSpaceTodoList] = useState<Array<TodoListOnWorkSpaces>>([]);
     const [activeTask, setActiveTask] = useState<TaskDTO>();
 
     const handlerNewBtnClick = () => {
@@ -60,7 +65,7 @@ const TodoListTab = (
         if (res.status && res.status < 400) {
             const result = res as AxiosResponse;
             setPrivateTodoList([result.data, ...privateTodoList]);
-            toast.error(ENCHINTL['toast']['todolist']['create-success'][intl]);
+            toast.success(ENCHINTL['toast']['todolist']['create-success'][intl]);
         } else {
             const err = res as AxiosError;
             if (err.response.status == 401) {
@@ -99,7 +104,6 @@ const TodoListTab = (
             setPrivateTodoList([...result.data]);
         } else {
             const err = res as AxiosError;
-            console.log(err);
             if (err.response.status == 401) {
                 toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
                 signOutAction();
@@ -107,8 +111,18 @@ const TodoListTab = (
         }
     }
 
-    async function handlerFindAllWorkSpaceTodoList() {
-
+    async function handlerFindAllTodoListOnWorkSpaces() {
+        const res = await findAllTodoListOnWorkSpaces(token, activeDate);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setWorkSpaceTodoList(result.data);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+        }
     }
 
 
@@ -117,7 +131,7 @@ const TodoListTab = (
         const res = await removeTask(id, token);
         if (res.status && res.status < 400) {
             setPrivateTodoList(privateTodoList.filter(
-                a => a.id !== activeTask.id
+                a => a.id !== id
             ));
             toast.success(ENCHINTL['toast']['todolist']['remove-success'][intl]);
         } else {
@@ -130,6 +144,7 @@ const TodoListTab = (
 
     useEffect(() => {
         handlerFindAllPrivateTodoList();
+        handlerFindAllTodoListOnWorkSpaces();
     }, [activeDate])
 
     return (
@@ -158,6 +173,8 @@ const TodoListTab = (
                         <TodoListBar
                             key={i}
                             task={v}
+                            editable={true}
+                            removable={true}
                             handlerEditBtnClick={handlerEditBtnClick}
                             handlerRemoveBtnClick={handlerRemoveBtnClick}
                         />
@@ -165,6 +182,27 @@ const TodoListTab = (
                 }
             </Flex>
             <Text as='p' size="5" className="py-2"><Strong>{ENCHINTL['side-bar']['todolist']['workspace-todolist-p'][intl]}</Strong></Text>
+            {
+                workspaceTodoList.map((v, i) => (
+                    <Flex direction="column" key={i}>
+                        <Text as="p" size="5"><Strong>{v.title}</Strong></Text>
+                        <Flex direction="column" px="3" pt="2">
+                            {
+                                v.todolists.map((task, j) => (
+                                    <TodoListBar
+                                        key={j}
+                                        task={task}
+                                        editable={false}
+                                        removable={false}
+                                        handlerEditBtnClick={handlerEditBtnClick}
+                                        handlerRemoveBtnClick={handlerRemoveBtnClick}
+                                    />
+                                ))
+                            }
+                        </Flex>
+                    </Flex>
+                ))
+            }
         </div>
     )
 }

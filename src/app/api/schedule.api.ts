@@ -39,6 +39,26 @@ export async function removeSchedule(id: number, token: string): Promise<AxiosRe
     }
 }
 
-export async function findAllScheduleBy(day: string, token: string): Promise<AxiosResponse | AxiosError> {
-    return await axios.get(BASE_URL + `/schedule/day`, { params: { day }, headers: { Authorization: `Bearer ${token}` } });
+export async function findAllScheduleByDay(day: string, token: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(BASE_URL + `/schedule/day`, { params: { day }, headers: { Authorization: `Bearer ${token}` } });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
 }
+
+export async function findAllScheduleOnWorkspaces(token: string, dueDate: string): Promise<AxiosError | AxiosResponse> {
+    try {
+        return await axios.get(`${BASE_URL}/schedule/workspace`, {
+            params: { dueDate },
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}
+

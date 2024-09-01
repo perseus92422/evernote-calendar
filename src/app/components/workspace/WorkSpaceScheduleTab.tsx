@@ -15,7 +15,8 @@ import {
     NewScheduleDTO,
     UpdateScheduleDTO,
     ScheduleDTO,
-    WorkSpaceDTO
+    WorkSpaceDTO,
+    UserDTO
 } from "@/app/type";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 
@@ -23,11 +24,13 @@ const WorkSpaceScheduleTab = (
     {
         intl,
         token,
+        user,
         workspace,
         signOutAction
     }: {
         intl: number;
         token: string;
+        user: UserDTO;
         workspace: WorkSpaceDTO;
         signOutAction: () => void;
     }
@@ -100,6 +103,9 @@ const WorkSpaceScheduleTab = (
 
     async function handlerRemoveBtnClick(id: number) {
         const res = await removeSchedule(id, token);
+        setActiveSchedule(scheduleList.find(
+            a => a.id === id
+        ));
         if (res.status && res.status < 400) {
             setScheduleList(scheduleList.filter(
                 a => a.id !== activeSchedule.id
@@ -141,6 +147,8 @@ const WorkSpaceScheduleTab = (
                 scheduleList.map((v, i) => (
                     <ScheduleBar
                         key={i}
+                        editable={v.ownerId == user?.id ? true : false}
+                        removable={v.ownerId == user?.id ? true : false}
                         intl={intl}
                         schedule={v}
                         handlerEditBtn={handlerEditBtnClick}

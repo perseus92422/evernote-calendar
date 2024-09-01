@@ -32,3 +32,9 @@ export interface TodoListDTO {
     date: string;
     todolist: TaskDTO[];
 }
+
+export interface TodoListOnWorkSpaces {
+    id: number;
+    title: string;
+    todolists: TaskDTO[];
+}

@@ -175,6 +175,7 @@ const Calender = () => {
                   <Tabs.Content value="schedule">
                     <ScheduleTab
                       intl={intl}
+                      user={user}
                       token={accessToken}
                       activeDate={activeDate}
                       signOutAction={signOutAction}
@@ -183,6 +184,7 @@ const Calender = () => {
                   <Tabs.Content value="todolist">
                     <TodoListTab
                       intl={intl}
+                      user={user}
                       token={accessToken}
                       activeDate={activeDate}
                       signOutAction={signOutAction}

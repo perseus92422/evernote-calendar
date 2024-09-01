@@ -141,8 +141,8 @@ const WorkSpaceNoteTab = (
                     <NoteBar
                         key={i}
                         note={v}
-                        editable={user.id === v.ownerId ? true : false}
-                        removable={user.id === v.ownerId ? true : false}
+                        editable={user?.id === v.ownerId ? true : false}
+                        removable={user?.id === v.ownerId ? true : false}
                         handlerEditBtnClick={handlerEditBtnClick}
                         handlerRemoveBtnClick={handlerRemoveBtnClick}
                     />

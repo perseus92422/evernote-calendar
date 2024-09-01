@@ -49,3 +49,12 @@ export async function findAllTaskByDay(day: string, token: string): Promise<Axio
     }
 
 }
+
+export async function findAllTodoListOnWorkSpaces(token: string, dueDate: string): Promise<AxiosResponse | AxiosError> {
+    try {
+        return await axios.get(`${BASE_URL}/task/workspace`, { params: { dueDate }, headers: { Authorization: `Bearer ${token}` } });
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}

@@ -13,7 +13,6 @@ import {
 import {
     TrashIcon,
     Pencil1Icon,
-    PaperPlaneIcon,
     Cross1Icon
 } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
@@ -57,7 +56,6 @@ const WorkSpace = () => {
     const [activeWorkSpace, setActiveWorkSpace] = useState<WorkSpaceDTO>(null);
 
     const handlerNewBtnClick = () => {
-        setActiveWorkSpace(null);
         setModalType(MODAL_TYPE.Create);
         setVisibleWorkSpaceModal(true);
     }
@@ -250,7 +248,7 @@ const WorkSpace = () => {
                                                     />
                                                 </Tooltip> */}
                                                 {
-                                                    user.id == v.ownerId ? (
+                                                    user?.id == v.ownerId ? (
                                                         <>
                                                             <Tooltip content={ENCHINTL['workspace']['table']['tooltip']['invite'][intl]}>
                                                                 <Pencil1Icon
@@ -313,6 +311,7 @@ const WorkSpace = () => {
                                 <Tabs.Content value="schedule">
                                     <WorkSpaceScheduleTab
                                         intl={intl}
+                                        user={user}
                                         token={accessToken}
                                         workspace={activeWorkSpace}
                                         signOutAction={signOutAction}
@@ -321,6 +320,7 @@ const WorkSpace = () => {
                                 <Tabs.Content value="todolist">
                                     <WorkSpaceTodoListTab
                                         intl={intl}
+                                        user={user}
                                         token={accessToken}
                                         workspace={activeWorkSpace}
                                         signOutAction={signOutAction}

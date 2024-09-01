@@ -16,11 +16,15 @@ const ScheduleBar = (
     {
         schedule,
         intl,
+        editable,
+        removable,
         handlerEditBtn,
         handlerRemoveBtn
     }: {
         schedule: ScheduleDTO;
         intl: number;
+        editable: boolean;
+        removable: boolean;
         handlerEditBtn: (arg: ScheduleDTO) => void;
         handlerRemoveBtn: (arg: number) => void;
     }) => {
@@ -30,18 +34,26 @@ const ScheduleBar = (
             <Flex direction="row" justify="between" gap="2" py="1">
                 <Text as="p"><Strong>{ENCHINTL['modal']['schedule']['types'][schedule.type as keyof ScheduleTypesDTO][intl]}</Strong></Text>
                 <Flex direction="row" gap="2">
-                    <Pencil1Icon
-                        className="cursor-pointer"
-                        width="20"
-                        height="20"
-                        onClick={() => handlerEditBtn(schedule)}
-                    />
-                    <TrashIcon
-                        className="cursor-pointer"
-                        width="20"
-                        height="20"
-                        onClick={() => handlerRemoveBtn(schedule.id)}
-                    />
+                    {
+                        editable ? (
+                            <Pencil1Icon
+                                className="cursor-pointer"
+                                width="20"
+                                height="20"
+                                onClick={() => handlerEditBtn(schedule)}
+                            />
+                        ) : null
+                    }
+                    {
+                        removable ? (
+                            <TrashIcon
+                                className="cursor-pointer"
+                                width="20"
+                                height="20"
+                                onClick={() => handlerRemoveBtn(schedule.id)}
+                            />
+                        ) : null
+                    }
                 </Flex>
             </Flex>
             <HoverCard.Root>

@@ -14,10 +14,14 @@ import { TaskDTO } from "@/app/type";
 const TodoListBar = (
     {
         task,
+        editable,
+        removable,
         handlerEditBtnClick,
         handlerRemoveBtnClick,
     }: {
         task: TaskDTO;
+        editable: boolean;
+        removable: boolean;
         handlerEditBtnClick: (arg: TaskDTO) => void;
         handlerRemoveBtnClick: (arg: number) => void;
     }
@@ -25,18 +29,26 @@ const TodoListBar = (
     return (
         <Flex direction="column" py="1" className="w-full rounded-[4px] border-2 px-2 py-2 border-[#00c7fe83] my-1">
             <Flex direction="row" justify="end" gap="2" py="1">
-                <Pencil1Icon
-                    className="cursor-pointer"
-                    height="20"
-                    width="20"
-                    onClick={() => handlerEditBtnClick(task)}
-                />
-                <TrashIcon
-                    className="cursor-pointer"
-                    height="20"
-                    width="20"
-                    onClick={() => handlerRemoveBtnClick(task.id)}
-                />
+                {
+                    editable ? (
+                        <Pencil1Icon
+                            className="cursor-pointer"
+                            height="20"
+                            width="20"
+                            onClick={() => handlerEditBtnClick(task)}
+                        />
+                    ) : null
+                }
+                {
+                    removable ? (
+                        <TrashIcon
+                            className="cursor-pointer"
+                            height="20"
+                            width="20"
+                            onClick={() => handlerRemoveBtnClick(task.id)}
+                        />
+                    ) : null
+                }
             </Flex>
             <HoverCard.Root>
                 <HoverCard.Trigger>

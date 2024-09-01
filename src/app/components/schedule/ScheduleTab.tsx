@@ -12,13 +12,16 @@ import ScheduleBar from "./ScheduleBar";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { MODAL_TYPE, PUBLIC_TYPE } from "../../const";
 import {
-    findAllScheduleBy,
+    findAllScheduleByDay,
+    findAllScheduleOnWorkspaces,
     removeSchedule
 } from "../../api";
 import {
     NewScheduleDTO,
     UpdateScheduleDTO,
-    ScheduleDTO
+    ScheduleOnWorkSpaces,
+    ScheduleDTO,
+    UserDTO
 } from "../../type";
 import {
     createSchedule,
@@ -29,12 +32,14 @@ import {
 const ScheduleTab = (
     {
         intl,
+        user,
         token,
         activeDate,
         signOutAction
     }:
         {
             intl: number;
+            user: UserDTO;
             token: string;
             activeDate: string;
             signOutAction: () => void;
@@ -44,7 +49,7 @@ const ScheduleTab = (
     const [visible, setVisible] = useState<boolean>(false);
     const [modalType, setModalType] = useState<MODAL_TYPE>(null);
     const [privateScheduleList, setPrivateScheduleList] = useState<Array<ScheduleDTO>>([]);
-    const [workspaceScheduleList, setWorkSpaceScheduleList] = useState<Array<ScheduleDTO>>([]);
+    const [workspaceScheduleList, setWorkSpaceScheduleList] = useState<Array<ScheduleOnWorkSpaces>>([]);
     const [activeSchedule, setActiveSchedule] = useState<ScheduleDTO>();
 
     const handlerNewBtnClick = () => {
@@ -74,7 +79,7 @@ const ScheduleTab = (
     }
 
     async function handlerFindAllPrivateSchedule() {
-        const res = await findAllScheduleBy(activeDate, token);
+        const res = await findAllScheduleByDay(activeDate, token);
         if (res.status && res.status < 400) {
             const result = res as AxiosResponse;
             setPrivateScheduleList([...result.data]);
@@ -87,8 +92,18 @@ const ScheduleTab = (
         }
     }
 
-    async function handlerFindAllWorkSpaceSchdeuld() {
-
+    async function handlerFindAllWorkSpaceSchedule() {
+        const res = await findAllScheduleOnWorkspaces(token, activeDate);
+        if (res.status && res.status < 400) {
+            const result = res as AxiosResponse;
+            setWorkSpaceScheduleList(result.data);
+        } else {
+            const err = res as AxiosError;
+            if (err.response.status == 401) {
+                toast.error(ENCHINTL['toast']['common']['token-expired'][intl]);
+                signOutAction();
+            }
+        }
     }
 
     async function handlerUpdateSchedule(payload: UpdateScheduleDTO) {
@@ -129,6 +144,7 @@ const ScheduleTab = (
 
     useEffect(() => {
         handlerFindAllPrivateSchedule();
+        handlerFindAllWorkSpaceSchedule();
     }, [activeDate])
 
     return (
@@ -155,12 +171,36 @@ const ScheduleTab = (
                         key={i}
                         schedule={v}
                         intl={intl}
+                        editable={true}
+                        removable={true}
                         handlerEditBtn={handlerScheduleEdit}
                         handlerRemoveBtn={handlerScheduleRemove}
                     />
                 ))
             }
             <Text as='p' size="4" className="py-2"><Strong>{ENCHINTL['side-bar']['schedule']['workspace-schedule-p'][intl]}</Strong></Text>
+            {
+                workspaceScheduleList.map((v, i) => (
+                    <Flex direction="column" >
+                        <Text as="p" size="5"><Strong>{v.title}</Strong></Text>
+                        <Flex direction="column" px="3" pt="2">
+                            {
+                                v.schedules.map((schedule, j) => (
+                                    <ScheduleBar
+                                        key={j}
+                                        intl={intl}
+                                        schedule={schedule}
+                                        editable={false}
+                                        removable={false}
+                                        handlerEditBtn={handlerScheduleEdit}
+                                        handlerRemoveBtn={handlerScheduleRemove}
+                                    />
+                                ))
+                            }
+                        </Flex>
+                    </Flex>
+                ))
+            }
         </div>
     )
 }

@@ -109,14 +109,14 @@ const WorkSpaceMemberTab = (
             {
                 user?.id == workspace?.ownerId ? (
                     <Flex justify="end" px="2" py="3">
-                        <Button color="cyan" variant="soft" onClick={handlerNewBtnClick}>{ENCHINTL['side-bar']['note']['new-btn'][intl]}</Button>
+                        <Button color="cyan" variant="soft" onClick={handlerNewBtnClick}>{ENCHINTL['workspace']['side-bar']['member']['invite-btn'][intl]}</Button>
                     </Flex>
                 ) : null
             }
             <Grid columns="3" gap="5" pt="2">
                 {
                     members.map((v, i) => (
-                        v.id != user.id ? (
+                        v.id != user?.id ? (
                             <MemberBar
                                 key={i}
                                 member={v}

@@ -186,8 +186,8 @@ const NoteTab = (
                                     <NoteBar
                                         key={j}
                                         note={note}
-                                        editable={user.id == note.ownerId ? true : false}
-                                        removable={user.id == note.ownerId ? true : false}
+                                        editable={false}
+                                        removable={false}
                                         handlerEditBtnClick={handlerEditBtnClick}
                                         handlerRemoveBtnClick={handlerRemoveBtnClick}
                                     />

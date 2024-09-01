@@ -5,7 +5,7 @@ export const dateToYYYYMMDDF = (date: Date): string => {
 }
 
 export const compareDate = (start: Date, end: Date): Boolean => {
-    if (moment(end).isBefore(start) || moment(end).isSame(start))
+    if (moment(end).isBefore(start))
         return false;
     else
         return true;
