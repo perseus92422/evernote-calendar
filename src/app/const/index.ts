@@ -8,13 +8,9 @@ export const COLOR_PATTERN = [
     "pink",
     "teal",
     "brown",
-    "gray",
     "cyan",
-    "magenta",
     "indigo",
-    "lime",
-    "olive",
-    "coral"
+    "lime"
 ];
 
 export const LINE_WIDTH_PATTERN = [

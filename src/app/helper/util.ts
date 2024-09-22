@@ -1,24 +1,26 @@
 import moment from "moment";
 
-export const dateToYYYYMMDDF = (date: Date): string => {
+export const dateToYYYYMMDDF = (date: Date | string): string => {
     return moment(date).format('YYYY-MM-DD');
 }
 
-export const compareDate = (start: Date, end: Date): Boolean => {
+export const getDateTime = (date: Date | string): string => {
+    return moment(date).format('YYYY-MM-DD HH:MM:SS')
+}
+
+export const compareDate = (start: string | Date, end: string | Date): number => {
+    if (dateToYYYYMMDDF(start) == dateToYYYYMMDDF(end))
+        return 0;
     if (moment(end).isBefore(start))
-        return false;
+        return -1;
     else
-        return true;
+        return 1;
 }
 
-export const getStartDayOfMonth = (): string => {
-    return moment().startOf('M').startOf('W').weekday(0).format('YYYY-MM-DD');
+export const getMonth = (date: string | Date): number => {
+    return parseInt(moment(date).format('MM'));
 }
 
-export const getEndDayOfMonth = (): string => {
-    return moment().startOf('M').startOf('W').weekday(0).format('YYYY-MM-DD');
-}
-
-export const getYear = (date: Date): number => {
-    return moment(date).year();
+export const getYear = (date: string | Date): number => {
+    return parseInt(moment(date).format('YYYY'));
 }

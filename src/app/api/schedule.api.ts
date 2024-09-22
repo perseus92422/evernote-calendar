@@ -62,3 +62,21 @@ export async function findAllScheduleOnWorkspaces(token: string, dueDate: string
     }
 }
 
+export async function findAllScheduleByMonth(token: string, month: number, year: number) {
+    try {
+        return await axios.get(`${BASE_URL}/schedule/month`,
+            {
+                params: {
+                    month,
+                    year
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+    } catch (e) {
+        const err = e as AxiosError;
+        return err;
+    }
+}

@@ -1,3 +1,4 @@
+import { ScheduleDTO } from "./schedule.dto";
 
 export interface DayDTO {
     date: string;
@@ -6,4 +7,5 @@ export interface DayDTO {
     isOut: boolean;
     isMonday: boolean;
     isSunday: boolean;
+    schedules: ScheduleDTO[];
 }

@@ -9,7 +9,7 @@ import {
     Link
 } from "@radix-ui/themes";
 import { useAppDispatch, useAppSelector } from "@/app/redux/hook";
-import { setIntlProps, setUserProps } from "@/app/features/calendar.slice";
+import { setIntlProps, setUserProps, setAccessTokenProps } from "@/app/features/calendar.slice";
 import { UserDTO } from "@/app/type";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { eraseStorage } from "@/app/helper";
@@ -41,6 +41,8 @@ const Header = () => {
 
     useEffect(() => {
         let storage = localStorage.getItem('user');
+        let token = localStorage.getItem('token');
+        dispatch(setAccessTokenProps(token));
         if (storage) {
             if (user)
                 setCurUser(user);
@@ -59,10 +61,10 @@ const Header = () => {
             <Flex gap="6">
                 {
                     curUser ? (<>
-                        {/* <Text as="span" size="4"><Link href="/note"><Strong>{ENCHINTL['header']['nav-bar']['note'][intl]}</Strong></Link></Text>
-                        <Text as="span" size="4"><Link href="/schedule"><Strong>{ENCHINTL['header']['nav-bar']['schedule'][intl]}</Strong></Link></Text>
-                        <Text as="span" size="4"><Link href="/task"><Strong>{ENCHINTL['header']['nav-bar']['task'][intl]}</Strong></Link></Text> */}
-                        {/* <Text as="span" size="4"><Link href="/workspace"><Strong>{ENCHINTL['header']['nav-bar']['workspace'][intl]}</Strong></Link></Text> */}
+                        <Text as="span" size="4"><Link href="/"><Strong>{ENCHINTL['header']['nav-bar']['calendar'][intl]}</Strong></Link></Text>
+                        <Text as="span" size="4"><Link href="/note"><Strong>{ENCHINTL['header']['nav-bar']['note'][intl]}</Strong></Link></Text>
+                        <Text as="span" size="4"><Link href="/library"><Strong>{ENCHINTL['header']['nav-bar']['library'][intl]}</Strong></Link></Text>
+                        <Text as="span" size="4"><Link href="/workspace"><Strong>{ENCHINTL['header']['nav-bar']['workspace'][intl]}</Strong></Link></Text>
                     </>) : null
                 }
             </Flex>
@@ -77,17 +79,20 @@ const Header = () => {
                             <DropdownMenu.Root>
                                 <DropdownMenu.Trigger>
                                     <Flex className="items-center cursor-pointer" gap="3">
-                                        <Flex className="border-2 rounded-full h-[50px] w-[50px] bg-[#6c9fff] justify-center items-center">
+                                        <div className="flex border-2 rounded-full h-[50px] w-[50px] bg-[#6c9fff] justify-center items-center">
                                             <Text size="5" className="text-white">
                                                 <Strong>
                                                     {curUser.firstName.toLocaleUpperCase().trim()[0] + curUser.lastName.toLocaleUpperCase().trim()[0]}
                                                 </Strong>
                                             </Text>
-                                        </Flex>
+                                        </div>
                                         <Text size="5"><Strong>{curUser.firstName + " " + curUser.lastName}</Strong></Text>
                                     </Flex>
                                 </DropdownMenu.Trigger>
                                 <DropdownMenu.Content>
+                                    <DropdownMenu.Item onClick={() => router.push('/')}>{ENCHINTL['header']['nav-bar']['calendar'][intl]}</DropdownMenu.Item>
+                                    <DropdownMenu.Item onClick={() => router.push('/note')}>{ENCHINTL['header']['nav-bar']['note'][intl]}</DropdownMenu.Item>
+                                    <DropdownMenu.Item onClick={() => router.push('/library')}>{ENCHINTL['header']['nav-bar']['library'][intl]}</DropdownMenu.Item>
                                     <DropdownMenu.Item onClick={() => router.push('/workspace')}>{ENCHINTL['header']['nav-bar']['workspace'][intl]}</DropdownMenu.Item>
                                     <DropdownMenu.Item onClick={handlerSignOutClick}>{ENCHINTL['header']['menu']['sign-out'][curIntl]}</DropdownMenu.Item>
                                 </DropdownMenu.Content>

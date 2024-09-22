@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { AxiosResponse, AxiosError } from "axios";
+import moment from "moment";
 import {
     Flex,
     Button,
@@ -6,7 +8,6 @@ import {
     Strong
 } from "@radix-ui/themes";
 import { toast } from "react-toastify";
-import { AxiosResponse, AxiosError } from "axios";
 import ScheduleModal from "./ScheduleModal";
 import ScheduleBar from "./ScheduleBar";
 import ENCHINTL from '@/app/lang/EN-CH.json';
@@ -35,7 +36,7 @@ const ScheduleTab = (
         user,
         token,
         activeDate,
-        signOutAction
+        signOutAction,
     }:
         {
             intl: number;
@@ -181,7 +182,7 @@ const ScheduleTab = (
             <Text as='p' size="4" className="py-2"><Strong>{ENCHINTL['side-bar']['schedule']['workspace-schedule-p'][intl]}</Strong></Text>
             {
                 workspaceScheduleList.map((v, i) => (
-                    <Flex direction="column" >
+                    <Flex key={i} direction="column" >
                         <Text as="p" size="5"><Strong>{v.title}</Strong></Text>
                         <Flex direction="column" px="3" pt="2">
                             {

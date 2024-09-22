@@ -19,13 +19,15 @@ const ToolTar = (
         viewMode,
         activeDate,
         setViewMode,
-        setActiveDate
+        setActiveDate,
+        setInitFlag
     }: {
         intl: number;
         viewMode: CALENDAR_VIEW_MODE;
         activeDate: string;
         setViewMode: (arg: CALENDAR_VIEW_MODE) => void;
         setActiveDate: (arg: string) => void;
+        setInitFlag: (arg: boolean) => void;
     }) => {
 
     const BASE_YEAR_CALENDAR = new Date().getFullYear();
@@ -37,18 +39,22 @@ const ToolTar = (
 
     const handleYearChange = (value: number) => {
         setActiveDate(moment(activeDate).year(value).format('YYYY-MM-DD'));
+        setInitFlag(true);
     }
 
     const handlerPrevOrNextMonthClick = (value: number) => {
         setActiveDate(moment(activeDate).add('M', value).format('YYYY-MM-DD'));
+        setInitFlag(true);
     }
 
     const handlerMonthChange = (value: number) => {
         setActiveDate(moment(activeDate).month(value).format('YYYY-MM-DD'));
+        setInitFlag(true);
     }
 
     const handlerTodayBtnClick = () => {
         setActiveDate(dateToYYYYMMDDF(new Date()));
+        setInitFlag(true);
     }
 
     return (

@@ -4,6 +4,7 @@ export interface NoteDTO {
     content: string;
     ownerId?: number;
     workspaceId?: number;
+    createAt?: Date;
 }
 
 export interface NewNoteDTO {

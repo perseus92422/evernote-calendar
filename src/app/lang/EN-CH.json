@@ -7,6 +7,10 @@
             ]
         },
         "nav-bar":{
+            "calendar":[
+                "Calendar",
+                "日曆"
+            ],
             "note":[
                 "Note",
                 "笔记"
@@ -22,6 +26,10 @@
             "workspace":[
                 "WorkSpace",
                 "工作区"
+            ],
+            "library":[
+                "Library",
+                "圖書館"
             ]
         }
     },
@@ -284,6 +292,14 @@
             "remove-success":[
                 "The note is removed successfully.",
                 "注释已成功删除。"
+            ],
+            "empty-title":[
+                "The title is empty.",
+                "标题为空。"
+            ],
+            "empty-content":[
+                "The content is empty",
+                "内容为空。"
             ]
         },
         "todolist":{
@@ -360,6 +376,12 @@
             "owner":[
                 "You are owner of the workspace.",
                 "您是该工作区的所有者。"
+            ]
+        },
+        "library":{
+            "upload-succes":[
+                "Upload is success.",
+                "上傳成功。"
             ]
         }
     },
@@ -714,6 +736,92 @@
                 "today":[
                     "Today",
                     "今天"
+                ]
+            }
+        }
+    },
+    "library":{
+        "tabs-bar":{
+            "tabs":{
+                "all":[
+                    "All",
+                    "鋁"
+                ],
+                "media":[
+                    "Media",
+                    "媒體"
+                ],
+                "doc":[
+                    "Docs",
+                    "文件"
+                ]
+            },
+            "toolbar":{
+                "element":[
+                    "element",
+                    "元素"
+                ]
+        }
+        },
+        "preview-bar":{
+            "toolbar":{
+                "openfileBtn":[
+                    "Open File",
+                    "開啟文件"
+                ]
+            },
+            "no-preview":{
+                "heading":[
+                    "Couldn't preview file",
+                    "無法預覽文件。"
+                ],
+                "description":[
+                    "Preview is not currently supported on this file type",
+                    "此文件類型目前不支援預覽。"
+                ],
+                "downloadBtn":[
+                    "Download",
+                    "下載"
+                ]
+            }
+        }
+    },
+    "note":{
+        "tabs-bar":{
+            "tabs":{
+                "person":[
+                    "Personal",
+                    "個人的"
+                ],
+                "workspace":[
+                    "WorkSpace",
+                    "工作区"
+                ]
+            }
+        },
+        "edit-bar":{
+            "btn":{
+                "save":[
+                    "Save",
+                    "節省"
+                ],
+                "new":[
+                    "New",
+                    "新"
+                ]
+            },
+            "dropdown-list":{
+                "new":[
+                    "New",
+                    "新"
+                ],
+                "save":[
+                    "Save",
+                    "節省"
+                ],
+                "remove":[
+                    "Remove",
+                    "消除"
                 ]
             }
         }

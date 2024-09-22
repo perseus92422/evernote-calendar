@@ -5,3 +5,4 @@ export * from './todolist.dto';
 export * from './auth.dto';
 export * from './workspace.dto';
 export * from './common.dto';
+export * from './library.dto';

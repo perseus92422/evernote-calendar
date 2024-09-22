@@ -33,6 +33,7 @@ import {
   compareDate
 } from '@/app/helper';
 import ENCHINTL from '@/app/lang/EN-CH.json';
+import { createSearchParamsBailoutProxy } from 'next/dist/client/components/searchparams-bailout-proxy';
 
 
 const ScheduleModal = (
@@ -74,7 +75,7 @@ const ScheduleModal = (
   }
 
   const handlerSubmit = () => {
-    if (!compareDate(startDate, endDate)) {
+    if (compareDate(startDate, endDate) < 0) {
       setError(ENCHINTL['error']['schedule']['modal']['invalid-end-date'][intl]);
       return;
     }
@@ -138,7 +139,7 @@ const ScheduleModal = (
   }
 
   const handleWidthChange = (value: number) => {
-    setWidth(width);
+    setWidth(value);
   }
 
   const initState = () => {

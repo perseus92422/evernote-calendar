@@ -4,10 +4,12 @@ import { UserDTO } from "../type";
 const initialState: {
     intl: number;
     user: UserDTO;
+    accessToken: string;
 } = {
 
     intl: 1,
-    user: null
+    user: null,
+    accessToken: ""
 }
 
 export const calendarSlice = createSlice({
@@ -19,12 +21,16 @@ export const calendarSlice = createSlice({
         },
         setUserProps(state, action) {
             state.user = action.payload;
+        },
+        setAccessTokenProps(state, action) {
+            state.accessToken = action.payload;
         }
     }
 })
 
 export const {
     setIntlProps,
-    setUserProps
+    setUserProps,
+    setAccessTokenProps
 } = calendarSlice.actions;
 export default calendarSlice.reducer;

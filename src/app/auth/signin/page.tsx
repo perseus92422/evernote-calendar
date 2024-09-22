@@ -19,7 +19,7 @@ import {
 import { toast } from "react-toastify";
 import { AxiosError, AxiosResponse } from "axios";
 import { useAppDispatch } from "@/app/redux/hook";
-import { setUserProps } from "@/app/features/calendar.slice";
+import { setUserProps, setAccessTokenProps } from "@/app/features/calendar.slice";
 import Message from "@/app/components/common/message";
 import ENCHINTL from '@/app/lang/EN-CH.json';
 import { signIn } from "@/app/api";
@@ -74,6 +74,7 @@ const SignIn = () => {
             const result = res as AxiosResponse;
             localStorage.setItem("token", result.data.token);
             localStorage.setItem("user", JSON.stringify(result.data.user));
+            dispatch(setAccessTokenProps(result.data.token))
             dispatch(setUserProps(result.data.user));
             router.push('/');
         } else {
